@@ -2,5 +2,6 @@
 
 int main(){
     printf("test SIMCITY !\n");
+    printf("test");
     return 0;
 }
