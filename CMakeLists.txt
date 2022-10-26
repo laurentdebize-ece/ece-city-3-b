@@ -4,4 +4,4 @@ project(ECE_CITY_3B C)
 set(CMAKE_C_STANDARD 11)
 
 add_executable(ECE_CITY_3B
-        main.c)
+        main.c structure.c structure.h)
