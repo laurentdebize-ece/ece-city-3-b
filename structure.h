@@ -1,10 +1,18 @@
 #ifndef ECE_CITY_3B_STRUCTURE_H
 #define ECE_CITY_3B_STRUCTURE_H
 
-
+//creation d'une liste pour pouvoir determiner les routes adjacentes a chaque batiment et les batiments adjacents aux autres
 typedef struct Liste {
     struct Liste* suivant;
     int numero;
+};
+
+// case de la map
+typedef struct Case{
+    int occupe;
+    char symbole;
+    int pos_x;
+    int pos_y;
 };
 
 typedef struct Route{
@@ -15,14 +23,7 @@ typedef struct Route{
     struct Liste adjacente_route;
     struct Liste adjacente_batiment;
 };
-
-typedef struct Case{
-    int occupe;
-    char symbole;
-    int pos_x;
-    int pos_y;
-};
-
+// contient les centrales et les chateaux d'eau
 typedef struct Batiment{
     char symbole;
     int capacite;
