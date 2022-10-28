@@ -11,9 +11,9 @@ typedef struct Route{
     char symbole;
     int pos_x;
     int pos_y;
-    struct Liste adjacente_maison;
-    struct Liste adjacente_route;
-    struct Liste adjacente_batiment;
+    struct Liste* adjacente_maison;
+    struct Liste* adjacente_route;
+    struct Liste* adjacente_batiment;
 };
 
 typedef struct Case{
@@ -28,7 +28,7 @@ typedef struct Batiment{
     int capacite;
     int pos_x;
     int pos_y;
-    struct Liste routeAdjacente;
+    struct Liste* routeAdjacente;
 };
 
 typedef struct Maison{
@@ -36,7 +36,7 @@ typedef struct Maison{
     int niveau;
     int eau;
     int electricite;
-    struct Liste routeAdjacente;
+    struct Liste* routeAdjacente;
     int pos_x;
     int pos_y;
 };
