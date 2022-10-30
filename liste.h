@@ -5,7 +5,7 @@
 typedef struct Liste {
     struct Liste* suivant;
     int numero;
-};
+}Liste;
 
 void ajouter_liste (struct Liste** liste, int numero);
 void retirer_liste (struct Liste** liste, int numero);
