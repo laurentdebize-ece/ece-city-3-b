@@ -1,11 +1,7 @@
 #ifndef ECE_CITY_3B_STRUCTURE_H
 #define ECE_CITY_3B_STRUCTURE_H
 
-//creation d'une liste pour pouvoir determiner les routes adjacentes a chaque batiment et les batiments adjacents aux autres
-typedef struct Liste {
-    struct Liste* suivant;
-    int numero;
-};
+#include "liste.h"
 
 // case de la map
 typedef struct Case{
@@ -35,6 +31,7 @@ typedef struct Batiment{
 typedef struct Maison{
     char symbole;
     int niveau;
+    int habitants;
     int eau;
     int electricite;
     struct Liste* routeAdjacente;
