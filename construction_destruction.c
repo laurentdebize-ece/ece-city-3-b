@@ -1,7 +1,15 @@
 #include "construction_destruction.h"
+#include "debug.h"
 #include <stdlib.h>
 
 /**************************************Construire***********************************************/
+
+bool batiment_sur_map(int pos_x, int pos_y, int taille_x, int taille_y){
+    if(pos_x + taille_x >= TAILLE_MAP_X || pos_y + taille_y >= TAILLE_MAP_Y || pos_x < 0 || pos_y < 0){
+        return false;
+    }
+    return true;
+}
 
 bool check_argent(int argent_joueur, int argent_demande){
     return (argent_joueur >= argent_demande)? true : false;
@@ -13,39 +21,83 @@ int** detecter_cases_interieur(Jeu* jeu,int pos_x,int pos_y,int taille_x,int tai
     for (int i = 0; i < nb_cases; i++){
         cases_interieurs[i] = (int*)malloc(2*sizeof(int));
     }
-    
     for (int i = 0; i < taille_x; i++){
-        for (int j = 0; i < taille_y; i++){
-            cases_interieurs[i*taille_x + j][0] = i + pos_x;
-            cases_interieurs[i*taille_x + j][1] = j + pos_y;
+        for (int j = 0; j < taille_y; j++){
+            cases_interieurs[i*taille_y + j][0] = i + pos_x;
+            cases_interieurs[i*taille_y + j][1] = j + pos_y;
         }
     }
-    
     return cases_interieurs;
 }
 
-int** detecter_cases_adjacentes(Jeu* jeu,int pos_x,int pos_y,int taille_x,int taille_y){
-    int nb_cases = 2*(taille_x + taille_y) + 4;
-    int** cases_adjacentes = (int**)malloc(nb_cases*sizeof(int*));
-    for (int i = 0; i < nb_cases; i++){
+
+#define PAS_ELEMENTS_A_GAUCHE 2
+#define PAS_ELEMENTS_A_DROITE 3
+#define PAS_ELEMENTS_EN_HAUT 5
+#define PAS_ELEMENTS_EN_BAS 7
+int** detecter_cases_adjacentes(Jeu* jeu,int pos_x,int pos_y,int taille_x,int taille_y,int* taille_tab){
+
+    int pas_element = 1;
+    if (pos_x == 0){
+        pas_element *= PAS_ELEMENTS_A_GAUCHE;
+    }
+    if (pos_x + taille_x == TAILLE_MAP_X){
+        pas_element *= PAS_ELEMENTS_A_DROITE;
+    }
+    if (pos_y == 0){
+        pas_element *= PAS_ELEMENTS_EN_HAUT;
+    }
+    if (pos_y + taille_y == TAILLE_MAP_Y){
+        pas_element *= PAS_ELEMENTS_EN_BAS;
+    }
+
+    if (((pas_element%PAS_ELEMENTS_A_GAUCHE == 0)&&(pas_element%PAS_ELEMENTS_EN_HAUT == 0))
+        ||((pas_element%PAS_ELEMENTS_A_GAUCHE == 0)&&(pas_element%PAS_ELEMENTS_EN_BAS == 0))
+        ||((pas_element%PAS_ELEMENTS_A_DROITE == 0)&&(pas_element%PAS_ELEMENTS_EN_HAUT == 0))
+        ||((pas_element%PAS_ELEMENTS_A_DROITE == 0)&&(pas_element%PAS_ELEMENTS_EN_BAS == 0))){
+        *taille_tab = taille_x + taille_y;
+    }
+    else if ((pas_element%PAS_ELEMENTS_A_GAUCHE == 0)||(pas_element%PAS_ELEMENTS_A_DROITE == 0)){
+        *taille_tab = 2*taille_y + taille_x;
+    }
+    else if ((pas_element%PAS_ELEMENTS_EN_HAUT == 0)||(pas_element%PAS_ELEMENTS_EN_BAS == 0)){
+        *taille_tab = 2*taille_x + taille_y;
+    }
+    else{
+        *taille_tab = 2*taille_x + 2*taille_y;
+    }
+
+    int** cases_adjacentes = (int**)malloc((*taille_tab)*sizeof(int*));
+    for (int i = 0; i < *taille_tab; i++){
         cases_adjacentes[i] = (int*)malloc(2*sizeof(int));
     }
 
     int compteur_indice = 0;
-    for (int i = 0; i < taille_x; i++){
-        if (i == 0 || i == taille_x){
-            for (int j = 0; i < taille_y; i++){
-                cases_adjacentes[compteur_indice][0] = i + pos_x;
-                cases_adjacentes[compteur_indice][1] = j + pos_y;
-                compteur_indice++;
-            }
-        }
-        else{
-            cases_adjacentes[compteur_indice][0] = i + pos_x;
-            cases_adjacentes[compteur_indice][1] = 0 + pos_y;
+    if (!(pas_element%PAS_ELEMENTS_A_GAUCHE == 0)){
+        for (int i = 0; i < taille_y; i++){
+            cases_adjacentes[compteur_indice][0] = pos_x - 1;
+            cases_adjacentes[compteur_indice][1] = pos_y + i;
             compteur_indice++;
-            cases_adjacentes[compteur_indice][0] = i + pos_x;
-            cases_adjacentes[compteur_indice][1] = taille_y + pos_y;
+        }
+    }
+    if (!(pas_element%PAS_ELEMENTS_A_DROITE == 0)){
+        for (int i = 0; i < taille_y; i++){
+            cases_adjacentes[compteur_indice][0] = pos_x + taille_x;
+            cases_adjacentes[compteur_indice][1] = pos_y + i;
+            compteur_indice++;
+        }
+    }
+    if (!(pas_element%PAS_ELEMENTS_EN_HAUT == 0)){
+        for (int i = 0; i < taille_x; i++){
+            cases_adjacentes[compteur_indice][0] = pos_x + i;
+            cases_adjacentes[compteur_indice][1] = pos_y - 1;
+            compteur_indice++;
+        }
+    }
+    if (!(pas_element%PAS_ELEMENTS_EN_BAS == 0)){
+        for (int i = 0; i < taille_x; i++){
+            cases_adjacentes[compteur_indice][0] = pos_x + i;
+            cases_adjacentes[compteur_indice][1] = pos_y + taille_y;
             compteur_indice++;
         }
     }
@@ -59,6 +111,20 @@ bool pas_de_batiment_sur_position(Jeu* jeu,int** tableau_cases_interieurs,int ta
             return false;
     }
     return true;
+}
+
+void mettre_cases_occupees(Jeu* jeu,int pos_x,int pos_y,int taille_x,int taille_y,char symbole,int numero){
+    for (int i = 0; i < taille_x; i++){
+        for (int j = 0; j < taille_y; j++){
+            jeu->map[pos_x + i][pos_y + j].occupe = true;
+            if (i == 0 || i == taille_x - 1 || j == 0 || j == taille_y - 1){
+                jeu->map[pos_x + i][pos_y + j].symbole = symbole;
+            }
+            else{
+                jeu->map[pos_x + i][pos_y + j].symbole = '0'+numero;
+            }
+        }
+    }
 }
 
 Liste* detecter_routes_adjacentes(Route* routes,int nb_routes,int** tableau_cases_adjacentes,int taille_tab){
@@ -123,15 +189,14 @@ Liste* detecter_batiements_adjacents(Batiment* batiments,int nb_batiments,int** 
     return liste_batiments_adjacents;
 }
 
-
 Liste** detecter_elements_adjacents(Jeu* jeu,int type,int pos_x,int pos_y,int taille_x,int taille_y){
     Liste** elements_adjacents = (Liste**)malloc(3*sizeof(Liste*));
     for (int i = 0; i < 3; i++){
         elements_adjacents[i] = NULL;
     }
-
-    int** cases_adjacentes = detecter_cases_adjacentes(jeu,pos_x,pos_y,taille_x,taille_y);
-    int taille_tab = 2*(taille_x + taille_y) + 4;
+    
+    int taille_tab;
+    int** cases_adjacentes = detecter_cases_adjacentes(jeu,pos_x,pos_y,taille_x,taille_y,&taille_tab);
     
     if (type ==  TYPE_ROUTE){
         elements_adjacents[TYPE_ROUTE] = detecter_routes_adjacentes(jeu->routes,jeu->nb_routes,cases_adjacentes,taille_tab);
@@ -154,6 +219,11 @@ void construire_maison(Jeu* jeu,int pos_x,int pos_y,Liste** elements_adjacents){
     jeu->maisons[jeu->nb_maisons].pos_x = pos_x;
     jeu->maisons[jeu->nb_maisons].pos_y = pos_y;
     jeu->maisons[jeu->nb_maisons].routeAdjacente = elements_adjacents[TYPE_ROUTE];
+    Liste* tmp = jeu->maisons[jeu->nb_maisons].routeAdjacente;
+    while(tmp != NULL){
+        ajouter_liste(&jeu->routes[tmp->numero].adjacente_maison,jeu->nb_maisons);
+        tmp = tmp->suivant;
+    }
     (jeu->nb_maisons)++;
 }
 
@@ -161,6 +231,11 @@ void construire_batiment(Jeu* jeu,int pos_x,int pos_y,int type_batiment,bool hor
     jeu->batiments[jeu->nb_centrales+jeu->nb_chateau_eau].pos_x = pos_x;
     jeu->batiments[jeu->nb_centrales+jeu->nb_chateau_eau].pos_y = pos_y;
     jeu->batiments[jeu->nb_centrales+jeu->nb_chateau_eau].routeAdjacente = elements_adjacents[TYPE_ROUTE];
+    Liste* tmp = jeu->batiments[jeu->nb_centrales+jeu->nb_chateau_eau].routeAdjacente;
+    while(tmp != NULL){
+        ajouter_liste(&(jeu->routes[tmp->numero].adjacente_batiment),jeu->nb_centrales+jeu->nb_chateau_eau);
+        tmp = tmp->suivant;
+    }
     jeu->batiments[jeu->nb_centrales+jeu->nb_chateau_eau].capacite = CAPACITE_BATIMENTS;
     jeu->batiments[jeu->nb_centrales+jeu->nb_chateau_eau].horizontal = horizontal;
     jeu->batiments[jeu->nb_centrales+jeu->nb_chateau_eau].type_batiment = type_batiment;
@@ -180,8 +255,23 @@ void construire_route(Jeu* jeu,int pos_x,int pos_y,Liste** elements_adjacents){
     jeu->routes[jeu->nb_routes].pos_x = pos_x;
     jeu->routes[jeu->nb_routes].pos_y = pos_y;
     jeu->routes[jeu->nb_routes].adjacente_route = elements_adjacents[TYPE_ROUTE];
+    Liste* tmp = jeu->routes[jeu->nb_routes].adjacente_route;
+    while (tmp != NULL){
+        ajouter_liste(&(jeu->routes[tmp->numero].adjacente_route),jeu->nb_routes);
+        tmp = tmp->suivant;
+    }
     jeu->routes[jeu->nb_routes].adjacente_maison = elements_adjacents[TYPE_MAISON];
+    tmp = jeu->routes[jeu->nb_routes].adjacente_maison;
+    while (tmp != NULL){
+        ajouter_liste(&(jeu->maisons[tmp->numero].routeAdjacente),jeu->nb_routes);
+        tmp = tmp->suivant;
+    }
     jeu->routes[jeu->nb_routes].adjacente_batiment = elements_adjacents[TYPE_BATIMENT];
+    tmp = jeu->routes[jeu->nb_routes].adjacente_batiment;
+    while (tmp != NULL){
+        ajouter_liste(&(jeu->batiments[tmp->numero].routeAdjacente),jeu->nb_routes);
+        tmp = tmp->suivant;
+    }
     (jeu->nb_routes)++;
 }
 
@@ -189,6 +279,8 @@ bool construire(Jeu* jeu,int type_batiment,int pos_x,int pos_y,bool horizontal){
     int argent_demande;
     int type;
     int taille_x,taille_y;
+    char symbole;
+    int numero;
     switch (type_batiment)
     {
     case TYPE_ROUTE:
@@ -196,12 +288,16 @@ bool construire(Jeu* jeu,int type_batiment,int pos_x,int pos_y,bool horizontal){
         type = TYPE_ROUTE;
         taille_x = 1;
         taille_y = 1;
+        symbole = SYMBOLE_ROUTE;
+        numero = jeu->nb_routes;
         break;
     case TYPE_MAISON:
         argent_demande = PRIX_MAISON;
         type = TYPE_MAISON;
         taille_x = TAILLE_MAISON;
         taille_y = TAILLE_MAISON;
+        symbole = SYMBOLE_MAISON;
+        numero = jeu->nb_maisons;
         break;
     case TYPE_CENTRALE:
         argent_demande = PRIX_CENTRALE;
@@ -212,6 +308,8 @@ bool construire(Jeu* jeu,int type_batiment,int pos_x,int pos_y,bool horizontal){
             taille_x = TAILLE_GRANDE_BATIMENT;
             taille_y = TAILLE_PETITE_BATIMENT;
         }
+        symbole = SYMBOLE_CENTRALE;
+        numero = jeu->nb_centrales+jeu->nb_chateau_eau;
         break;
     case TYPE_CHATEAU_EAU:
         argent_demande = PRIX_CHATEAU_EAU;
@@ -222,14 +320,17 @@ bool construire(Jeu* jeu,int type_batiment,int pos_x,int pos_y,bool horizontal){
             taille_x = TAILLE_GRANDE_BATIMENT;
             taille_y = TAILLE_PETITE_BATIMENT;
         }
+        symbole = SYMBOLE_CHATEAU_EAU;
+        numero = jeu->nb_centrales+jeu->nb_chateau_eau;
         break;
     default:
         return false;
         break;
     }
 
-    if (check_argent(jeu->argent,argent_demande)){
+    if (batiment_sur_map(pos_x,pos_y,taille_x,taille_y) && check_argent(jeu->argent,argent_demande)){
         int** cases_interieur = detecter_cases_interieur(jeu,pos_x,pos_y,taille_x,taille_y);
+
         if (pas_de_batiment_sur_position(jeu,cases_interieur,taille_x*taille_y)){
             Liste** elements_adjacents = detecter_elements_adjacents(jeu,type,pos_x,pos_y,taille_x,taille_y);
 
@@ -246,20 +347,24 @@ bool construire(Jeu* jeu,int type_batiment,int pos_x,int pos_y,bool horizontal){
                 break;
             }
 
+            mettre_cases_occupees(jeu,pos_x,pos_y,taille_x,taille_y,symbole,numero);
             for (int i = 0; i < taille_x*taille_y; i++){
                 free(cases_interieur[i]);
             }
             free(cases_interieur);
+
         }
-        else
+        else{
             for (int i = 0; i < taille_x*taille_y; i++){
                 free(cases_interieur[i]);
             }
             free(cases_interieur);
             return false;
+        }
     }
     else
         return false;
+    jeu->argent -= argent_demande;
     return true;
 }
 
@@ -269,81 +374,94 @@ bool construire(Jeu* jeu,int type_batiment,int pos_x,int pos_y,bool horizontal){
 
 void faire_moins_un_si_sup_num(Liste** liste,int numero){
     if (*liste != NULL){
-        struct Liste* tmp = *liste; 
+        Liste* tmp = *liste; 
         while(tmp!=NULL){
-            if(tmp->numero > numero)
+            if(tmp->numero > numero){
                 (tmp->numero)--;
+            }
+            tmp = tmp->suivant;
         }
     }
 }
 
-bool detruire_maison(Jeu* jeu, int numero){
-    if(numero < jeu->nb_maisons){
-        for (int i = 0; i < jeu->nb_routes; i++){
-            retirer_liste(&(jeu->routes[i].adjacente_maison),numero);
-            faire_moins_un_si_sup_num(&(jeu->routes[i].adjacente_maison),numero);
-        }
-        free_liste(&(jeu->maisons[numero].routeAdjacente));
-        for (int i = numero; i < jeu->nb_maisons; i++){
-            jeu->maisons[i].eau = jeu->maisons[i+1].eau;
-            jeu->maisons[i].electricite = jeu->maisons[i+1].electricite;
-            jeu->maisons[i].habitants = jeu->maisons[i+1].habitants;
-            jeu->maisons[i].niveau = jeu->maisons[i+1].niveau;
-            jeu->maisons[i].pos_x = jeu->maisons[i+1].pos_x;
-            jeu->maisons[i].pos_y = jeu->maisons[i+1].pos_y;
-            jeu->maisons[i].routeAdjacente = jeu->maisons[i+1].routeAdjacente;
-        }
-
-        (jeu->nb_maisons)--;
-        
-        return true;
+void mettre_cases_inoccupees(Jeu* jeu,int** tableau_cases_interieurs,int taille_tab){
+    for (int i = 0; i < taille_tab; i++){
+        jeu->map[tableau_cases_interieurs[i][0]][tableau_cases_interieurs[i][1]].occupe = false;
+        jeu->map[tableau_cases_interieurs[i][0]][tableau_cases_interieurs[i][1]].symbole = SYMBOLE_VIDE;
     }
-    return false;
+}
+
+
+bool detruire_maison(Jeu* jeu, int numero){
+    for (int i = 0; i < jeu->nb_routes; i++){
+        retirer_liste(&(jeu->routes[i].adjacente_maison),numero);
+        faire_moins_un_si_sup_num(&(jeu->routes[i].adjacente_maison),numero);
+    }
+    free_liste(&(jeu->maisons[numero].routeAdjacente));
+    for (int i = numero; i < jeu->nb_maisons; i++){
+        jeu->maisons[i].eau = jeu->maisons[i+1].eau;
+        jeu->maisons[i].electricite = jeu->maisons[i+1].electricite;
+        jeu->maisons[i].habitants = jeu->maisons[i+1].habitants;
+        jeu->maisons[i].niveau = jeu->maisons[i+1].niveau;
+        jeu->maisons[i].pos_x = jeu->maisons[i+1].pos_x;
+        jeu->maisons[i].pos_y = jeu->maisons[i+1].pos_y;
+        jeu->maisons[i].routeAdjacente = jeu->maisons[i+1].routeAdjacente;
+        if (i != jeu->nb_maisons-1){
+            mettre_cases_occupees(jeu,jeu->maisons[i].pos_x,jeu->maisons[i].pos_y,TAILLE_MAISON,TAILLE_MAISON,SYMBOLE_MAISON,i);
+        }
+    }
+
+    (jeu->nb_maisons)--;
+    
+    return true;
 }
 
 bool detruire_batiment(Jeu* jeu, int numero,int type_batiment){
-    if(numero < jeu->nb_centrales+jeu->nb_chateau_eau){
-        for (int i = 0; i < jeu->nb_centrales+jeu->nb_chateau_eau; i++){
-            retirer_liste(&(jeu->routes[i].adjacente_batiment),numero);
-            faire_moins_un_si_sup_num(&(jeu->routes[i].adjacente_batiment),numero);
-        }
-        free_liste(&(jeu->batiments[numero].routeAdjacente));
-        for (int i = numero; i < jeu->nb_centrales+jeu->nb_chateau_eau; i++){
-            jeu->batiments[i].capacite = jeu->batiments[i+1].capacite;
-            jeu->batiments[i].horizontal = jeu->batiments[i+1].horizontal;
-            jeu->batiments[i].pos_x = jeu->batiments[i+1].pos_x;
-            jeu->batiments[i].pos_y = jeu->batiments[i+1].pos_y;
-            jeu->batiments[i].routeAdjacente = jeu->batiments[i+1].routeAdjacente;
-        }
-        
-        switch(type_batiment){
-            case TYPE_CENTRALE:
-                (jeu->nb_centrales)--;
-                break;
-            case TYPE_CHATEAU_EAU:
-                (jeu->nb_chateau_eau)--;
-                break;
-        }
-
-        return true;
+    for (int i = 0; i < jeu->nb_routes; i++){
+        retirer_liste(&(jeu->routes[i].adjacente_batiment),numero);
+        faire_moins_un_si_sup_num(&(jeu->routes[i].adjacente_batiment),numero);
     }
-    return false;
+    free_liste(&(jeu->batiments[numero].routeAdjacente));
+    for (int i = numero; i < jeu->nb_centrales+jeu->nb_chateau_eau; i++){
+        jeu->batiments[i].capacite = jeu->batiments[i+1].capacite;
+        jeu->batiments[i].horizontal = jeu->batiments[i+1].horizontal;
+        jeu->batiments[i].pos_x = jeu->batiments[i+1].pos_x;
+        jeu->batiments[i].pos_y = jeu->batiments[i+1].pos_y;
+        jeu->batiments[i].routeAdjacente = jeu->batiments[i+1].routeAdjacente;
+        if (i != jeu->nb_centrales+jeu->nb_chateau_eau-1){
+            mettre_cases_occupees(jeu,jeu->batiments[i].pos_x,jeu->batiments[i].pos_y,
+            (jeu->batiments[i].horizontal)?TAILLE_GRANDE_BATIMENT:TAILLE_PETITE_BATIMENT,
+            (jeu->batiments[i].horizontal?TAILLE_PETITE_BATIMENT:TAILLE_GRANDE_BATIMENT),
+            jeu->map[jeu->batiments[i].pos_x][jeu->batiments[i].pos_y].symbole,i);
+        }
+    }
+        
+    switch(type_batiment){
+        case TYPE_CENTRALE:
+            (jeu->nb_centrales)--;
+            break;
+        case TYPE_CHATEAU_EAU:
+            (jeu->nb_chateau_eau)--;
+            break;
+    }
+
+    return true;
 }
 
 bool detruire_route(Jeu* jeu, int pos_x,int pos_y){
     for (int i = 0; i < jeu->nb_routes; i++){
         if (jeu->routes[i].pos_x == pos_x && jeu->routes[i].pos_y == pos_y){
             for (int j = 0; j < jeu->nb_routes; j++){
-                retirer_liste(&(jeu->routes[i].adjacente_maison),i);
-                faire_moins_un_si_sup_num(&(jeu->routes[i].adjacente_maison),i);
+                retirer_liste(&(jeu->routes[j].adjacente_route),i);
+                faire_moins_un_si_sup_num(&(jeu->routes[j].adjacente_route),i);
             }
             for (int j = 0; j < jeu->nb_maisons; j++){
-                retirer_liste(&(jeu->maisons[i].routeAdjacente),i);
-                faire_moins_un_si_sup_num(&(jeu->maisons[i].routeAdjacente),i);
+                retirer_liste(&(jeu->maisons[j].routeAdjacente),i);
+                faire_moins_un_si_sup_num(&(jeu->maisons[j].routeAdjacente),i);
             }
             for (int j = 0; j < jeu->nb_centrales+jeu->nb_chateau_eau; j++){
-                retirer_liste(&(jeu->batiments[i].routeAdjacente),i);
-                faire_moins_un_si_sup_num(&(jeu->batiments[i].routeAdjacente),i);
+                retirer_liste(&(jeu->batiments[j].routeAdjacente),i);
+                faire_moins_un_si_sup_num(&(jeu->batiments[j].routeAdjacente),i);
             }
             free_liste(&(jeu->routes[i].adjacente_maison));
             free_liste(&(jeu->routes[i].adjacente_batiment));
@@ -367,26 +485,70 @@ bool detruire_route(Jeu* jeu, int pos_x,int pos_y){
 }
 
 bool detruire(Jeu* jeu, int type_batiment, int numero,int pos_x,int pos_y){
+    int taille_x, taille_y;
     switch (type_batiment)
     {
     case TYPE_ROUTE:
-        if(detruire_route(jeu,pos_x,pos_y))
-            return true;
+        taille_x = 1;
+        taille_y = 1;
+        if(!detruire_route(jeu,pos_x,pos_y))
+            return false;
         break;
     case TYPE_MAISON:
-        if(detruire_maison(jeu,numero))
-            return true;
+        if(numero >= 0 && numero < jeu->nb_maisons){
+            taille_x = TAILLE_MAISON;
+            taille_y = TAILLE_MAISON;
+            pos_x = jeu->maisons[numero].pos_x;
+            pos_y = jeu->maisons[numero].pos_y;
+            if(!detruire_maison(jeu,numero))
+                return false;
+        }
+        else
+            return false;
         break;
     case TYPE_CENTRALE:
-        if(detruire_batiment(jeu,numero,type_batiment))
-            return true;
+        if (numero >= 0 && numero < jeu->nb_centrales+jeu->nb_chateau_eau && jeu->batiments[numero].type_batiment==TYPE_CENTRALE){
+            taille_x = TAILLE_PETITE_BATIMENT;
+            taille_y = TAILLE_GRANDE_BATIMENT;
+            if(jeu->batiments[numero].horizontal){
+                taille_x = TAILLE_GRANDE_BATIMENT;
+                taille_y = TAILLE_PETITE_BATIMENT;
+            }
+            pos_x = jeu->batiments[numero].pos_x;
+            pos_y = jeu->batiments[numero].pos_y;
+            if(!detruire_batiment(jeu,numero,type_batiment))
+                return false;
+        }
+        else
+            return false;
         break;
     case TYPE_CHATEAU_EAU:
-        if(detruire_batiment(jeu,numero,type_batiment))
+        if (numero >= 0 && numero < jeu->nb_centrales+jeu->nb_chateau_eau && jeu->batiments[numero].type_batiment==TYPE_CHATEAU_EAU){
+            taille_x = TAILLE_PETITE_BATIMENT;
+            taille_y = TAILLE_GRANDE_BATIMENT;
+            if(jeu->batiments[numero].horizontal){
+                taille_x = TAILLE_GRANDE_BATIMENT;
+                taille_y = TAILLE_PETITE_BATIMENT;
+            }
+            pos_x = jeu->batiments[numero].pos_x;
+            pos_y = jeu->batiments[numero].pos_y;
+            if(!detruire_batiment(jeu,numero,type_batiment))
+                return false;
+        }
+        else
+            return false;
     default:
         break;
     }
-    return false;
+
+    int** cases_interieurs = detecter_cases_interieur(jeu,pos_x,pos_y,taille_x,taille_y);
+    mettre_cases_inoccupees(jeu,cases_interieurs,taille_x*taille_y);
+    for(int i = 0; i < taille_x*taille_y; i++){
+        free(cases_interieurs[i]);
+    }
+    free(cases_interieurs);
+
+    return true;
 }
 
 /*************************************Fin Détruire*********************************************/

@@ -4,6 +4,13 @@
 #include "liste.h"
 #include <stdbool.h>
 
+#define TAILLE_MAP_X 45
+#define TAILLE_MAP_Y 35
+
+#define NB_MAX_ROUTES TAILLE_MAP_X*TAILLE_MAP_Y
+#define NB_MAX_BATIMENTS TAILLE_MAP_X*TAILLE_MAP_Y/(TAILLE_GRANDE_BATIMENT*TAILLE_PETITE_BATIMENT)
+#define NB_MAX_MAISONS TAILLE_MAP_X*TAILLE_MAP_Y/(TAILLE_MAISON*TAILLE_MAISON)
+
 #define TYPE_ROUTE 0
 #define TYPE_MAISON 1
 #define TYPE_BATIMENT 2
@@ -21,16 +28,19 @@
 
 #define CAPACITE_BATIMENTS 5000
 
+#define SYMBOLE_ROUTE 'R'
+#define SYMBOLE_MAISON 'M'
+#define SYMBOLE_CENTRALE 'C'
+#define SYMBOLE_CHATEAU_EAU 'E'
+#define SYMBOLE_VIDE ' '
+
 // case de la map
 typedef struct Case{
     bool occupe;
     char symbole;
-    int pos_x;
-    int pos_y;
 }Case;
 
 typedef struct Route{
-    char symbole;
     int pos_x;
     int pos_y;
     struct Liste* adjacente_maison;
@@ -39,7 +49,6 @@ typedef struct Route{
 }Route;
 // contient les centrales et les chateaux d'eau
 typedef struct Batiment{
-    char symbole;
     int type_batiment;
     int capacite;
     int pos_x;
@@ -49,7 +58,6 @@ typedef struct Batiment{
 }Batiment;
 
 typedef struct Maison{
-    char symbole;
     int niveau;
     int habitants;
     int eau;

@@ -5,12 +5,14 @@
 
 /**************************************Construire***********************************************/
 
+bool batiment_sur_map(int pos_x, int pos_y, int taille_x, int taille_y);
 bool check_argent(int argent_joueur, int argent_demande);
 
 int** detecter_cases_interieur(Jeu* jeu,int pos_x,int pos_y,int taille_x,int taille_y);
-int** detecter_cases_adjacentes(Jeu* jeu,int pos_x,int pos_y,int taille_x,int taille_y);
+int** detecter_cases_adjacentes(Jeu* jeu,int pos_x,int pos_y,int taille_x,int taille_y,int* taille_tab);
 
 bool pas_de_batiment_sur_position(Jeu* jeu,int** tableau_cases_interieurs,int taille_tab);
+void mettre_cases_occupees(Jeu* jeu,int pos_x,int pos_y,int taille_x,int taille_y,char symbole,int numero);
 
 Liste* detecter_routes_adjacentes(Route* routes,int nb_routes,int** tableau_cases_adjacentes,int taille_tab);
 Liste* detecter_maisons_adjacentes(Maison* maisons,int nb_maisons,int** tableau_cases_adjacentes,int taille_tab);
@@ -28,6 +30,7 @@ bool construire(Jeu* jeu,int type_batiment,int pos_x,int pos_y,bool horizontal);
 /***************************************Détruire***********************************************/
 
 void faire_moins_un_si_sup_num(Liste** liste,int numero);
+void mettre_cases_inoccupees(Jeu* jeu,int** tableau_cases_interieurs,int taille_tab);
 
 bool detruire_maison(Jeu* jeu, int numero);
 bool detruire_batiment(Jeu* jeu, int numero,int type_batiment);
