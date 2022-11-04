@@ -30,7 +30,8 @@ int** detecter_cases_interieur(Jeu* jeu,int pos_x,int pos_y,int taille_x,int tai
     return cases_interieurs;
 }
 
-
+// macros pour savoir si la construction est sur un ou plusieurs bords de la map
+// <=> la construction n'a pas d'éléments adjacents de ce coté là
 #define PAS_ELEMENTS_A_GAUCHE 2
 #define PAS_ELEMENTS_A_DROITE 3
 #define PAS_ELEMENTS_EN_HAUT 5
@@ -51,6 +52,7 @@ int** detecter_cases_adjacentes(Jeu* jeu,int pos_x,int pos_y,int taille_x,int ta
         pas_element *= PAS_ELEMENTS_EN_BAS;
     }
 
+    // on détermine le nombre de cases adjacentes dans *taille_tab
     if (((pas_element%PAS_ELEMENTS_A_GAUCHE == 0)&&(pas_element%PAS_ELEMENTS_EN_HAUT == 0))
         ||((pas_element%PAS_ELEMENTS_A_GAUCHE == 0)&&(pas_element%PAS_ELEMENTS_EN_BAS == 0))
         ||((pas_element%PAS_ELEMENTS_A_DROITE == 0)&&(pas_element%PAS_ELEMENTS_EN_HAUT == 0))
@@ -72,6 +74,7 @@ int** detecter_cases_adjacentes(Jeu* jeu,int pos_x,int pos_y,int taille_x,int ta
         cases_adjacentes[i] = (int*)malloc(2*sizeof(int));
     }
 
+    // on remplit le tableau de cases adjacentes selon les cas
     int compteur_indice = 0;
     if (!(pas_element%PAS_ELEMENTS_A_GAUCHE == 0)){
         for (int i = 0; i < taille_y; i++){
@@ -107,6 +110,7 @@ int** detecter_cases_adjacentes(Jeu* jeu,int pos_x,int pos_y,int taille_x,int ta
 
 bool pas_de_batiment_sur_position(Jeu* jeu,int** tableau_cases_interieurs,int taille_tab){
     for (int i = 0; i < taille_tab; i++){
+        // O <=> x et 1 <=> y
         if(jeu->map[tableau_cases_interieurs[i][0]][tableau_cases_interieurs[i][1]].occupe)
             return false;
     }
@@ -117,6 +121,7 @@ void mettre_cases_occupees(Jeu* jeu,int pos_x,int pos_y,int taille_x,int taille_
     for (int i = 0; i < taille_x; i++){
         for (int j = 0; j < taille_y; j++){
             jeu->map[pos_x + i][pos_y + j].occupe = true;
+            // sur les bords de la construction on met le symbole de la construction et à l'intérieur le numéro de la construction
             if (i == 0 || i == taille_x - 1 || j == 0 || j == taille_y - 1){
                 jeu->map[pos_x + i][pos_y + j].symbole = symbole;
             }
@@ -198,12 +203,13 @@ Liste** detecter_elements_adjacents(Jeu* jeu,int type,int pos_x,int pos_y,int ta
     int taille_tab;
     int** cases_adjacentes = detecter_cases_adjacentes(jeu,pos_x,pos_y,taille_x,taille_y,&taille_tab);
     
+    // les routes ont une liste d'ajdacences pour les maisons, les batiments et les routes
     if (type ==  TYPE_ROUTE){
         elements_adjacents[TYPE_ROUTE] = detecter_routes_adjacentes(jeu->routes,jeu->nb_routes,cases_adjacentes,taille_tab);
         elements_adjacents[TYPE_MAISON] = detecter_maisons_adjacentes(jeu->maisons,jeu->nb_maisons,cases_adjacentes,taille_tab);
         elements_adjacents[TYPE_BATIMENT] = detecter_batiements_adjacents(jeu->batiments,jeu->nb_centrales+jeu->nb_chateau_eau,cases_adjacentes,taille_tab);
     }
-    else{
+    else{// alors que les batiments et les maisons n'ont que des listes d'adjacences pour les routes
         elements_adjacents[TYPE_ROUTE] = detecter_routes_adjacentes(jeu->routes,jeu->nb_routes,cases_adjacentes,taille_tab);
     }
 
@@ -216,11 +222,13 @@ Liste** detecter_elements_adjacents(Jeu* jeu,int type,int pos_x,int pos_y,int ta
 }
 
 void construire_maison(Jeu* jeu,int pos_x,int pos_y,Liste** elements_adjacents){
+    // on ajoute la maison au tableau de maisons au premier emplacement libre
     jeu->maisons[jeu->nb_maisons].pos_x = pos_x;
     jeu->maisons[jeu->nb_maisons].pos_y = pos_y;
     jeu->maisons[jeu->nb_maisons].routeAdjacente = elements_adjacents[TYPE_ROUTE];
     Liste* tmp = jeu->maisons[jeu->nb_maisons].routeAdjacente;
     while(tmp != NULL){
+        // comme les graphes sont non orienté on ajoute la maison à la liste d'adjacence de toute les route de sa liste
         ajouter_liste(&jeu->routes[tmp->numero].adjacente_maison,jeu->nb_maisons);
         tmp = tmp->suivant;
     }
@@ -228,6 +236,7 @@ void construire_maison(Jeu* jeu,int pos_x,int pos_y,Liste** elements_adjacents){
 }
 
 void construire_batiment(Jeu* jeu,int pos_x,int pos_y,int type_batiment,bool horizontal,Liste** elements_adjacents){
+    // même principe que pour les maisons
     jeu->batiments[jeu->nb_centrales+jeu->nb_chateau_eau].pos_x = pos_x;
     jeu->batiments[jeu->nb_centrales+jeu->nb_chateau_eau].pos_y = pos_y;
     jeu->batiments[jeu->nb_centrales+jeu->nb_chateau_eau].routeAdjacente = elements_adjacents[TYPE_ROUTE];
@@ -252,6 +261,7 @@ void construire_batiment(Jeu* jeu,int pos_x,int pos_y,int type_batiment,bool hor
 }
 
 void construire_route(Jeu* jeu,int pos_x,int pos_y,Liste** elements_adjacents){
+    // même principe que pour les maisons et les batiments
     jeu->routes[jeu->nb_routes].pos_x = pos_x;
     jeu->routes[jeu->nb_routes].pos_y = pos_y;
     jeu->routes[jeu->nb_routes].adjacente_route = elements_adjacents[TYPE_ROUTE];
@@ -281,6 +291,7 @@ bool construire(Jeu* jeu,int type_batiment,int pos_x,int pos_y,bool horizontal){
     int taille_x,taille_y;
     char symbole;
     int numero;
+    // determine les différentes variables ci-dessus en fonction du type de batiment
     switch (type_batiment)
     {
     case TYPE_ROUTE:
@@ -324,16 +335,19 @@ bool construire(Jeu* jeu,int type_batiment,int pos_x,int pos_y,bool horizontal){
         numero = jeu->nb_centrales+jeu->nb_chateau_eau;
         break;
     default:
+        // donc si le type de batiment n'est pas reconnu
         return false;
         break;
     }
 
+    // on teste d'abord si le batiment est sur la carte et ensuite si on a assez d'argent
     if (batiment_sur_map(pos_x,pos_y,taille_x,taille_y) && check_argent(jeu->argent,argent_demande)){
         int** cases_interieur = detecter_cases_interieur(jeu,pos_x,pos_y,taille_x,taille_y);
-
+        // on teste si les cases ou l'on va construire sont vides
         if (pas_de_batiment_sur_position(jeu,cases_interieur,taille_x*taille_y)){
             Liste** elements_adjacents = detecter_elements_adjacents(jeu,type,pos_x,pos_y,taille_x,taille_y);
 
+            // on construit
             switch (type)
             {
             case TYPE_ROUTE:
@@ -364,6 +378,7 @@ bool construire(Jeu* jeu,int type_batiment,int pos_x,int pos_y,bool horizontal){
     }
     else
         return false;
+    // si tout s'est bien passé on enlève l'argent de la banque
     jeu->argent -= argent_demande;
     return true;
 }
@@ -393,11 +408,14 @@ void mettre_cases_inoccupees(Jeu* jeu,int** tableau_cases_interieurs,int taille_
 
 
 bool detruire_maison(Jeu* jeu, int numero){
+    // on retire la maison de toutes les listes d'adjacence
     for (int i = 0; i < jeu->nb_routes; i++){
         retirer_liste(&(jeu->routes[i].adjacente_maison),numero);
+        // on fait -1 à tous les numéros supérieurs à celui de la maison à détruire car on décale toutes les maisons
         faire_moins_un_si_sup_num(&(jeu->routes[i].adjacente_maison),numero);
     }
     free_liste(&(jeu->maisons[numero].routeAdjacente));
+    // on décale toutes les maisons après celle qu'on détruit
     for (int i = numero; i < jeu->nb_maisons; i++){
         jeu->maisons[i].eau = jeu->maisons[i+1].eau;
         jeu->maisons[i].electricite = jeu->maisons[i+1].electricite;
@@ -407,6 +425,7 @@ bool detruire_maison(Jeu* jeu, int numero){
         jeu->maisons[i].pos_y = jeu->maisons[i+1].pos_y;
         jeu->maisons[i].routeAdjacente = jeu->maisons[i+1].routeAdjacente;
         if (i != jeu->nb_maisons-1){
+            // pour modifier les indices dans l'affichage car on décale toutes les maisons
             mettre_cases_occupees(jeu,jeu->maisons[i].pos_x,jeu->maisons[i].pos_y,TAILLE_MAISON,TAILLE_MAISON,SYMBOLE_MAISON,i);
         }
     }
@@ -417,6 +436,7 @@ bool detruire_maison(Jeu* jeu, int numero){
 }
 
 bool detruire_batiment(Jeu* jeu, int numero,int type_batiment){
+    // même principe que pour les maisons
     for (int i = 0; i < jeu->nb_routes; i++){
         retirer_liste(&(jeu->routes[i].adjacente_batiment),numero);
         faire_moins_un_si_sup_num(&(jeu->routes[i].adjacente_batiment),numero);
@@ -449,6 +469,7 @@ bool detruire_batiment(Jeu* jeu, int numero,int type_batiment){
 }
 
 bool detruire_route(Jeu* jeu, int pos_x,int pos_y){
+    // même principe que pour les maisons et les batiments mais on a pas besoin de remodifier la carte
     for (int i = 0; i < jeu->nb_routes; i++){
         if (jeu->routes[i].pos_x == pos_x && jeu->routes[i].pos_y == pos_y){
             for (int j = 0; j < jeu->nb_routes; j++){
@@ -495,6 +516,7 @@ bool detruire(Jeu* jeu, int type_batiment, int numero,int pos_x,int pos_y){
             return false;
         break;
     case TYPE_MAISON:
+        // on vérifie que la maison existe
         if(numero >= 0 && numero < jeu->nb_maisons){
             taille_x = TAILLE_MAISON;
             taille_y = TAILLE_MAISON;
@@ -507,6 +529,7 @@ bool detruire(Jeu* jeu, int type_batiment, int numero,int pos_x,int pos_y){
             return false;
         break;
     case TYPE_CENTRALE:
+        // on vérifie que la centrale existe
         if (numero >= 0 && numero < jeu->nb_centrales+jeu->nb_chateau_eau && jeu->batiments[numero].type_batiment==TYPE_CENTRALE){
             taille_x = TAILLE_PETITE_BATIMENT;
             taille_y = TAILLE_GRANDE_BATIMENT;
@@ -523,6 +546,7 @@ bool detruire(Jeu* jeu, int type_batiment, int numero,int pos_x,int pos_y){
             return false;
         break;
     case TYPE_CHATEAU_EAU:
+        // on vérifie que le chateau d'eau existe
         if (numero >= 0 && numero < jeu->nb_centrales+jeu->nb_chateau_eau && jeu->batiments[numero].type_batiment==TYPE_CHATEAU_EAU){
             taille_x = TAILLE_PETITE_BATIMENT;
             taille_y = TAILLE_GRANDE_BATIMENT;
@@ -538,9 +562,11 @@ bool detruire(Jeu* jeu, int type_batiment, int numero,int pos_x,int pos_y){
         else
             return false;
     default:
+        return false;
         break;
     }
 
+    // on modifie la carte
     int** cases_interieurs = detecter_cases_interieur(jeu,pos_x,pos_y,taille_x,taille_y);
     mettre_cases_inoccupees(jeu,cases_interieurs,taille_x*taille_y);
     for(int i = 0; i < taille_x*taille_y; i++){
