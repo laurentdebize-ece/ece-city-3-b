@@ -5,10 +5,12 @@
 typedef struct Liste {
     struct Liste* suivant;
     int numero;
-};
+}Liste;
 
 void ajouter_liste (struct Liste** liste, int numero);
 void retirer_liste (struct Liste** liste, int numero);
 void free_liste (struct Liste** liste);
+
+void afficher_liste (struct Liste* liste);
 
 #endif

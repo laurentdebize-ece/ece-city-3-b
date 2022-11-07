@@ -1,11 +1,13 @@
 #include "liste.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 void ajouter_liste (struct Liste** liste, int numero){
+
     struct Liste* new_item = (struct Liste*)malloc(sizeof(struct Liste));
     new_item->numero = numero;
     new_item->suivant = *liste;
-    *liste = new_item; 
+    *liste = new_item;
 }
 
 void retirer_liste (struct Liste** liste, int numero){
@@ -35,4 +37,12 @@ void free_liste (struct Liste** liste){
         *liste = (*liste)->suivant;
         free(tmp);
     }
+}
+
+void afficher_liste (struct Liste* liste){
+    while (liste != NULL){
+        printf("%d ", liste->numero);
+        liste = liste->suivant;
+    }
+    printf("\n");
 }
