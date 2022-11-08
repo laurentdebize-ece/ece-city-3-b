@@ -6,9 +6,6 @@ void compteur_debut_cycle(Jeu *jeu) {
     jeu->tot_eau = 5000 * jeu->nb_chateau_eau;
     jeu->tot_electricite = 5000 * jeu->nb_centrales;
 
-}
-
-void compteur_population(Jeu *jeu) {
     for (int i = 0; i < jeu->nb_maisons; i++) {
         jeu->population += jeu->maisons[i].habitants;
     }
