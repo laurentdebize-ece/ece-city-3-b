@@ -6,6 +6,11 @@
 Jeu initialisation_jeu(){
     Jeu jeu;
     jeu.argent = ARGENT_INITIAL;
+    jeu.eau = 0;
+    jeu.electricite = 0;
+    jeu.population = 0;
+    jeu.tot_eau = 0;
+    jeu.tot_electricite = 0;
     jeu.nb_maisons = 0;
     jeu.nb_routes = 0;
     jeu.nb_centrales = 0;

@@ -4,7 +4,7 @@
 #include "affichage.h"
 #include <stdio.h>
 
-int main(){
+int main() {
     printf("test SIMCITY !\n");
 
     Jeu jeu = initialisation_jeu();

@@ -69,6 +69,11 @@ typedef struct Maison{
 
 typedef struct Jeu{
     int argent;
+    int eau;
+    int electricite;
+    int population;
+    int tot_eau;
+    int tot_electricite;
     Case** map;
     Route* routes;
     int nb_routes;
