@@ -6,10 +6,11 @@ void compteur_debut_cycle(Jeu *jeu) {
     jeu->tot_eau = 5000 * jeu->nb_chateau_eau;
     jeu->tot_electricite = 5000 * jeu->nb_centrales;
 
-    for (int i = 0; i < jeu->nb_maisons; i++) {
-        jeu->population += jeu->maisons[i].habitants;
-    }
-    jeu->eau= jeu->tot_eau-jeu->population;
+
+    compteur_population(jeu);
+    calcul_eau(jeu);
+    impot(jeu);
+
 }
  
 void impot(Jeu *jeu) {
@@ -18,6 +19,12 @@ void impot(Jeu *jeu) {
 
 void calcul_eau(Jeu* jeu){
     jeu->eau= jeu->tot_eau-jeu->population;
+}
+void compteur_population(Jeu* jeu){
+    //jeu->population = 0;
+    for (int i = 0; i < jeu->nb_maisons; i++) {
+        jeu->population += jeu->maisons[i].habitants;
+    }
 }
 
 void afficherCompteur(Jeu jeu) {
