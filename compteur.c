@@ -9,15 +9,21 @@ void compteur_debut_cycle(Jeu *jeu) {
     for (int i = 0; i < jeu->nb_maisons; i++) {
         jeu->population += jeu->maisons[i].habitants;
     }
+    jeu->eau= jeu->tot_eau-jeu->population;
 }
-
+ 
 void impot(Jeu *jeu) {
     jeu->argent += jeu->population * 10;
 }
 
+void calcul_eau(Jeu* jeu){
+    jeu->eau= jeu->tot_eau-jeu->population;
+}
+
 void afficherCompteur(Jeu jeu) {
-    printf("Electricite : %d/%d\n", jeu.electricite, jeu.tot_electricite);
-    printf("Eau : %d/%d\n", jeu.eau, jeu.tot_eau);
-    printf("Argent : %d\n", jeu.argent);
+    printf("Electricite : %d/%d         ", jeu.electricite, jeu.tot_electricite);
+    printf("Eau : %d/%d         ", jeu.eau, jeu.tot_eau);
+    printf("Argent : %d         ", jeu.argent);
     printf("Population : %d\n", jeu.population);
 }
+

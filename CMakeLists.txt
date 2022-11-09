@@ -8,5 +8,5 @@ add_executable(ECE_CITY_3B
         liste.h liste.c
         construction_destruction.h construction_destruction.c
         initialisation_liberation.h initialisation_liberation.c
-        affichage.h affichage.c
+        affichage.h affichage.c compteur.c compteur.h
         debug.h debug.c)

@@ -2,6 +2,7 @@
 #include "initialisation_liberation.h"
 #include "debug.h"
 #include "affichage.h"
+#include "compteur.h"
 #include <stdio.h>
 
 int main() {
@@ -9,6 +10,7 @@ int main() {
 
     Jeu jeu = initialisation_jeu();
 
+    compteur_debut_cycle(&jeu);
     construire(&jeu,TYPE_ROUTE,0,0,0);
     construire(&jeu,TYPE_ROUTE,1,0,0);
     construire(&jeu,TYPE_ROUTE,2,0,0);
@@ -26,8 +28,7 @@ int main() {
     construire(&jeu,TYPE_CENTRALE,8,2,0);
 
     afficherCarte(jeu.map);
-    printf("argent : %d\n",jeu.argent);
-
+    afficherCompteur(jeu);
     liberation_jeu(&jeu);
     return 0;
 }
