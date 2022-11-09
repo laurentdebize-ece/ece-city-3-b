@@ -1,5 +1,7 @@
 #include "affichage.h"
 #include <stdio.h>
+#include <raylib.h>
+
 
 void afficherCarte(Case** map){
     printf("   ");
