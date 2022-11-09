@@ -29,7 +29,6 @@ void afficherCarteRaylib(){
     const int screenHeight = 1450;
 
     InitWindow(screenWidth, screenHeight, "carte");
-    Texture2D texture = LoadTexture("info/texturepelouse.jpg");        // chargement texture
 
     // camera en 3D
     Camera3D camera = { 0 };
