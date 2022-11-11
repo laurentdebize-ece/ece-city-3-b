@@ -9,4 +9,6 @@ add_executable(ECE_CITY_3B
         construction_destruction.h construction_destruction.c
         initialisation_liberation.h initialisation_liberation.c
         affichage.h affichage.c
-        debug.h debug.c)
+        debug.h debug.c
+        detection_actions.h detection_actions.c
+        messages.h messages.c)
