@@ -6,13 +6,15 @@ void repartition_ressources(Jeu* jeu);
 void repartition_eau(Jeu* jeu);
 
 void repartition_electricite(Jeu* jeu){
-    Liste** composantes_maisons,composantes_centrales;
+    Liste** composantes_maisons;
+    Liste** composantes_centrales;
     int nb_composantes;
     composantes_connexes(jeu,&nb_composantes,&composantes_maisons,&composantes_centrales);
 
     for (int i = 0;i < nb_composantes;i++){
         composantes_maisons[i] = tri_maisons(jeu,composantes_maisons[i]);
     }
+    composantes_centrales = tri_centrales(jeu,composantes_centrales,nb_composantes);
 
     int* capacites_centrales = malloc(sizeof(int)*(jeu->nb_centrales+jeu->nb_chateau_eau));
     for (int i = 0;i < jeu->nb_centrales+jeu->nb_chateau_eau;i++){
@@ -22,7 +24,34 @@ void repartition_electricite(Jeu* jeu){
     for (int i = 0;i < nb_composantes;i++){
         Liste* tmp = composantes_centrales[i];
         int capacite_totale = 0;
-        while(tmp != NULL){}
+        while(tmp != NULL){
+            capacite_totale += capacites_centrales[tmp->numero];
+            tmp = tmp->suivant;
+        }
+        // répartir l'électricité totale dans les maisons
+        tmp = composantes_maisons[i];
+        while(tmp != NULL){
+            int habitants_max = nb_habitants_max(jeu->maisons[tmp->numero].niveau);
+            if (capacite_totale >= habitants_max){
+                jeu->maisons[tmp->numero].electricite = habitants_max;
+                capacite_totale -= habitants_max;
+            }
+            tmp = tmp->suivant;
+        }
+        // rerépartir l'electricité restante dans capacites_centrales
+        tmp = composantes_centrales[i];
+        while(tmp != NULL){
+            if (capacites_centrales > CAPACITE_BATIMENTS){
+                capacites_centrales[tmp->numero] = CAPACITE_BATIMENTS;
+                capacite_totale -= CAPACITE_BATIMENTS;
+            }
+            else{
+                capacites_centrales[tmp->numero] = capacite_totale;
+                capacite_totale = 0;
+            }
+
+            tmp = tmp->suivant;
+        }
     }
 }
 
@@ -106,4 +135,66 @@ Liste* tri_maisons(Jeu* jeu, Liste* maisons){
     return triees;
 }
 
-void repartition_habitants(Jeu* jeu);
+Liste** tri_centrales(Jeu* jeu,Liste** composantes_centrales, int nb_composantes){
+    Liste** triees = malloc(sizeof(Liste*)*nb_composantes);
+    for (int i = 0;i<nb_composantes;i++){
+        triees[i] = NULL;   
+    }
+
+    int* dans_cb_cc = malloc(sizeof(int)*(jeu->nb_centrales+jeu->nb_chateau_eau));
+    for (int i = 0;i<jeu->nb_centrales+jeu->nb_chateau_eau;i++){
+        dans_cb_cc[i] = 0;
+    }
+
+    for(int i = 0; i < nb_composantes; i++){
+        Liste* tmp = composantes_centrales[i];
+        while(tmp != NULL){
+            (dans_cb_cc[tmp->numero])++;
+        }
+    }
+
+    for(int i = 0; i < nb_composantes; i++){
+        while(composantes_centrales[i] != NULL){
+            Liste* tmp = composantes_centrales[i];
+            int min_dans_cb_cc = tmp->numero;
+            while(tmp != NULL){
+                if(dans_cb_cc[tmp->numero] < dans_cb_cc[min_dans_cb_cc]){
+                    min_dans_cb_cc = tmp->numero;
+                }
+                tmp = tmp->suivant;
+            }
+            ajouter_liste(&triees[i],min_dans_cb_cc);
+            retirer_liste(&composantes_centrales[i],min_dans_cb_cc);
+        }
+    }
+
+    free(dans_cb_cc);
+    free(composantes_centrales);
+
+    return triees;
+}
+
+void repartition_habitants(Jeu* jeu){
+    for(int i = 0; i < jeu->nb_maisons; i++){
+        jeu->maisons[i].habitants = (jeu->maisons[i].eau<jeu->maisons[i].electricite)?jeu->maisons[i].eau:jeu->maisons[i].electricite;
+    }
+}
+
+int nb_habitants_max(int niveau){
+    switch(niveau){
+        case NIVEAU_RUINE:
+            return 0;
+        case NIVEAU_TERRAIN_VAGUE:
+            return 0;
+        case NIVEAU_CABANE:
+            return HAB_MAX_CABANE;
+        case NIVEAU_MAISON:
+            return HAB_MAX_MAISON;
+        case NIVEAU_IMMEUBLE:
+            return HAB_MAX_IMMEUBLE;
+        case NIVEAU_GRATTE_CIEL:
+            return HAB_MAX_GRATTE_CIEL;
+        default:
+            return 0;
+    }
+}
