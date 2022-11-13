@@ -24,6 +24,49 @@ void afficherCarte(Case** map){
     }
 }
 
+//affichage de la map à partir du fichier texte lu
+void afficherMap(Jeu * jeu, int niveau) {
+    int ligne, colonne;
+    switch (niveau) {
+        case 0:
+            printf("argentJoueur: %d\n", jeu->argent);
+            printf("nbHabitations : %d\n", jeu->nb_maisons);
+            for (ligne = 0; ligne < TAILLE_MAP_Y; ligne++) {
+                for (colonne = 0; colonne < TAILLE_MAP_X; colonne++) {
+                    printf("%c ",jeu->map[ligne][colonne].symbole);
+                }
+                printf("\n");
+            }
+            break;
+        case -1:
+            for (ligne = 0; ligne < TAILLE_MAP_Y; ligne++) {
+                for (colonne = 0; colonne < TAILLE_MAP_X; colonne++) {
+                    if (jeu->map[ligne][colonne].symbole == SYMBOLE_ROUTE || jeu->map[ligne][colonne].symbole == SYMBOLE_CHATEAU_EAU) {
+                        printf("%c ", jeu->map[ligne][colonne].symbole);
+                    } else {
+                        printf("0 ");
+                    }
+                }
+                printf("\n");
+            }
+            break;
+        case -2:
+            for (ligne = 0; ligne < TAILLE_MAP_Y; ligne++) {
+                for (colonne = 0; colonne < TAILLE_MAP_X; colonne++) {
+                    if (jeu->map[ligne][colonne].symbole == SYMBOLE_ROUTE || jeu->map[ligne][colonne].symbole == SYMBOLE_CENTRALE) {
+                        printf("%c ", jeu->map[ligne][colonne].symbole);
+                    } else {
+                        printf("0 ");
+                    }
+                }
+                printf("\n");
+            }
+            break;
+        default:
+            printf("erreur niveau\n");
+            break;
+    }
+}
 
 void afficherCarteRaylib(){
     // initialisation

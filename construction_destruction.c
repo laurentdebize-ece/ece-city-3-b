@@ -577,4 +577,31 @@ bool detruire(Jeu* jeu, int type_batiment, int numero,int pos_x,int pos_y){
     return true;
 }
 
+// pour determiner le numero du batiment a detruire en fonction de sa position
+bool trouverNumero(Jeu *jeu, int type_batiment, int *numero, int colonne, int ligne) {
+    switch (type_batiment) {
+        case TYPE_MAISON:
+            for (int i = 0; i < jeu->nb_maisons; i++) {
+                if (jeu->maisons[i].pos_x == colonne && jeu->maisons[i].pos_y == ligne) {
+                    *numero = i;
+                    return true;
+                }
+            }
+            break;
+        case TYPE_CHATEAU_EAU:
+        case TYPE_CENTRALE:
+            for (int i = 0; i < jeu->nb_chateau_eau + jeu->nb_centrales; i++) {
+                if (jeu->batiments[i].pos_x == colonne && jeu->batiments[i].pos_y == ligne &&
+                    jeu->batiments[i].type_batiment == type_batiment) {
+                    *numero = i;
+                    return true;
+                }
+            }
+            break;
+        default :
+            return false;
+            break;
+    }
+    return false;
+}
 /*************************************Fin Détruire*********************************************/

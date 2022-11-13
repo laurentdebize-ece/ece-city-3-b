@@ -32,7 +32,7 @@
 #define SYMBOLE_MAISON 'M'
 #define SYMBOLE_CENTRALE 'C'
 #define SYMBOLE_CHATEAU_EAU 'E'
-#define SYMBOLE_VIDE ' '
+#define SYMBOLE_VIDE '0'
 
 // case de la map
 typedef struct Case{

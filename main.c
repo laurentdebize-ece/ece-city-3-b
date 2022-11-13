@@ -4,14 +4,18 @@
 #include "affichage.h"
 #include "compteur.h"
 #include <stdio.h>
+#include "jeu.h"
 
 int main() {
     printf("test SIMCITY !\n");
-
-    Jeu jeu = initialisation_jeu();
-
+    int niveauActuel=0;
+    Jeu jeu ;
     compteur_debut_cycle(&jeu);
-    construire(&jeu,TYPE_ROUTE,0,0,0);
+
+    // fonction pour commencer la partie et boucler tant que la partie n'est pas finie
+    jouer(&jeu, &niveauActuel);
+
+    /*construire(&jeu,TYPE_ROUTE,0,0,0);
     construire(&jeu,TYPE_ROUTE,1,0,0);
     construire(&jeu,TYPE_ROUTE,2,0,0);
     construire(&jeu,TYPE_ROUTE,0,1,0);
@@ -33,10 +37,9 @@ int main() {
     detruire(&jeu,TYPE_CENTRALE,0,0,0);
     construire(&jeu,TYPE_CHATEAU_EAU,3,1,0);
     construire(&jeu,TYPE_CENTRALE,8,2,0);
-
-
-    compteur_debut_cycle(&jeu);
     afficherCarte(jeu.map);
+*/
+    compteur_debut_cycle(&jeu);
     afficherCompteur(jeu);
     liberation_jeu(&jeu);
     return 0;
