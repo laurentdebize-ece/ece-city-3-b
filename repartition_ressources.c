@@ -1,4 +1,5 @@
 #include "repartition_ressources.h"
+#include "liste.h"
 #include <stdlib.h>
 
 void repartition_ressources(Jeu* jeu);

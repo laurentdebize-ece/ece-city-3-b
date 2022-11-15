@@ -13,4 +13,10 @@ void free_liste (struct Liste** liste);
 
 void afficher_liste (struct Liste* liste);
 
+typedef Liste File;
+
+void enfiler (File** file, int numero);
+int defiler (File** file);
+void free_file (File** file);
+
 #endif

@@ -46,3 +46,36 @@ void afficher_liste (struct Liste* liste){
     }
     printf("\n");
 }
+
+
+void enfiler (File** file, int numero){
+    File * tmp = *file;
+    File * new_item = (File*)malloc(sizeof(File));
+    new_item->numero = numero;
+    new_item->suivant = NULL;
+
+    if (tmp == NULL){
+        *file = new_item;
+    }
+    else{
+        while (tmp->suivant != NULL){
+            tmp = tmp->suivant;
+        }
+        tmp->suivant = new_item;
+    }
+}
+
+int defiler (File** file){
+    int numero = -1;
+    if (*file != NULL){
+        File * tmp = *file;
+        numero = tmp->numero;
+        *file = (*file)->suivant;
+        free(tmp);
+    }
+    return numero;
+}
+
+void free_file (File** file){
+    free_liste(file);
+}
