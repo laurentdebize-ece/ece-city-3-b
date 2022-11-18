@@ -10,8 +10,6 @@ add_executable(ECE_CITY_3B
         initialisation_liberation.h initialisation_liberation.c
         affichage.h affichage.c compteur.c compteur.h
         debug.h debug.c jeu.c jeu.h fichier.h fichier.c)
-INCLUDE_DIRECTORIES( /usr/local/Cellar/raylib/4.2.0/include)
-LINK_DIRECTORIES( /usr/local/Cellar/raylib/4.2.0/lib)
-file(GLOB LIBRARIES "/usr/local/Cellar/raylib/4.2.0/lib/*.dylib")
-message("LIBRARIES = ${LIBRARIES}")
-TARGET_LINK_LIBRARIES(ECE_CITY_3B ${LIBRARIES})
+
+add_subdirectory(raylib)
+target_link_libraries(ECE_CITY_3B raylib)

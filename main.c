@@ -11,7 +11,7 @@ int main() {
     int niveauActuel=0;
     Jeu jeu ;
     compteur_debut_cycle(&jeu);
-
+    choix_mode_jeu(&jeu);
     // fonction pour commencer la partie et boucler tant que la partie n'est pas finie
     jouer(&jeu, &niveauActuel);
 

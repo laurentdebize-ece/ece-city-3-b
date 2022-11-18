@@ -88,5 +88,9 @@ bool detruire(Jeu *jeu, int type_batiment, int numero, int pos_x, int pos_y);
 bool trouverNumero(Jeu *jeu, int type_batiment, int *numero, int colonne, int ligne);
 /*************************************Fin Détruire*********************************************/
 
+/**************************************Changement de Niveau************************************/
+void choix_mode_jeu (Jeu *jeu);
+void changement_type_maison(Jeu *jeu);
+void regression_type_maison(Jeu*jeu);
 
 #endif
