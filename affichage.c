@@ -33,7 +33,7 @@ void afficherMap(Jeu * jeu, int niveau) {
             printf("nbHabitations : %d\n", jeu->nb_maisons);
             for (ligne = 0; ligne < TAILLE_MAP_Y; ligne++) {
                 for (colonne = 0; colonne < TAILLE_MAP_X; colonne++) {
-                    printf("%c ",jeu->map[ligne][colonne].symbole);
+                    printf("%c ",jeu->map[colonne][ligne].symbole);
                 }
                 printf("\n");
             }
@@ -41,8 +41,8 @@ void afficherMap(Jeu * jeu, int niveau) {
         case -1:
             for (ligne = 0; ligne < TAILLE_MAP_Y; ligne++) {
                 for (colonne = 0; colonne < TAILLE_MAP_X; colonne++) {
-                    if (jeu->map[ligne][colonne].symbole == SYMBOLE_ROUTE || jeu->map[ligne][colonne].symbole == SYMBOLE_CHATEAU_EAU) {
-                        printf("%c ", jeu->map[ligne][colonne].symbole);
+                    if (jeu->map[colonne][ligne].symbole == SYMBOLE_ROUTE || jeu->map[colonne][ligne].symbole == SYMBOLE_CHATEAU_EAU) {
+                        printf("%c ", jeu->map[colonne][ligne].symbole);
                     } else {
                         printf("0 ");
                     }
@@ -53,8 +53,8 @@ void afficherMap(Jeu * jeu, int niveau) {
         case -2:
             for (ligne = 0; ligne < TAILLE_MAP_Y; ligne++) {
                 for (colonne = 0; colonne < TAILLE_MAP_X; colonne++) {
-                    if (jeu->map[ligne][colonne].symbole == SYMBOLE_ROUTE || jeu->map[ligne][colonne].symbole == SYMBOLE_CENTRALE) {
-                        printf("%c ", jeu->map[ligne][colonne].symbole);
+                    if (jeu->map[colonne][ligne].symbole == SYMBOLE_ROUTE || jeu->map[colonne][ligne].symbole == SYMBOLE_CENTRALE) {
+                        printf("%c ", jeu->map[colonne][ligne].symbole);
                     } else {
                         printf("0 ");
                     }

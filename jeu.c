@@ -84,6 +84,7 @@ void jouer(Jeu * jeu, int* niveauActuel){
             case 2:
                 while (choixOk != true) {
                     printf("que souhaitez vous construire ?\n R- Route\n H- Habitation\n C- Centrale\n E- Chateau\n");
+                    fflush(stdin);
                     scanf("%c", &choixType);
                     if (choixType == 'R' || choixType == 'H' || choixType == 'C' || choixType == 'E') {
                         choixOk = true;
@@ -99,6 +100,7 @@ void jouer(Jeu * jeu, int* niveauActuel){
             case 3:
                 while (choixOk != true) {
                     printf("que souhaitez vous detruire ?\n R- Route\n H- Habitation\n C- Centrale\n E- Chateau\n");
+                    fflush(stdin);
                     scanf("%c", &choixType);
                     if (choixType == 'R' || choixType == 'H' || choixType == 'C' || choixType == 'E') {
                         choixOk = true;

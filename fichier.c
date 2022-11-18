@@ -18,11 +18,11 @@ Case **chargerMap(Jeu *jeu) {
         //fscanf(fichier, "%d", &jeu->nb_maisons);
         //do {
             for (ligne = 0; ligne < TAILLE_MAP_Y; ligne++) {
-                for (colonne = 0; colonne < TAILLE_MAP_X; colonne++) {
+                for (colonne = 0; colonne < TAILLE_MAP_X ; colonne++) {
                     caractereLu = fgetc(fichier);
                     myCaractere = caractereLu;
-                    map[ligne][colonne].occupe = false;
-                    map[ligne][colonne].symbole = myCaractere;
+                    map[colonne][ligne].occupe = false;
+                    map[colonne][ligne].symbole = myCaractere;
                }
                 caractereLu = fgetc(fichier);//pour lite le \n
             }
@@ -45,7 +45,7 @@ void sauvegarderJeu(Jeu * jeu) {
     if (fichierMap != NULL) {
         for (ligne = 0; ligne < TAILLE_MAP_Y; ligne++) {
             for (colonne = 0; colonne < TAILLE_MAP_X; colonne++) {
-                caractere= jeu->map[ligne][colonne].symbole;
+                caractere= jeu->map[colonne][ligne].symbole;
                 //fprintf(fichierMap, "%c", jeu->map[ligne][colonne].symbole);
                 fputc(caractere, fichierMap);
             }
