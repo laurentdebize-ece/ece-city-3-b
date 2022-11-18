@@ -39,8 +39,6 @@ int main() {
     construire(&jeu,TYPE_CENTRALE,8,2,0);
     afficherCarte(jeu.map);
 */
-    compteur_debut_cycle(&jeu);
-    afficherCompteur(jeu);
     liberation_jeu(&jeu);
     return 0;
 }

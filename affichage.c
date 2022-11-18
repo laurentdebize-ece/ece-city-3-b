@@ -1,6 +1,7 @@
 #include "affichage.h"
 #include <stdio.h>
 #include <raylib.h>
+#include "compteur.h"
 
 
 void afficherCarte(Case** map){
@@ -29,7 +30,6 @@ void afficherMap(Jeu * jeu, int niveau) {
     int ligne, colonne;
     switch (niveau) {
         case 0:
-            printf("argentJoueur: %d\n", jeu->argent);
             printf("nbHabitations : %d\n", jeu->nb_maisons);
             for (ligne = 0; ligne < TAILLE_MAP_Y; ligne++) {
                 for (colonne = 0; colonne < TAILLE_MAP_X; colonne++) {
@@ -66,6 +66,7 @@ void afficherMap(Jeu * jeu, int niveau) {
             printf("erreur niveau\n");
             break;
     }
+    afficherCompteur(*jeu);
 }
 
 void afficherCarteRaylib(){

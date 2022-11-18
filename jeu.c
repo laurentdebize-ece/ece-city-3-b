@@ -3,6 +3,7 @@
 //
 
 #include "jeu.h"
+#include "compteur.h"
 
 Jeu reprendrePartie() {
     FILE *fichierJeu = fopen("../caracteristiques.txt", "r");
@@ -128,6 +129,8 @@ void jouer(Jeu * jeu, int* niveauActuel){
                 printf("erreur numéro veuillez réessayer\n");
                 break;
         }
+        compteur_debut_cycle(jeu);
+        //afficherCompteur(*jeu);
     }
-    printf("argent : %d\n",jeu->argent);
+
 }
