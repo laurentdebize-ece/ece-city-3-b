@@ -12,13 +12,11 @@ int main() {
     Jeu jeu ;
     bool end=false;
     compteur_debut_cycle(&jeu);
+    choix_mode_jeu(&jeu);
     while (end !=true) {
         // fonction pour commencer la partie et boucler tant que la partie n'est pas finie
         end = jouer(&jeu, &niveauActuel);
     }
-    choix_mode_jeu(&jeu);
-    // fonction pour commencer la partie et boucler tant que la partie n'est pas finie
-    jouer(&jeu, &niveauActuel);
 
     /*construire(&jeu,TYPE_ROUTE,0,0,0);
     construire(&jeu,TYPE_ROUTE,1,0,0);

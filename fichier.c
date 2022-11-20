@@ -83,6 +83,7 @@ void sauvegarderJeu(Jeu * jeu) {
         fprintf(fichierJeu, "%d ", jeu->batiments[i].capacite);
         fprintf(fichierJeu, "%d\n", jeu->batiments[i].horizontal);
     }
+    fclose(fichierJeu); // On ferme le fichier
 }
 
 // fonction pour changer de niveau

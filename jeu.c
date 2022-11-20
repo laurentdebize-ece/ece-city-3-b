@@ -78,19 +78,19 @@ bool jouer(Jeu *jeu, int *niveauActuel) {
     afficherMap(jeu, *niveauActuel);
     while (end != true) {
         while (choixOk != true ) {
-            printf("Que voulez vous faire ?\n 1- changer de niveau de visualisation\n 2- construire\n 3- detruire\n 4- sauvegarder la partie\n 0- Quitter le jeu\n");
+            printf("Que voulez vous faire ?\n 1- changer de niveau de visualisation\n 2- construire\n 3- detruire\n 0- Quitter le jeu\n");
             scanf("%d", &choix);
-            if (choix ==0 || choix == 1 || choix == 2 || choix == 3 || choix == 4){
+            if (choix ==0 || choix == 1 || choix == 2 || choix == 3){
                 choixOk= true;
             }
         }
         choixOk=false;
         switch (choix) {
             case 0:
-                printf("Voulez vous sauvegarder la partie ? (0=oui/1=non) \n");
+                printf("Voulez vous sauvegarder la partie ? (1=oui/0=non) \n");
                 fflush(stdin);
                 scanf("%d", &sauvegarde);
-                if (sauvegarde == 0) {
+                if (sauvegarde == 1) {
                     sauvegarderJeu(jeu);
                 }
                 end = true;
@@ -139,9 +139,6 @@ bool jouer(Jeu *jeu, int *niveauActuel) {
                 }
                 afficherMap(jeu, *niveauActuel);
                 choixOk = false;
-                break;
-            case 4 :
-                sauvegarderJeu(jeu);
                 break;
             default :
                 printf("erreur numéro veuillez réessayer\n");
