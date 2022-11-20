@@ -165,7 +165,13 @@ char choixConstruction(char *type) {
     return type_de_construction;
 }
 
-void choixEmplacement(int *ligne, int *colonne) {
+bool  choixEmplacement(int *ligne, int *colonne, Jeu*  jeu) {
     scanf("%d/%d", ligne, colonne);
+    if (jeu->map[*colonne][*ligne].occupe == true){
+        return false;
+    }
+    else {
+        return true;
+    }
 }
 

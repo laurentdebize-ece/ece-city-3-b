@@ -14,5 +14,5 @@ void changerNiv(int *nivAct, Jeu * jeu);
 void sauvegarderJeu(Jeu * jeu);
 // fonctions pour permettre au joueur de choisir le type et l'emplacement de sa construction
 char choixConstruction(char *type);
-void choixEmplacement(int *ligne, int *colonne);
+bool choixEmplacement(int *ligne, int *colonne, Jeu* jeu);
 #endif //MYBRANCH_FONCTIONS_H

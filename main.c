@@ -10,11 +10,12 @@ int main() {
     printf("test SIMCITY !\n");
     int niveauActuel=0;
     Jeu jeu ;
+    bool end=false;
     compteur_debut_cycle(&jeu);
-
-    // fonction pour commencer la partie et boucler tant que la partie n'est pas finie
-    jouer(&jeu, &niveauActuel);
-
+    while (end !=true) {
+        // fonction pour commencer la partie et boucler tant que la partie n'est pas finie
+        end = jouer(&jeu, &niveauActuel);
+    }
     /*construire(&jeu,TYPE_ROUTE,0,0,0);
     construire(&jeu,TYPE_ROUTE,1,0,0);
     construire(&jeu,TYPE_ROUTE,2,0,0);

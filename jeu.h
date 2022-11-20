@@ -15,6 +15,6 @@
 #include <stdbool.h>
 
 Jeu reprendrePartie();
-void jouer(Jeu *jeu, int *niveauActuel);
+bool jouer(Jeu *jeu, int *niveauActuel);
 
 #endif //FICHIER_H_JEU_H

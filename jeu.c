@@ -20,7 +20,7 @@ Jeu reprendrePartie() {
     for (int i = 0; i < nbRoute; i++) {
         fscanf(fichierJeu, "%d", &jeu.routes[i].pos_x);
         fscanf(fichierJeu, "%d", &jeu.routes[i].pos_y);
-        construire(&jeu,TYPE_ROUTE,jeu.routes[i].pos_x,jeu.routes[i].pos_y,0);
+        construire(&jeu, TYPE_ROUTE, jeu.routes[i].pos_x, jeu.routes[i].pos_y, 0);
         fscanf(fichierJeu, "\n");
     }
     // detecter les maisons + routes adjacentes
@@ -31,11 +31,11 @@ Jeu reprendrePartie() {
         fscanf(fichierJeu, "%d", &jeu.maisons[i].habitants);
         fscanf(fichierJeu, "%d", &jeu.maisons[i].eau);
         fscanf(fichierJeu, "%d", &jeu.maisons[i].electricite);
-        construire(&jeu,TYPE_MAISON,jeu.maisons[i].pos_x,jeu.maisons[i].pos_y,0);
+        construire(&jeu, TYPE_MAISON, jeu.maisons[i].pos_x, jeu.maisons[i].pos_y, 0);
         fscanf(fichierJeu, "\n");
     }
     // detecter les centrales et leur routes adjacentes
-    for (int i = 0; i <nbCentrale+nbChateau; i++) {
+    for (int i = 0; i < nbCentrale + nbChateau; i++) {
         fscanf(fichierJeu, "%d", &jeu.batiments[i].pos_x);
         fscanf(fichierJeu, "%d", &jeu.batiments[i].pos_y);
         fscanf(fichierJeu, "%d", &jeu.batiments[i].type_batiment);
@@ -43,31 +43,32 @@ Jeu reprendrePartie() {
         int horizontal;
         fscanf(fichierJeu, "%d", &horizontal);
         // pour faire fonctionner le bouleen est reussir a lire le fichier quand meme car on print dans le fichier un int 0/1
-        if (horizontal==1){
-            jeu.batiments[i].horizontal= true;
+        if (horizontal == 1) {
+            jeu.batiments[i].horizontal = true;
+        } else {
+            jeu.batiments[i].horizontal = false;
         }
-        else {
-            jeu.batiments[i].horizontal= false;
-        }
-        construire(&jeu,jeu.batiments[i].type_batiment,jeu.batiments[i].pos_x,jeu.batiments[i].pos_y,jeu.batiments[i].horizontal);
-        fscanf(fichierJeu,"\n");
+        construire(&jeu, jeu.batiments[i].type_batiment, jeu.batiments[i].pos_x, jeu.batiments[i].pos_y,
+                   jeu.batiments[i].horizontal);
+        fscanf(fichierJeu, "\n");
     }
     jeu.argent = argentPred;
     return jeu;
 }
 
-void jouer(Jeu * jeu, int* niveauActuel){
+bool jouer(Jeu *jeu, int *niveauActuel) {
     bool choixOk = false;
     bool end = false;
-    int choix, ligne, colonne;
+    bool isCaseLibre = false;
+    int choix= -1;
+    int ligne, colonne, sauvegarde;
     char choixType, type;
-    FILE * fichierJeu = fopen("../caracteristiques.txt", "r");
+    FILE *fichierJeu = fopen("../caracteristiques.txt", "r");
 
     // test pour savoir si on commence une nouvelle partie ou si on reprend une partie sauvegardee
-    if ( fichierJeu != NULL){
+    if (fichierJeu != NULL) {
         *jeu = reprendrePartie();
-    }
-    else {
+    } else {
         *jeu = initialisation_jeu();
     }
 
@@ -76,9 +77,24 @@ void jouer(Jeu * jeu, int* niveauActuel){
     printf("niveauActuel : %d\n", *niveauActuel);
     afficherMap(jeu, *niveauActuel);
     while (end != true) {
-        printf("Que voulez vous faire ?\n 1- changer de niveau de visualisation\n 2- construire\n 3- detruire\n 4- arreter la partie\n");
-        scanf("%d", &choix);
+        while (choixOk != true ) {
+            printf("Que voulez vous faire ?\n 1- changer de niveau de visualisation\n 2- construire\n 3- detruire\n 4- sauvegarder la partie\n 0- Quitter le jeu\n");
+            scanf("%d", &choix);
+            if (choix ==0 || choix == 1 || choix == 2 || choix == 3 || choix == 4){
+                choixOk= true;
+            }
+        }
+        choixOk=false;
         switch (choix) {
+            case 0:
+                printf("Voulez vous sauvegarder la partie ? (0=oui/1=non) \n");
+                fflush(stdin);
+                scanf("%d", &sauvegarde);
+                if (sauvegarde == 0) {
+                    sauvegarderJeu(jeu);
+                }
+                end = true;
+                break;
             case 1:
                 changerNiv(niveauActuel, jeu);
                 break;
@@ -92,11 +108,15 @@ void jouer(Jeu * jeu, int* niveauActuel){
                     }
                 }
                 type = choixConstruction(&choixType);
-                printf("ou voulez vous construire (ligne/colonne) ?\n");
-                choixEmplacement(&ligne, &colonne);
-                construire(jeu,type,colonne, ligne,0);
+                while (isCaseLibre == false) {
+                    printf("ou voulez vous construire (ligne/colonne) ?\n");
+                    fflush(stdin);
+                    isCaseLibre = choixEmplacement(&ligne, &colonne, jeu);
+                }
+                isCaseLibre = false;
+                construire(jeu, type, colonne, ligne, 0);
                 afficherMap(jeu, *niveauActuel);
-                choixOk=false;
+                choixOk = false;
                 break;
             case 3:
                 while (choixOk != true) {
@@ -109,21 +129,19 @@ void jouer(Jeu * jeu, int* niveauActuel){
                 }
                 type = choixConstruction(&choixType);
                 printf("ou voulez vous detruire (ligne/colonne) ?\n");
-                choixEmplacement(&ligne, &colonne);
+                choixEmplacement(&ligne, &colonne, jeu);
                 if (type == TYPE_ROUTE) {
-                    detruire(jeu, TYPE_ROUTE, 0, colonne, ligne) ;
-                }
-                else {
+                    detruire(jeu, TYPE_ROUTE, 0, colonne, ligne);
+                } else {
                     int numero;
                     trouverNumero(jeu, type, &numero, colonne, ligne);
-                    detruire(jeu, type, numero,0,0) ;
+                    detruire(jeu, type, numero, 0, 0);
                 }
                 afficherMap(jeu, *niveauActuel);
-                choixOk=false;
+                choixOk = false;
                 break;
             case 4 :
                 sauvegarderJeu(jeu);
-                end = true;
                 break;
             default :
                 printf("erreur numéro veuillez réessayer\n");
@@ -132,5 +150,5 @@ void jouer(Jeu * jeu, int* niveauActuel){
         compteur_debut_cycle(jeu);
         //afficherCompteur(*jeu);
     }
-
+    return true;
 }
