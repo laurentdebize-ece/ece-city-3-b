@@ -21,10 +21,12 @@ Case **chargerMap(Jeu *jeu) {
                 for (colonne = 0; colonne < TAILLE_MAP_X ; colonne++) {
                     caractereLu = fgetc(fichier);
                     myCaractere = caractereLu;
-                    map[colonne][ligne].occupe = false;
+                    if (myCaractere != SYMBOLE_VIDE){
+                        map[colonne][ligne].occupe = true;
+                    }
                     map[colonne][ligne].symbole = myCaractere;
                }
-                caractereLu = fgetc(fichier);//pour lite le \n
+                caractereLu = fgetc(fichier); //pour lire le \n
             }
         //} while (caractereLu != EOF); // On continue tant le caractere lu n'est pas EndOfFile (fin de fichier)
         fclose(fichier); // On ferme le fichier
