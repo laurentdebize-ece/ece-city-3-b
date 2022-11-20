@@ -605,3 +605,76 @@ bool trouverNumero(Jeu *jeu, int type_batiment, int *numero, int colonne, int li
     return false;
 }
 /*************************************Fin Détruire*********************************************/
+
+/*************************************Changement de Niveau*************************************/
+
+void choix_mode_jeu (Jeu *jeu) {
+    printf("Choisissez le mode de jeu : \n 1- Mode capitaliste\n 2- Mode communiste\n");
+    scanf("%d",&jeu->mode_jeu);
+}
+
+void changement_type_maison(Jeu* jeu){
+    switch (jeu->mode_jeu) {
+        case MODE_CAPITALISTE:
+            for (int i = 0; i < jeu->nb_maisons; i++) {
+                if(jeu->maisons[i].type_maison<=3){
+                jeu->maisons[i].type_maison+=1;
+                }
+            }
+            break;
+        case MODE_COMMUNISTE:
+            for (int i = 0; i < jeu->nb_maisons; i++) {
+                    switch (jeu->maisons[i].type_maison) {
+                        case 0:
+                            if (jeu->maisons[i].habitants>= 10) {
+                                jeu->maisons[i].type_maison=1;
+                                break;
+                            }
+                        case 1:
+                            if (jeu->maisons[i].habitants>= 50) {
+                                jeu->maisons[i].type_maison=2;
+                                break;
+                            }
+                        case 2:
+                            if (jeu->maisons[i].habitants>= 100) {
+                                jeu->maisons[i].type_maison=3;
+                                break;
+                            }
+                        case 3:
+                            if (jeu->maisons[i].habitants>= 1000) {
+                                jeu->maisons[i].type_maison=4;
+                                break;
+                            }
+                    }
+            }
+            break;
+    }
+}
+
+void regression_type_maison(Jeu*jeu){
+    for (int i = 0; i < jeu->nb_maisons; i++) {
+        switch (jeu->maisons[i].type_maison) {
+            case 1:
+                if (jeu->maisons[i].habitants<= 10) {
+                    jeu->maisons[i].type_maison=0;
+                    break;
+                }
+            case 2:
+                if (jeu->maisons[i].habitants<= 5) {
+                    jeu->maisons[i].type_maison=1;
+                    break;
+                }
+            case 3:
+                if (jeu->maisons[i].habitants<= 100) {
+                    jeu->maisons[i].type_maison=2;
+                    break;
+                }
+            case 4:
+                if (jeu->maisons[i].habitants<= 1000) {
+                    jeu->maisons[i].type_maison=3;
+                    break;
+                }
+
+        }
+    }
+}

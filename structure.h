@@ -4,6 +4,9 @@
 #include "liste.h"
 #include <stdbool.h>
 
+#define MODE_CAPITALISTE 1
+#define MODE_COMMUNISTE 2
+
 #define TAILLE_MAP_X 45
 #define TAILLE_MAP_Y 35
 
@@ -65,9 +68,11 @@ typedef struct Maison{
     struct Liste* routeAdjacente;
     int pos_x;
     int pos_y;
+    int type_maison;
 }Maison;
 
 typedef struct Jeu{
+    int mode_jeu;
     int argent;
     int eau;
     int electricite;
