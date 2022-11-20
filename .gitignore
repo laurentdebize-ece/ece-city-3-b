@@ -4,3 +4,4 @@ build
 .vscode
 Makefile
 ece_city
+/raylib/

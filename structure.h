@@ -4,6 +4,7 @@
 #include "liste.h"
 #include <stdbool.h>
 
+
 #define MODE_CAPITALISTE 1
 #define MODE_COMMUNISTE 2
 
@@ -36,6 +37,24 @@
 #define SYMBOLE_CENTRALE 'C'
 #define SYMBOLE_CHATEAU_EAU 'E'
 #define SYMBOLE_VIDE '0'
+
+// affichage en travaux
+
+#define LARGEUR_ECRAN 1280
+#define HAUTEUR_ECRAN 720
+#define TAILLE_PLATEAU 50
+
+#define VERT_HERBE CLITERAL(Color){ 124, 252, 0, 255 }
+
+#define FLT_MAX     340282346638528859811704183484516925440.0f
+
+typedef struct{
+    float pos_x;
+    float pos_y;
+    float pos_z;
+}Manoires;
+
+// affichage en travaux
 
 // case de la map
 typedef struct Case{
