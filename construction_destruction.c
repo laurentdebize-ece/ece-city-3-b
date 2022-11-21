@@ -645,9 +645,12 @@ void changement_type_maison(Jeu* jeu){
                                 jeu->maisons[i].type_maison=4;
                                 break;
                             }
+                        default:
+                            choix_mode_jeu(jeu);
+                            break;
                     }
             }
-            break;
+
     }
 }
 
@@ -674,6 +677,8 @@ void regression_type_maison(Jeu*jeu){
                     jeu->maisons[i].type_maison=3;
                     break;
                 }
+            default:
+                break;
 
         }
     }
