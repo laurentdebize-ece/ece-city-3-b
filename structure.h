@@ -43,6 +43,8 @@
 #define LARGEUR_ECRAN 1280
 #define HAUTEUR_ECRAN 720
 #define TAILLE_PLATEAU 50
+#define LARGEUR_PLATEAU 35
+#define LONGUEUR_PLATEAU 45
 
 #define VERT_HERBE CLITERAL(Color){ 124, 252, 0, 255 }
 
@@ -54,12 +56,34 @@ typedef struct{
     float pos_z;
 }Manoires;
 
+typedef struct{
+    float pos_x;
+    float pos_y;
+    float pos_z;
+}Usines;
+
+typedef struct{
+    float pos_x;
+    float pos_y;
+    float pos_z;
+}ChateauEau;
+
+typedef struct{
+    float pos_x;
+    float pos_y;
+    float pos_z;
+}Routes;
+
+
+
 // affichage en travaux
 
 // case de la map
 typedef struct Case{
     bool occupe;
     char symbole;
+    float x, z, largeur, hauteur;
+
 }Case;
 
 typedef struct Route{

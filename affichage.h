@@ -5,7 +5,8 @@
 
 void afficherCarte(Case** map);
 void afficherMap(Jeu * jeu, int niveau);
-//void afficherCarteRaylib();
+void dessinerCases(Case cases[LARGEUR_PLATEAU][LONGUEUR_PLATEAU]);
+void initCases(Case cases[LARGEUR_PLATEAU][LONGUEUR_PLATEAU]);
 void affichageMapRaylib();
 
 #endif //ECE_CITY_3B_AFFICHAGE_H

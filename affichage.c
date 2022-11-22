@@ -70,44 +70,29 @@ void afficherMap(Jeu * jeu, int niveau) {
     }
     afficherCompteur(*jeu);
 }
-/*
-void afficherCarteRaylib(){
-    // initialisation
-    const int screenWidth = 2000;
-    const int screenHeight = 1450;
 
-    InitWindow(screenWidth, screenHeight, "carte");
+void initCases(Case cases[LARGEUR_PLATEAU][LONGUEUR_PLATEAU]){
+    int i,j;
+    for(i = 0; i < LARGEUR_PLATEAU;i++){
+        for(j = 0; j < LONGUEUR_PLATEAU;j++){
+            cases[i][j].largeur = 1;
+            cases[i][j].hauteur = 1;
+            cases[i][j].x = 18 - 0.5 - i;
+            cases[i][j].z = -22 + 0.5 + j;
+            cases[i][j].occupe = false;
 
-    // camera en 3D
-    Camera3D camera = { 0 };
-    camera.position = (Vector3){ 10.0f, 10.0f, 10.0f };
-    camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };
-    camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
-    camera.fovy = 45.0f;
-    camera.projection = CAMERA_PERSPECTIVE;
-
-    SetCameraMode(camera, CAMERA_FREE); // mode de la camera
-
-    SetTargetFPS(60);                   // fps
-    while (!WindowShouldClose()){
-        // mise a jour
-        UpdateCamera(&camera);
-
-        // dessiner
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
-
-        BeginMode3D(camera);
-        DrawGrid(46, 2);
-
-
-        EndMode3D();
-        EndDrawing();
+        }
     }
-
-    CloseWindow();
 }
-*/
+
+void dessinerCases(Case cases[LARGEUR_PLATEAU][LONGUEUR_PLATEAU]){
+    int i, j;
+    for(i = 0; i < LARGEUR_PLATEAU; i++){
+        for(j = 0; j < LONGUEUR_PLATEAU; j++){
+            DrawCubeWires((Vector3){cases[i][j].x,0.0f,cases[i][j].z}, cases[i][j].largeur, 0, cases[i][j].hauteur, RAYWHITE);
+        }
+    }
+}
 
 void affichageMapRaylib(){
     InitWindow(LARGEUR_ECRAN, HAUTEUR_ECRAN, "Raylib test");
@@ -116,7 +101,7 @@ void affichageMapRaylib(){
 
     //mise en place de la camera en 3D
     Camera3D camera = {0};
-    camera.position = (Vector3){ 60, 60, 60 };
+    camera.position = (Vector3){ 40, 40, 40 };
     camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };      // ou pointe la camera
     camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };          // hauteur de la camera
     camera.fovy = 45.0f;                                // Champ de vision de la camera
@@ -130,7 +115,15 @@ void affichageMapRaylib(){
     Vector3 positionHerbe2[1000];
     Vector3 positionHerbe3[1000];
     int nbMaison = 0;
+    int nbUsine = 0;
+    int nbChateauEau = 0;
+    int nbroute = 0;
     Manoires maison[100];
+    Usines usines[100];
+    ChateauEau chateauDo[100];
+    Routes routes[100];
+    Case cases[LARGEUR_PLATEAU][LONGUEUR_PLATEAU];
+    initCases(cases);
 
 
     // Quadrilatère sol
@@ -195,7 +188,7 @@ void affichageMapRaylib(){
     Model immeuble = LoadModel("..\\3D\\large_buildingC.obj");
     Model gratteCiel = LoadModel("..\\3D\\skyscraperF.obj");
     Model chateauEau = LoadModel("..\\3D\\chateauEau.glb");
-    Model usine = LoadModel("..\\3D\\victorian_factory.obj");
+    Model usine = LoadModel("..\\3D\\hangar_largeA.obj");
     Model route1 = LoadModel("..\\3D\\road_bendSidewalk.obj");
     Model route2 = LoadModel("..\\3D\\road_crossroad.obj");
     Model route3 = LoadModel("..\\3D\\road_end.obj");
@@ -269,9 +262,11 @@ void affichageMapRaylib(){
 
 
 
-        DrawGrid(50, 1);
+
         DrawModel(sol,positionCubeSol,TAILLE_PLATEAU,VERT_HERBE);
-        DrawCubeWires(positionContourCarte, 35, 0, 45, BLACK);
+        dessinerCases(cases);
+        DrawCubeWires(positionContourCarte, LARGEUR_PLATEAU, 0, LONGUEUR_PLATEAU, BLACK);
+        DrawGrid(50, 1);
 
         for(int i = 0; i < 1000; i++){
             DrawModel(herbe1, positionHerbe1[i], 1, WHITE);
@@ -287,14 +282,74 @@ void affichageMapRaylib(){
         }
 
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-            maison[nbMaison].pos_x = collision.point.x;
-            maison[nbMaison].pos_y = collision.point.y;
-            maison[nbMaison].pos_z = collision.point.z;
-            nbMaison = nbMaison + 1;
+            int i,j;
+            for(i = 0; i < LARGEUR_PLATEAU;i++){
+                for(j = 0; j < LONGUEUR_PLATEAU;j++){
+                    if (collision.point.z <= cases[i][j].z + 0.5 && collision.point.z >= cases[i][j].z - 0.5 && collision.point.x  <= cases[i][j].x + 0.5  && collision.point.x >= cases[i][j].x - 0.5){
+                        maison[nbMaison].pos_x = cases[i][j].x + 1;
+                        maison[nbMaison].pos_y = collision.point.y;
+                        maison[nbMaison].pos_z = cases[i][j].z - 1;
+                        nbMaison = nbMaison + 1;
+                    }
+
+                }
+            }
+        }
+
+        if (IsKeyPressed(KEY_U)){
+            int i,j;
+            for(i = 0; i < LARGEUR_PLATEAU;i++){
+                for(j = 0; j < LONGUEUR_PLATEAU;j++){
+                    if (collision.point.z <= cases[i][j].z + 0.5 && collision.point.z >= cases[i][j].z - 0.5 && collision.point.x  <= cases[i][j].x + 0.5  && collision.point.x >= cases[i][j].x - 0.5){
+                        usines[nbUsine].pos_x = cases[i][j].x + 1.5;
+                        usines[nbUsine].pos_y = collision.point.y;
+                        usines[nbUsine].pos_z = cases[i][j].z - 2.5;
+                        nbUsine = nbUsine + 1;
+                    }
+
+                }
+            }
+        }
+        if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
+            int i,j;
+            for(i = 0; i < LARGEUR_PLATEAU;i++){
+                for(j = 0; j < LONGUEUR_PLATEAU;j++){
+                    if (collision.point.z <= cases[i][j].z + 0.5 && collision.point.z >= cases[i][j].z - 0.5 && collision.point.x  <= cases[i][j].x + 0.5  && collision.point.x >= cases[i][j].x - 0.5){
+                        chateauDo[nbChateauEau].pos_x = cases[i][j].x;
+                        chateauDo[nbChateauEau].pos_y = collision.point.y;
+                        chateauDo[nbChateauEau].pos_z = cases[i][j].z;
+                        nbChateauEau = nbChateauEau + 1;
+                    }
+
+                }
+            }
+        }
+        if (IsKeyPressed(KEY_R)){
+            int i,j;
+            for(i = 0; i < LARGEUR_PLATEAU;i++){
+                for(j = 0; j < LONGUEUR_PLATEAU;j++){
+                    if (collision.point.z <= cases[i][j].z + 0.5 && collision.point.z >= cases[i][j].z - 0.5 && collision.point.x  <= cases[i][j].x + 0.5  && collision.point.x >= cases[i][j].x - 0.5){
+                        routes[nbroute].pos_x = cases[i][j].x;
+                        routes[nbroute].pos_y = collision.point.y;
+                        routes[nbroute].pos_z = cases[i][j].z;
+                        nbroute = nbroute + 1;
+                    }
+
+                }
+            }
         }
 
         for(int i = 0; i < nbMaison; i++){
-            DrawModel(maison1, (Vector3){maison[i].pos_x,maison[i].pos_y,maison[i].pos_z},1,WHITE);
+            DrawModel(maison1, (Vector3){maison[i].pos_x,maison[i].pos_y,maison[i].pos_z},2,WHITE);
+        }
+        for(int i = 0; i < nbUsine; i++){
+            DrawModel(usine, (Vector3){usines[i].pos_x,usines[i].pos_y,usines[i].pos_z},1.8,WHITE);
+        }
+        for(int i = 0; i < nbChateauEau; i++){
+            DrawModel(chateauEau, (Vector3){chateauDo[i].pos_x,chateauDo[i].pos_y,chateauDo[i].pos_z},0.002,WHITE); // modele chateau eau ne marche pas
+        }
+        for(int i = 0; i < nbroute; i++){
+            DrawModel(route1, (Vector3){routes[i].pos_x,routes[i].pos_y,routes[i].pos_z},1,WHITE);
         }
 
 
@@ -312,11 +367,6 @@ void affichageMapRaylib(){
                                 collision.point.x,
                                 collision.point.y,
                                 collision.point.z), 10, ypos + 15, 10, BLACK);
-
-            DrawText(TextFormat("Norme: %3.2f %3.2f %3.2f",
-                                collision.normal.x,
-                                collision.normal.y,
-                                collision.normal.z), 10, ypos + 30, 10, BLACK);
 
         }
 
