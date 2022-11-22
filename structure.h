@@ -46,6 +46,7 @@
 #define SYMBOLE_CHATEAU_EAU 'E'
 #define SYMBOLE_VIDE ' '
 
+#define NON_MARQUE -1
 // case de la map
 typedef struct Case{
     bool occupe;
