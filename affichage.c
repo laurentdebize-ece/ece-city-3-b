@@ -188,7 +188,7 @@ void affichageMapRaylib(){
     Model immeuble = LoadModel("..\\3D\\large_buildingC.obj");
     Model gratteCiel = LoadModel("..\\3D\\skyscraperF.obj");
     Model chateauEau = LoadModel("..\\3D\\chateauEau.glb");
-    Model usine = LoadModel("..\\3D\\hangar_largeA.obj");
+    Model usine = LoadModel("..\\3D\\usine.glb");
     Model route1 = LoadModel("..\\3D\\road_bendSidewalk.obj");
     Model route2 = LoadModel("..\\3D\\road_crossroad.obj");
     Model route3 = LoadModel("..\\3D\\road_end.obj");
@@ -301,16 +301,16 @@ void affichageMapRaylib(){
             for(i = 0; i < LARGEUR_PLATEAU;i++){
                 for(j = 0; j < LONGUEUR_PLATEAU;j++){
                     if (collision.point.z <= cases[i][j].z + 0.5 && collision.point.z >= cases[i][j].z - 0.5 && collision.point.x  <= cases[i][j].x + 0.5  && collision.point.x >= cases[i][j].x - 0.5){
-                        usines[nbUsine].pos_x = cases[i][j].x + 1.5;
+                        usines[nbUsine].pos_x = cases[i][j].x + 2.5;
                         usines[nbUsine].pos_y = collision.point.y;
-                        usines[nbUsine].pos_z = cases[i][j].z - 2.5;
+                        usines[nbUsine].pos_z = cases[i][j].z - 1.5;
                         nbUsine = nbUsine + 1;
                     }
 
                 }
             }
         }
-        if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
+        if (IsKeyPressed(KEY_C)){
             int i,j;
             for(i = 0; i < LARGEUR_PLATEAU;i++){
                 for(j = 0; j < LONGUEUR_PLATEAU;j++){
@@ -343,7 +343,7 @@ void affichageMapRaylib(){
             DrawModel(maison1, (Vector3){maison[i].pos_x,maison[i].pos_y,maison[i].pos_z},2,WHITE);
         }
         for(int i = 0; i < nbUsine; i++){
-            DrawModel(usine, (Vector3){usines[i].pos_x,usines[i].pos_y,usines[i].pos_z},1.8,WHITE);
+            DrawModel(usine, (Vector3){usines[i].pos_x,usines[i].pos_y,usines[i].pos_z},0.003,WHITE);
         }
         for(int i = 0; i < nbChateauEau; i++){
             DrawModel(chateauEau, (Vector3){chateauDo[i].pos_x,chateauDo[i].pos_y,chateauDo[i].pos_z},0.002,WHITE); // modele chateau eau ne marche pas
