@@ -4,6 +4,7 @@
 
 #include "jeu.h"
 #include "compteur.h"
+#include "eau.h"
 
 Jeu reprendrePartie() {
     FILE *fichierJeu = fopen("../caracteristiques.txt", "r");
@@ -143,6 +144,9 @@ bool jouer(Jeu *jeu, int *niveauActuel) {
             default :
                 printf("erreur numéro veuillez réessayer\n");
                 break;
+        }
+        if (jeu->nb_chateau_eau !=0 ) {
+            repartitionEau(jeu);
         }
         compteur_debut_cycle(jeu);
         //afficherCompteur(*jeu);

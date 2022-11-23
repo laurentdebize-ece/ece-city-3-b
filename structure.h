@@ -49,6 +49,7 @@
 #define SYMBOLE_CHATEAU_EAU 'E'
 #define SYMBOLE_VIDE '*'
 
+#define NON_MARQUE -1
 // affichage en travaux
 
 #define LARGEUR_ECRAN 1280
