@@ -6,6 +6,130 @@
 #include <time.h>
 #include "construction_destruction.h"
 
+#define screenWidth 2000
+#define screenHeight 1450
+
+
+
+void choixM(Jeu jeu){
+    bool exit = true;
+    float scrollingBack = 0.0f;
+
+
+    Image choix = LoadImage("../image/choix.png");
+    Image capitaliste = LoadImage("../image/capitaliste.png");
+    Image communiste = LoadImage("../image/communiste.png");
+    Image simcityflou = LoadImage("../image/simcity.png");
+
+
+    Texture2D Choix = LoadTextureFromImage(choix);
+    Texture2D Capitaliste = LoadTextureFromImage(capitaliste);
+    Texture2D Communiste = LoadTextureFromImage(communiste);
+    Texture2D Simcityflou = LoadTextureFromImage(simcityflou);
+
+
+    UnloadImage(choix);
+    UnloadImage(capitaliste);
+    UnloadImage(communiste);
+    UnloadImage(simcityflou);
+
+    while (!WindowShouldClose()){
+
+        scrollingBack -= 0.1f;
+        // NOTE: Texture is scaled twice its size, so it sould be considered on scrolling
+        if (scrollingBack <= -Simcityflou.width * 10) scrollingBack = 0;
+
+
+        BeginDrawing();
+        ClearBackground(WHITE);
+
+        DrawTextureEx(Simcityflou, (Vector2){scrollingBack, 20 }, 0.0f, 1.7f, WHITE);
+        DrawTextureEx(Simcityflou, (Vector2){Simcityflou.width * 2 , 20 }, 0.0f, 1.7f, WHITE);
+
+
+        DrawTextureEx(Choix, (Vector2){35,200 }, 0.0f, 1.0f, WHITE);
+        if((GetMousePosition().x >= 270) && (GetMousePosition().x <=  750) && (GetMousePosition().y >= 670) && (GetMousePosition().y <= 810)){
+            DrawTextureEx(Capitaliste, (Vector2){35,200 }, 0.0f, 1.0f, WHITE);
+            if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                jeu.mode_jeu = 1;
+            }
+        }
+        if((GetMousePosition().x >= 1200) && (GetMousePosition().x <=  1700) && (GetMousePosition().y >= 670) && (GetMousePosition().y <= 810)){
+            DrawTextureEx(Communiste, (Vector2){35,200 }, 0.0f, 1.0f, WHITE);
+            if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                jeu.mode_jeu = 2;
+            }
+        }
+
+
+        EndDrawing();
+    }
+    UnloadTexture(Choix);
+    UnloadTexture(Capitaliste);
+    UnloadTexture(Communiste);
+    CloseWindow();
+}
+
+
+void menu1(){
+    // Pour longueur et largeur: screenWidth 2000, screenHeight 1450
+    float scrollingBack = 0.0f;
+    bool exit = false;
+    Jeu jeu;
+
+    InitWindow(screenWidth, screenHeight, "menu");
+    Image simcity = LoadImage("../image/simcity.png");
+    Image logo = LoadImage("../image/logoSimcity.png");
+    Image bouton = LoadImage("../image/logo.png");
+    Image bouton2 = LoadImage("../image/logoclick.png");
+
+    Texture2D Simcity = LoadTextureFromImage(simcity);
+    Texture2D Logo = LoadTextureFromImage(logo);
+    Texture2D Bouton = LoadTextureFromImage(bouton);
+    Texture2D Bouton2 = LoadTextureFromImage(bouton2);
+
+
+    UnloadImage(simcity);
+    UnloadImage(logo);
+    UnloadImage(bouton);
+    UnloadImage(bouton2);
+
+    SetTargetFPS(60);
+
+    while (!WindowShouldClose())
+    {
+        scrollingBack -= 0.1f;
+        // NOTE: Texture is scaled twice its size, so it sould be considered on scrolling
+        if (scrollingBack <= -simcity.width * 10) scrollingBack = 0;
+
+        BeginDrawing();
+        ClearBackground(WHITE);
+
+        // DrawTexture(Simcity,0,0,WHITE);
+        DrawTextureEx(Simcity, (Vector2){scrollingBack, 20 }, 0.0f, 1.7f, WHITE);
+        DrawTextureEx(Simcity, (Vector2){simcity.width * 2 , 20 }, 0.0f, 1.7f, WHITE);
+
+        DrawTextureEx(Logo, (Vector2){150,100 }, 0.0f, 1.8f, WHITE);
+        DrawTextureEx(Bouton, (Vector2){585,500 }, 0.0f, 0.5f, WHITE);
+        if((GetMousePosition().x >= 870) && (GetMousePosition().x <= 1250) && (GetMousePosition().y >= 720) && (GetMousePosition().y <= 820)){
+            DrawTextureEx(Bouton2, (Vector2){585,500 }, 0.0f, 0.5f, WHITE);
+            if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                choixM(jeu);
+            }
+        }
+
+        //DrawText("jouer", 940, 710, 100, RED);
+        //si bouton dans la zone du bouton jouer d'une autre couleur
+
+        EndDrawing();
+    }
+
+    UnloadTexture(Simcity);
+    UnloadTexture(Logo);
+    UnloadTexture(Bouton);
+    CloseWindow();
+}
+
 
 void afficherCarte(Case** map){
     printf("   ");
