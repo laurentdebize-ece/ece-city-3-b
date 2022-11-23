@@ -11,7 +11,7 @@ int main() {
     int niveauActuel=0;
     Jeu jeu = initialisation_jeu();
     bool end=false;
-  //  affichageMapRaylib(&jeu);
+    affichageMapRaylib(&jeu);
     compteur_debut_cycle(&jeu);
     choix_mode_jeu(&jeu);
     while (end !=true) {

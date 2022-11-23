@@ -5,7 +5,7 @@
 /**************************************Construire***********************************************/
 
 bool batiment_sur_map(int pos_x, int pos_y, int taille_x, int taille_y){
-    if(pos_x + taille_x >= TAILLE_MAP_X || pos_y + taille_y >= TAILLE_MAP_Y || pos_x < 0 || pos_y < 0){
+    if(pos_x + taille_x - 1 >= TAILLE_MAP_X || pos_y + taille_y - 1 >= TAILLE_MAP_Y || pos_x < 0 || pos_y < 0){
         return false;
     }
     return true;
