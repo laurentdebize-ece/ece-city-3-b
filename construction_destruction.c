@@ -60,10 +60,10 @@ int** detecter_cases_adjacentes(Jeu* jeu,int pos_x,int pos_y,int taille_x,int ta
         *taille_tab = taille_x + taille_y;
     }
     else if ((pas_element%PAS_ELEMENTS_A_GAUCHE == 0)||(pas_element%PAS_ELEMENTS_A_DROITE == 0)){
-        *taille_tab = 2*taille_y + taille_x;
+        *taille_tab = 2*taille_x + taille_y;
     }
     else if ((pas_element%PAS_ELEMENTS_EN_HAUT == 0)||(pas_element%PAS_ELEMENTS_EN_BAS == 0)){
-        *taille_tab = 2*taille_x + taille_y;
+        *taille_tab = 2*taille_y + taille_x;
     }
     else{
         *taille_tab = 2*taille_x + 2*taille_y;
