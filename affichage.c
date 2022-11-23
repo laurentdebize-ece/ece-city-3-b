@@ -238,7 +238,7 @@ void affichageMapRaylib(Jeu* jeu){
 
 
 
-        ClearBackground(WHITE);
+        ClearBackground(SKYBLUE);
 
         BeginMode3D(camera);
 
@@ -377,7 +377,7 @@ void affichageMapRaylib(Jeu* jeu){
 
         DrawFPS(10, 10);
 
-        DrawText(TextFormat("%d $", jeu->argent), 15, 20, 20, BLACK);
+        DrawText(TextFormat("%d $", jeu->argent), 50, 400, 30, BLACK);
 
 
         if (demandeDeFermetureWindow){
