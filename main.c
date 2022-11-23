@@ -11,8 +11,9 @@ int main() {
 
     printf("test SIMCITY !\n");
     int niveauActuel=0;
-    Jeu jeu ;
+    Jeu jeu = initialisation_jeu();
     bool end=false;
+    affichageMapRaylib(&jeu);
     compteur_debut_cycle(&jeu);
     choix_mode_jeu(&jeu);
     while (end !=true) {
