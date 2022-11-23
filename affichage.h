@@ -9,4 +9,7 @@ void dessinerCases(Case cases[TAILLE_MAP_X][TAILLE_MAP_Y]);
 void initCases(Case cases[TAILLE_MAP_X][TAILLE_MAP_Y]);
 void affichageMapRaylib(Jeu* jeu);
 
+void choixM(Jeu jeu);
+void menu1();
+
 #endif //ECE_CITY_3B_AFFICHAGE_H
