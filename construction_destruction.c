@@ -612,7 +612,45 @@ void choix_mode_jeu (Jeu *jeu) {
     printf("Choisissez le mode de jeu : \n 1- Mode capitaliste\n 2- Mode communiste\n");
     scanf("%d",&jeu->mode_jeu);
 }
+void evolution_maison(Jeu* jeu, int nummaison){
+    switch (jeu->mode_jeu) {
+        case MODE_CAPITALISTE:
+                if(jeu->maisons[nummaison].type_maison<=NIVEAU_IMMEUBLE){
+                    jeu->maisons[nummaison].type_maison+=1;
+                }
+            break;
+        case MODE_COMMUNISTE:
+                switch (jeu->maisons[nummaison].type_maison) {
+                    case NIVEAU_TERRAIN_VAGUE:
+                        if (jeu->maisons[nummaison].habitants>= 0) {
+                            jeu->maisons[nummaison].type_maison=NIVEAU_CABANE;
+                            break;
+                        }
+                    case NIVEAU_CABANE:
+                        if (jeu->maisons[nummaison].habitants>= HAB_MAX_CABANE) {
+                            jeu->maisons[nummaison].type_maison=NIVEAU_MAISON;
+                            break;
+                        }
+                    case NIVEAU_MAISON:
+                        if (jeu->maisons[nummaison].habitants>= HAB_MAX_MAISON) {
+                            jeu->maisons[nummaison].type_maison=NIVEAU_IMMEUBLE;
+                            break;
+                        }
+                    case NIVEAU_IMMEUBLE:
+                        if (jeu->maisons[nummaison].habitants>= HAB_MAX_IMMEUBLE) {
+                            jeu->maisons[nummaison].type_maison=NIVEAU_GRATTE_CIEL;
+                            break;
+                        }
+                    default:
+                        break;
+                }
+        default:
+            choix_mode_jeu(jeu);
+            break;
+            }
 
+    }
+/*
 void changement_type_maison(Jeu* jeu){
     switch (jeu->mode_jeu) {
         case MODE_CAPITALISTE:
@@ -653,33 +691,31 @@ void changement_type_maison(Jeu* jeu){
 
     }
 }
-
-void regression_type_maison(Jeu*jeu){
-    for (int i = 0; i < jeu->nb_maisons; i++) {
-        switch (jeu->maisons[i].type_maison) {
-            case 1:
-                if (jeu->maisons[i].habitants<= 10) {
-                    jeu->maisons[i].type_maison=0;
+*/
+void regression_type_maison(Jeu*jeu, int nummaison){
+        switch (jeu->maisons[nummaison].type_maison) {
+            case NIVEAU_CABANE:
+                if (jeu->maisons[nummaison].habitants<= 0) {
+                    jeu->maisons[nummaison].type_maison=NIVEAU_RUINE;
                     break;
                 }
-            case 2:
-                if (jeu->maisons[i].habitants<= 5) {
-                    jeu->maisons[i].type_maison=1;
+            case NIVEAU_MAISON:
+                if (jeu->maisons[nummaison].habitants<= NIVEAU_CABANE) {
+                    jeu->maisons[nummaison].type_maison=NIVEAU_CABANE;
                     break;
                 }
-            case 3:
-                if (jeu->maisons[i].habitants<= 100) {
-                    jeu->maisons[i].type_maison=2;
+            case NIVEAU_IMMEUBLE:
+                if (jeu->maisons[nummaison].habitants<= NIVEAU_MAISON) {
+                    jeu->maisons[nummaison].type_maison=NIVEAU_MAISON;
                     break;
                 }
-            case 4:
-                if (jeu->maisons[i].habitants<= 1000) {
-                    jeu->maisons[i].type_maison=3;
+            case NIVEAU_GRATTE_CIEL:
+                if (jeu->maisons[nummaison].habitants<= HAB_MAX_IMMEUBLE) {
+                    jeu->maisons[nummaison].type_maison=NIVEAU_IMMEUBLE;
                     break;
                 }
             default:
                 break;
 
         }
-    }
 }

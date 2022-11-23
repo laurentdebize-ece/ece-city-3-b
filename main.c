@@ -7,6 +7,8 @@
 #include "jeu.h"
 
 int main() {
+
+
     printf("test SIMCITY !\n");
     int niveauActuel=0;
     Jeu jeu ;

@@ -16,16 +16,18 @@ void impot(Jeu *jeu) {
 }
 
 void calcul_eau(Jeu* jeu){
-    jeu->eau=0;
+    int eau=0, eautot=0;
     for(int i = 0; i < jeu->nb_maisons; i++){
-        jeu->eau= jeu->tot_eau - jeu->maisons[i].eau;
+        eau+=jeu->maisons[i].eau;
     }
+    eautot= jeu->tot_eau - eau;
+    jeu->eau = eautot;
 }
 
 void compteur_population(Jeu* jeu){
     jeu->population = 0;
     for (int i = 0; i < jeu->nb_maisons; i++) {
-        jeu->population = jeu->maisons[i].habitants;
+        jeu->population += jeu->maisons[i].habitants;
     }
 }
 
