@@ -9,7 +9,7 @@
 Jeu reprendrePartie() {
     FILE *fichierJeu = fopen("../caracteristiques.txt", "r");
     Jeu jeu;
-    int argentPred, nbRoute, nbMaison, nbCentrale, nbChateau;
+    int argentPred, eau, elec, nbRoute, nbMaison, nbCentrale, nbChateau;
     jeu = initialisation_jeu();
     fscanf(fichierJeu, "%d", &argentPred);
     fscanf(fichierJeu, "%d", &nbMaison);
@@ -72,7 +72,7 @@ bool jouer(Jeu *jeu, int *niveauActuel) {
     } else {
         *jeu = initialisation_jeu();
     }
-
+    compteur_debut_cycle(jeu);
     //charger la map à partir du fichier
     jeu->map = chargerMap(jeu);
     printf("niveauActuel : %d\n", *niveauActuel);

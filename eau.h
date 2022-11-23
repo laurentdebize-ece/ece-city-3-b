@@ -10,7 +10,7 @@
 
 
 // fonction test avant BFS
-void initialisationFiles_chateaux(Jeu *jeu, int *tab_indice_chateau, File **tab_file);
+void initialisationFiles_chateaux(Jeu *jeu, int *tab_indice_chateau, File **tab_file, char** marquage);
 bool fonctionTest(Jeu *jeu, File *file, int *tab_indice_chateau);
 
 // fonctions pour marquer les routes lorsqu'elles ont ete decouvertes par un chateau
@@ -22,7 +22,7 @@ int capacite_totale_maison(Jeu* jeu, int numero);
 void remplir_maison(int* num_maison, int num_route, Jeu* jeu, int indice_chateau, int capacite_maison);
 
 // fonction BFS pour parcourir toutes les routes et tous les chateau en meme temps
-void BFS_eau(Jeu *jeu, File *file, int indice_chateau, Batiment * chateau, char** marquage);
+void BFS_eau(Jeu *jeu, File **file, int indice_chateau, Batiment * chateau, char** marquage);
 
 // fonction qui met toutes les fonctions precedentes en commun pour pouvoir effectuer la repartition de l'eau
 void repartitionEau(Jeu *jeu);

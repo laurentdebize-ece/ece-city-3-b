@@ -5,9 +5,9 @@
 #include "eau.h"
 #include <stdlib.h>
 
-void initialisationFiles_chateaux(Jeu *jeu, int *tab_indice_chateau, File **tab_file) {
+void initialisationFiles_chateaux(Jeu *jeu, int *tab_indice_chateau, File **tab_file, char** marquage) {
     int nbChateau = 0;
-    for (int i = 0; i < jeu->nb_chateau_eau; i++) {
+    for (int i = 0; i < jeu->nb_chateau_eau+jeu->nb_centrales; i++) {
         // on parcours tous les batiments du jeu jusqu'a trouver un chateau
         if (jeu->batiments[i].type_batiment == TYPE_CHATEAU_EAU) {
             // on remplit le tableau avec l'indice du chateau
@@ -16,7 +16,8 @@ void initialisationFiles_chateaux(Jeu *jeu, int *tab_indice_chateau, File **tab_
             Liste * tmp = jeu->batiments[i].routeAdjacente; // VERIFIEZ QUE DANS LE BFS CA NE MODIFIE PAS TOUTE L'ADJACENCE
             while (tmp != NULL) {
                 // enfiler chaque routes adjacentes au chateau dans la file qui lui correspond
-                enfiler(&tab_file[nbChateau], tmp->numero);
+                enfiler(&(tab_file[nbChateau]), tmp->numero);
+                marquage[tmp->numero][nbChateau] = (char)nbChateau;
                 tmp = tmp->suivant;
             }
             nbChateau++;
@@ -98,14 +99,14 @@ void remplir_maison(int* num_maison, int num_route, Jeu* jeu, int indice_chateau
 }
 
 
-void BFS_eau(Jeu *jeu, File *file, int indice_chateau, Batiment * chateau, char** marquage) {
-    file = chateau->routeAdjacente;
+void BFS_eau(Jeu *jeu, File **file, int indice_chateau, Batiment * chateau, char** marquage) {
+    //*file = chateau->routeAdjacente;
     int num_maison, capacite_maison;
     // on recupere la premiere route de la file = premiere route adjacente au chateau
-    while (chateau->capacite != 0 && file != NULL){
-    int num_route = defiler(&file);
+    if (chateau->capacite != 0 && *file != NULL){
+    int num_route = defiler(file);
     // si la route n'est pas deja marquée par le chateau
-    if (num_route!= -1 && marquage [num_route][indice_chateau] == NON_MARQUE){
+    if (num_route!= -1 ){
         Liste * tmp = jeu->routes[num_route].adjacente_maison;
         // tant que la route possede une maison adjacente
         while (tmp != NULL ){
@@ -119,12 +120,14 @@ void BFS_eau(Jeu *jeu, File *file, int indice_chateau, Batiment * chateau, char*
         tmp = jeu->routes[num_route].adjacente_route;
         while (tmp!=NULL){
             int newRoute = tmp->numero;
-            enfiler(&file, newRoute);
-            tmp= tmp->suivant;
+            if (marquage [newRoute][indice_chateau] == NON_MARQUE) {
+                enfiler(file, newRoute);
+                marquage[newRoute][indice_chateau] = (char)indice_chateau;
+            }
+                tmp = tmp->suivant;
         }
     }
     // on marque la route
-    marquage[num_route][indice_chateau] = (char)indice_chateau;
     }
 }
 
@@ -133,13 +136,13 @@ void repartitionEau(Jeu *jeu) {
     File **tab_file;
     int *tab_indice_chateau;
     int indice;
-    char** marquage;
+    char** marquage= init_marquage(jeu);
     tab_indice_chateau = malloc(sizeof(int) * jeu->nb_chateau_eau);
     tab_file = malloc(sizeof(File *) * jeu->nb_chateau_eau);
     for (int i=0; i<jeu->nb_chateau_eau; i++){
         tab_file[i] = NULL;
     }
-    initialisationFiles_chateaux(jeu, tab_indice_chateau, tab_file);
+    initialisationFiles_chateaux(jeu, tab_indice_chateau, tab_file,marquage);
     bool continuer = 1;
     // on creer une boucle pour pouvoir tester si chateau non vide & si file non vide a la fin de chaque cycle de BFS
     while (continuer == true) {
@@ -149,26 +152,28 @@ void repartitionEau(Jeu *jeu) {
             // on teste si le chateau non vide et si sa file non vide
             if (fonctionTest(jeu, tab_file[indice], &tab_indice_chateau[indice]) == false) {
                 // si ça n'est pas le cas on lance un BFS sur le chateau en passant en parametre sa liste de routes adjacentes
-                marquage= init_marquage(jeu);
-                BFS_eau(jeu, tab_file[indice], indice, &jeu->batiments[indice], marquage);
-                liberer_tab_marquage(jeu, marquage);
+
+                BFS_eau(jeu, &(tab_file[indice]), indice, &jeu->batiments[indice], marquage);
+
             }
         }
         continuer = 0;
         // apres avoir effectuer tous les BFS on verifie une seconde fois que tous les chateaux ne soient pas vides et que toutes les files non plus
         for (int i = 0; i < jeu->nb_chateau_eau; i++) {
-            if (fonctionTest(jeu, tab_file[i], &tab_indice_chateau[i]) == true) {
-                continuer = false;
-            } else {
+            if (fonctionTest(jeu, tab_file[i], &tab_indice_chateau[i]) == false) {
                 continuer = true;
             }
             // si ça n'est pas le cas on relance à nouveau des BFS
             // si tout est vide alors il n'y a plus d'eau a distribuer et on arrete la distribution tant qu'un nouveau chateau n'est pas construit
         }
     }
+    liberer_tab_marquage(jeu, marquage);
     free (tab_indice_chateau);
-    free (*tab_file);
-    *tab_file = NULL;
+    for(int i = 0; i<jeu->nb_chateau_eau;i++){
+        free_file(&(tab_file[i]));
+    }
+    free (tab_file);
+    tab_file = NULL;
     tab_indice_chateau = NULL;
 
 
