@@ -54,25 +54,8 @@ typedef struct{
     float pos_x;
     float pos_y;
     float pos_z;
-}Manoires;
+}Position;
 
-typedef struct{
-    float pos_x;
-    float pos_y;
-    float pos_z;
-}Usines;
-
-typedef struct{
-    float pos_x;
-    float pos_y;
-    float pos_z;
-}ChateauEau;
-
-typedef struct{
-    float pos_x;
-    float pos_y;
-    float pos_z;
-}Routes;
 
 
 
@@ -89,6 +72,7 @@ typedef struct Case{
 typedef struct Route{
     int pos_x;
     int pos_y;
+    Position position;
     struct Liste* adjacente_maison;
     struct Liste* adjacente_route;
     struct Liste* adjacente_batiment;
@@ -99,6 +83,7 @@ typedef struct Batiment{
     int capacite;
     int pos_x;
     int pos_y;
+    Position position;
     bool horizontal;
     struct Liste* routeAdjacente;
 }Batiment;
@@ -111,6 +96,7 @@ typedef struct Maison{
     struct Liste* routeAdjacente;
     int pos_x;
     int pos_y;
+    Position position;
     int type_maison;
 }Maison;
 
