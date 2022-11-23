@@ -4,6 +4,7 @@
 #include "compteur.h"
 #include <stdlib.h>
 #include <time.h>
+#include "construction_destruction.h"
 
 
 void afficherCarte(Case** map){
@@ -70,53 +71,38 @@ void afficherMap(Jeu * jeu, int niveau) {
     }
     afficherCompteur(*jeu);
 }
-/*
-void afficherCarteRaylib(){
-    // initialisation
-    const int screenWidth = 2000;
-    const int screenHeight = 1450;
 
-    InitWindow(screenWidth, screenHeight, "carte");
+void initCases(Case cases[TAILLE_MAP_X][TAILLE_MAP_Y]){
+    int i,j;
+    for(i = 0; i < TAILLE_MAP_X;i++){
+        for(j = 0; j < TAILLE_MAP_Y;j++){
+            cases[i][j].largeur = 1;
+            cases[i][j].hauteur = 1;
+            cases[i][j].z = 23 - 0.5 - i;
+            cases[i][j].x = -17 + 0.5 + j;
+            cases[i][j].occupe = false;
 
-    // camera en 3D
-    Camera3D camera = { 0 };
-    camera.position = (Vector3){ 10.0f, 10.0f, 10.0f };
-    camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };
-    camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
-    camera.fovy = 45.0f;
-    camera.projection = CAMERA_PERSPECTIVE;
-
-    SetCameraMode(camera, CAMERA_FREE); // mode de la camera
-
-    SetTargetFPS(60);                   // fps
-    while (!WindowShouldClose()){
-        // mise a jour
-        UpdateCamera(&camera);
-
-        // dessiner
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
-
-        BeginMode3D(camera);
-        DrawGrid(46, 2);
-
-
-        EndMode3D();
-        EndDrawing();
+        }
     }
-
-    CloseWindow();
 }
-*/
 
-void affichageMapRaylib(){
+void dessinerCases(Case cases[TAILLE_MAP_X][TAILLE_MAP_Y]){
+    int i, j;
+    for(i = 0; i < TAILLE_MAP_X; i++){
+        for(j = 0; j < TAILLE_MAP_Y; j++){
+            DrawCubeWires((Vector3){cases[i][j].x,0.0f,cases[i][j].z}, cases[i][j].largeur, 0, cases[i][j].hauteur, RAYWHITE);
+        }
+    }
+}
+
+void affichageMapRaylib(Jeu* jeu){
     InitWindow(LARGEUR_ECRAN, HAUTEUR_ECRAN, "Raylib test");
 
     srand(time(NULL)) ;
 
     //mise en place de la camera en 3D
     Camera3D camera = {0};
-    camera.position = (Vector3){ 60, 60, 60 };
+    camera.position = (Vector3){ 40, 40, 40 };
     camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };      // ou pointe la camera
     camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };          // hauteur de la camera
     camera.fovy = 45.0f;                                // Champ de vision de la camera
@@ -129,15 +115,15 @@ void affichageMapRaylib(){
     Vector3 positionHerbe1[1000];
     Vector3 positionHerbe2[1000];
     Vector3 positionHerbe3[1000];
-    int nbMaison = 0;
-    Manoires maison[100];
+    Case cases[TAILLE_MAP_X][TAILLE_MAP_Y];
+    initCases(cases);
 
 
     // Quadrilatère sol
-    Vector3 g0 = (Vector3){ -17.0f, 0.0f, -22.0f };
-    Vector3 g1 = (Vector3){ -17.0f, 0.0f,  23.0f };
-    Vector3 g2 = (Vector3){  18.0f, 0.0f,  23.0f };
-    Vector3 g3 = (Vector3){  18.0f, 0.0f, -22.0f };
+    Vector3 g0 = (Vector3){ -50.0f, 0.0f, -50.0f };
+    Vector3 g1 = (Vector3){ -50.0f, 0.0f,  50.0f };
+    Vector3 g2 = (Vector3){  50.0f, 0.0f,  50.0f };
+    Vector3 g3 = (Vector3){  50.0f, 0.0f, -50.0f };
 
     for (int i = 0; i < 1000; i++){
         positionHerbe1[i].x = rand()%24;
@@ -195,7 +181,7 @@ void affichageMapRaylib(){
     Model immeuble = LoadModel("..\\3D\\large_buildingC.obj");
     Model gratteCiel = LoadModel("..\\3D\\skyscraperF.obj");
     Model chateauEau = LoadModel("..\\3D\\chateauEau.glb");
-    Model usine = LoadModel("..\\3D\\victorian_factory.obj");
+    Model usine = LoadModel("..\\3D\\usine.glb");
     Model route1 = LoadModel("..\\3D\\road_bendSidewalk.obj");
     Model route2 = LoadModel("..\\3D\\road_crossroad.obj");
     Model route3 = LoadModel("..\\3D\\road_end.obj");
@@ -252,7 +238,7 @@ void affichageMapRaylib(){
 
 
 
-        ClearBackground(WHITE);
+        ClearBackground(SKYBLUE);
 
         BeginMode3D(camera);
 
@@ -269,9 +255,11 @@ void affichageMapRaylib(){
 
 
 
-        DrawGrid(50, 1);
+
         DrawModel(sol,positionCubeSol,TAILLE_PLATEAU,VERT_HERBE);
-        DrawCubeWires(positionContourCarte, 35, 0, 45, BLACK);
+        dessinerCases(cases);
+        DrawCubeWires(positionContourCarte, TAILLE_MAP_Y, 0, TAILLE_MAP_X, BLACK);
+       // DrawGrid(50, 1);
 
         for(int i = 0; i < 1000; i++){
             DrawModel(herbe1, positionHerbe1[i], 1, WHITE);
@@ -287,14 +275,84 @@ void affichageMapRaylib(){
         }
 
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-            maison[nbMaison].pos_x = collision.point.x;
-            maison[nbMaison].pos_y = collision.point.y;
-            maison[nbMaison].pos_z = collision.point.z;
-            nbMaison = nbMaison + 1;
+            int i,j;
+            for(i = 0; i < TAILLE_MAP_X;i++){
+                for(j = 0; j < TAILLE_MAP_Y;j++){
+                    if (collision.point.z <= cases[i][j].z + 0.5 && collision.point.z >= cases[i][j].z - 0.5 && collision.point.x  <= cases[i][j].x + 0.5  && collision.point.x >= cases[i][j].x - 0.5){
+                        if (construire(jeu, TYPE_MAISON,i,j,0)) {
+                            jeu->maisons[jeu->nb_maisons - 1].position.pos_x= cases[i][j].x + 1;
+                            jeu->maisons[jeu->nb_maisons - 1].position.pos_y= collision.point.y;
+                            jeu->maisons[jeu->nb_maisons - 1].position.pos_z= cases[i][j].z - 1;
+                        }
+                    }
+
+                }
+            }
         }
 
-        for(int i = 0; i < nbMaison; i++){
-            DrawModel(maison1, (Vector3){maison[i].pos_x,maison[i].pos_y,maison[i].pos_z},1,WHITE);
+        if (IsKeyPressed(KEY_U)){
+            int i,j;
+            for(i = 0; i < TAILLE_MAP_X;i++){
+                for(j = 0; j < TAILLE_MAP_Y;j++){
+                    if (collision.point.z <= cases[i][j].z + 0.5 && collision.point.z >= cases[i][j].z - 0.5 && collision.point.x  <= cases[i][j].x + 0.5  && collision.point.x >= cases[i][j].x - 0.5){
+                        if (construire(jeu, TYPE_CENTRALE,i,j,0)) {
+                            jeu->batiments[jeu->nb_centrales + jeu->nb_chateau_eau - 1].position.pos_x= cases[i][j].x + 2.5;
+                            jeu->batiments[jeu->nb_centrales + jeu->nb_chateau_eau - 1].position.pos_y= collision.point.y;
+                            jeu->batiments[jeu->nb_centrales + jeu->nb_chateau_eau - 1].position.pos_z= cases[i][j].z - 1.5;
+                        }
+                    }
+
+
+                }
+            }
+        }
+        if (IsKeyPressed(KEY_C)){
+            int i,j;
+            for(i = 0; i < TAILLE_MAP_X;i++){
+                for(j = 0; j < TAILLE_MAP_Y;j++){
+                    if (collision.point.z <= cases[i][j].z + 0.5 && collision.point.z >= cases[i][j].z - 0.5 && collision.point.x  <= cases[i][j].x + 0.5  && collision.point.x >= cases[i][j].x - 0.5){
+                        if (construire(jeu, TYPE_CHATEAU_EAU,i,j,0)) {
+                            jeu->batiments[jeu->nb_centrales + jeu->nb_chateau_eau - 1].position.pos_x= cases[i][j].x;
+                            jeu->batiments[jeu->nb_centrales + jeu->nb_chateau_eau - 1].position.pos_y= collision.point.y;
+                            jeu->batiments[jeu->nb_centrales + jeu->nb_chateau_eau - 1].position.pos_z= cases[i][j].z;
+                        }
+                    }
+
+                }
+            }
+        }
+        if (IsKeyPressed(KEY_R)){
+            int i,j;
+            for(i = 0; i < TAILLE_MAP_X;i++){
+                for(j = 0; j < TAILLE_MAP_Y;j++){
+                    if (collision.point.z <= cases[i][j].z + 0.5 && collision.point.z >= cases[i][j].z - 0.5 && collision.point.x  <= cases[i][j].x + 0.5  && collision.point.x >= cases[i][j].x - 0.5){
+                        if (construire(jeu, TYPE_ROUTE,i,j,0)) {
+                            jeu->routes[jeu->nb_routes - 1].position.pos_x= cases[i][j].x;
+                            jeu->routes[jeu->nb_routes - 1].position.pos_y= collision.point.y;
+                            jeu->routes[jeu->nb_routes - 1].position.pos_z= cases[i][j].z;
+                        }
+                    }
+
+                }
+            }
+        }
+
+        for(int i = 0; i < jeu->nb_maisons; i++){
+            DrawModel(maison1, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,WHITE);
+        }
+        for(int i = 0; i < jeu->nb_centrales+jeu->nb_chateau_eau; i++){
+            switch (jeu->batiments[i].type_batiment) {
+                case TYPE_CHATEAU_EAU:
+                    DrawModel(chateauEau, (Vector3){jeu->batiments[i].position.pos_x,jeu->batiments[i].position.pos_y,jeu->batiments[i].position.pos_z},0.002,WHITE);
+                    break;
+                case TYPE_CENTRALE:
+                    DrawModel(usine, (Vector3){jeu->batiments[i].position.pos_x,jeu->batiments[i].position.pos_y,jeu->batiments[i].position.pos_z},0.003,WHITE);
+                    break;
+            }
+        }
+
+        for(int i = 0; i < jeu->nb_routes; i++){
+            DrawModel(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,WHITE);
         }
 
 
@@ -313,16 +371,13 @@ void affichageMapRaylib(){
                                 collision.point.y,
                                 collision.point.z), 10, ypos + 15, 10, BLACK);
 
-            DrawText(TextFormat("Norme: %3.2f %3.2f %3.2f",
-                                collision.normal.x,
-                                collision.normal.y,
-                                collision.normal.z), 10, ypos + 30, 10, BLACK);
-
         }
 
 
 
         DrawFPS(10, 10);
+
+        DrawText(TextFormat("%d $", jeu->argent), 50, 400, 30, BLACK);
 
 
         if (demandeDeFermetureWindow){

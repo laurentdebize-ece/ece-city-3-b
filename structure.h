@@ -55,8 +55,11 @@
 #define LARGEUR_ECRAN 1280
 #define HAUTEUR_ECRAN 720
 #define TAILLE_PLATEAU 50
+#define LARGEUR_PLATEAU 35
+#define LONGUEUR_PLATEAU 45
 
 #define VERT_HERBE CLITERAL(Color){ 124, 252, 0, 255 }
+#define VERT_SOL CLITERAL(Color){ 20,212,0,255}
 
 #define FLT_MAX     340282346638528859811704183484516925440.0f
 
@@ -64,7 +67,10 @@ typedef struct{
     float pos_x;
     float pos_y;
     float pos_z;
-}Manoires;
+}Position;
+
+
+
 
 // affichage en travaux
 
@@ -72,11 +78,14 @@ typedef struct{
 typedef struct Case{
     bool occupe;
     char symbole;
+    float x, z, largeur, hauteur;
+
 }Case;
 
 typedef struct Route{
     int pos_x;
     int pos_y;
+    Position position;
     struct Liste* adjacente_maison;
     struct Liste* adjacente_route;
     struct Liste* adjacente_batiment;
@@ -87,6 +96,7 @@ typedef struct Batiment{
     int capacite;
     int pos_x;
     int pos_y;
+    Position position;
     bool horizontal;
     struct Liste* routeAdjacente;
 }Batiment;
@@ -99,6 +109,7 @@ typedef struct Maison{
     struct Liste* routeAdjacente;
     int pos_x;
     int pos_y;
+    Position position;
     int type_maison;
 }Maison;
 
