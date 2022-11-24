@@ -3,6 +3,7 @@
 
 #include "liste.h"
 #include <stdbool.h>
+#include "time.h"
 
 
 #define MODE_CAPITALISTE 1
@@ -109,8 +110,8 @@ typedef struct Maison{
     struct Liste* routeAdjacente;
     int pos_x;
     int pos_y;
+    int timer;
     Position position;
-    int type_maison;
 }Maison;
 
 typedef struct Jeu{
@@ -129,6 +130,7 @@ typedef struct Jeu{
     int nb_chateau_eau;
     Maison* maisons;
     int nb_maisons;
+    time_t temps;
 }Jeu;
 
 

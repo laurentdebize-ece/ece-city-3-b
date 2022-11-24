@@ -6,6 +6,21 @@
 #include "compteur.h"
 #include "eau.h"
 
+void timer(Jeu * jeu){
+    time_t time_null = time(NULL);
+    if (jeu->temps!=time_null){
+        jeu->temps = time_null;
+        for (int i = 0; i < jeu->nb_maisons; i++) {
+            jeu->maisons[i].timer++;
+            if (jeu->maisons[i].timer % 15 == 0){
+                evolution_et_regression(jeu, i);
+                compteur_cycle_maison(jeu);
+            }
+        }
+
+    }
+}
+
 Jeu reprendrePartie() {
     FILE *fichierJeu = fopen("../caracteristiques.txt", "r");
     Jeu jeu;
@@ -78,6 +93,7 @@ bool jouer(Jeu *jeu, int *niveauActuel) {
     printf("niveauActuel : %d\n", *niveauActuel);
     afficherMap(jeu, *niveauActuel);
     while (end != true) {
+        compteur_debut_cycle(jeu);
         while (choixOk != true ) {
             printf("Que voulez vous faire ?\n 1- changer de niveau de visualisation\n 2- construire\n 3- detruire\n 0- Quitter le jeu\n");
             scanf("%d", &choix);
@@ -148,7 +164,6 @@ bool jouer(Jeu *jeu, int *niveauActuel) {
         if (jeu->nb_chateau_eau !=0 ) {
             repartitionEau(jeu);
         }
-        compteur_debut_cycle(jeu);
         //afficherCompteur(*jeu);
     }
     return true;
