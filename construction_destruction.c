@@ -226,6 +226,7 @@ void construire_maison(Jeu* jeu,int pos_x,int pos_y,Liste** elements_adjacents){
     jeu->maisons[jeu->nb_maisons].pos_x = pos_x;
     jeu->maisons[jeu->nb_maisons].pos_y = pos_y;
     jeu->maisons[jeu->nb_maisons].routeAdjacente = elements_adjacents[TYPE_ROUTE];
+    jeu->maisons[jeu->nb_maisons].timer=0;
     Liste* tmp = jeu->maisons[jeu->nb_maisons].routeAdjacente;
     while(tmp != NULL){
         // comme les graphes sont non orienté on ajoute la maison à la liste d'adjacence de toute les route de sa liste
@@ -612,33 +613,42 @@ void choix_mode_jeu (Jeu *jeu) {
     printf("Choisissez le mode de jeu : \n 1- Mode capitaliste\n 2- Mode communiste\n");
     scanf("%d",&jeu->mode_jeu);
 }
+
+void evolution_et_regression(Jeu* jeu,int nummaison){
+        if (!regression_type_maison(jeu,nummaison)){
+            evolution_maison(jeu,nummaison);
+        }else
+            regression_type_maison(jeu, nummaison);
+        }
+
+
 void evolution_maison(Jeu* jeu, int nummaison){
     switch (jeu->mode_jeu) {
         case MODE_CAPITALISTE:
-                if(jeu->maisons[nummaison].type_maison<=NIVEAU_IMMEUBLE){
-                    jeu->maisons[nummaison].type_maison+=1;
+                if(jeu->maisons[nummaison].niveau<=NIVEAU_IMMEUBLE){
+                    jeu->maisons[nummaison].niveau+=1;
                 }
             break;
         case MODE_COMMUNISTE:
-                switch (jeu->maisons[nummaison].type_maison) {
+                switch (jeu->maisons[nummaison].niveau) {
                     case NIVEAU_TERRAIN_VAGUE:
                         if (jeu->maisons[nummaison].habitants>= 0) {
-                            jeu->maisons[nummaison].type_maison=NIVEAU_CABANE;
+                            jeu->maisons[nummaison].niveau=NIVEAU_CABANE;
                             break;
                         }
                     case NIVEAU_CABANE:
-                        if (jeu->maisons[nummaison].habitants>= HAB_MAX_CABANE) {
-                            jeu->maisons[nummaison].type_maison=NIVEAU_MAISON;
+                        if (jeu->maisons[nummaison].habitants>= HAB_MAX_CABANE && jeu->eau>0 && jeu->electricite>HAB_MAX_MAISON) {
+                            jeu->maisons[nummaison].niveau=NIVEAU_MAISON;
                             break;
                         }
                     case NIVEAU_MAISON:
-                        if (jeu->maisons[nummaison].habitants>= HAB_MAX_MAISON) {
-                            jeu->maisons[nummaison].type_maison=NIVEAU_IMMEUBLE;
+                        if (jeu->maisons[nummaison].habitants>= HAB_MAX_MAISON && jeu->eau>0 && jeu->electricite>HAB_MAX_IMMEUBLE) {
+                            jeu->maisons[nummaison].niveau=NIVEAU_IMMEUBLE;
                             break;
                         }
                     case NIVEAU_IMMEUBLE:
-                        if (jeu->maisons[nummaison].habitants>= HAB_MAX_IMMEUBLE) {
-                            jeu->maisons[nummaison].type_maison=NIVEAU_GRATTE_CIEL;
+                        if (jeu->maisons[nummaison].habitants>= HAB_MAX_IMMEUBLE && jeu->eau>0 && jeu->electricite>HAB_MAX_GRATTE_CIEL) {
+                            jeu->maisons[nummaison].niveau=NIVEAU_GRATTE_CIEL;
                             break;
                         }
                     default:
@@ -655,32 +665,32 @@ void changement_type_maison(Jeu* jeu){
     switch (jeu->mode_jeu) {
         case MODE_CAPITALISTE:
             for (int i = 0; i < jeu->nb_maisons; i++) {
-                if(jeu->maisons[i].type_maison<=3){
-                jeu->maisons[i].type_maison+=1;
+                if(jeu->maisons[i].niveau<=3){
+                jeu->maisons[i].niveau+=1;
                 }
             }
             break;
         case MODE_COMMUNISTE:
             for (int i = 0; i < jeu->nb_maisons; i++) {
-                    switch (jeu->maisons[i].type_maison) {
+                    switch (jeu->maisons[i].niveau) {
                         case 0:
                             if (jeu->maisons[i].habitants>= 10) {
-                                jeu->maisons[i].type_maison=1;
+                                jeu->maisons[i].niveau=1;
                                 break;
                             }
                         case 1:
                             if (jeu->maisons[i].habitants>= 50) {
-                                jeu->maisons[i].type_maison=2;
+                                jeu->maisons[i].niveau=2;
                                 break;
                             }
                         case 2:
                             if (jeu->maisons[i].habitants>= 100) {
-                                jeu->maisons[i].type_maison=3;
+                                jeu->maisons[i].niveau=3;
                                 break;
                             }
                         case 3:
                             if (jeu->maisons[i].habitants>= 1000) {
-                                jeu->maisons[i].type_maison=4;
+                                jeu->maisons[i].niveau=4;
                                 break;
                             }
                         default:
@@ -692,30 +702,35 @@ void changement_type_maison(Jeu* jeu){
     }
 }
 */
-void regression_type_maison(Jeu*jeu, int nummaison){
-        switch (jeu->maisons[nummaison].type_maison) {
+bool regression_type_maison(Jeu*jeu, int nummaison){
+        switch (jeu->maisons[nummaison].niveau) {
             case NIVEAU_CABANE:
-                if (jeu->maisons[nummaison].habitants<= 0) {
-                    jeu->maisons[nummaison].type_maison=NIVEAU_RUINE;
+                if (jeu->maisons[nummaison].habitants< 0) {
+                    jeu->maisons[nummaison].niveau=NIVEAU_RUINE;
+                    return 1;
                     break;
                 }
             case NIVEAU_MAISON:
-                if (jeu->maisons[nummaison].habitants<= NIVEAU_CABANE) {
-                    jeu->maisons[nummaison].type_maison=NIVEAU_CABANE;
+                if (jeu->maisons[nummaison].habitants< NIVEAU_CABANE) {
+                    jeu->maisons[nummaison].niveau=NIVEAU_CABANE;
+                    return 1;
                     break;
                 }
             case NIVEAU_IMMEUBLE:
-                if (jeu->maisons[nummaison].habitants<= NIVEAU_MAISON) {
-                    jeu->maisons[nummaison].type_maison=NIVEAU_MAISON;
+                if (jeu->maisons[nummaison].habitants< NIVEAU_MAISON) {
+                    jeu->maisons[nummaison].niveau=NIVEAU_MAISON;
+                    return 1;
                     break;
                 }
             case NIVEAU_GRATTE_CIEL:
-                if (jeu->maisons[nummaison].habitants<= HAB_MAX_IMMEUBLE) {
-                    jeu->maisons[nummaison].type_maison=NIVEAU_IMMEUBLE;
+                if (jeu->maisons[nummaison].habitants< HAB_MAX_IMMEUBLE) {
+                    jeu->maisons[nummaison].niveau=NIVEAU_IMMEUBLE;
+                    return 1;
                     break;
                 }
             default:
                 break;
 
         }
+        return 0;
 }

@@ -19,6 +19,7 @@ Jeu initialisation_jeu(){
     jeu.maisons = initialisation_maison();
     jeu.routes = initialisation_route();
     jeu.batiments = initialisation_batiment();
+    jeu.temps = 0;
 
     return jeu;
 }
