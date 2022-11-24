@@ -10,4 +10,4 @@ add_executable(ECE_CITY_3B
         initialisation_liberation.h initialisation_liberation.c
         affichage.h affichage.c
         debug.h debug.c
-        repartition_ressources.h repartition_ressources.c)
+        elec.h elec.c)

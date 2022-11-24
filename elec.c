@@ -1,10 +1,6 @@
-#include "repartition_ressources.h"
+#include "elec.h"
 #include "liste.h"
 #include <stdlib.h>
-
-void repartition_ressources(Jeu* jeu);
-
-void repartition_eau(Jeu* jeu);
 
 void repartition_electricite(Jeu* jeu){
     Liste** composantes_maisons;
