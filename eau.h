@@ -19,10 +19,10 @@ void liberer_tab_marquage( Jeu * jeu,  char ** marquage);
 
 // fonction pour gerer le remplissage des maison en fonction de sa capacite et de son evolution
 int capacite_totale_maison(Jeu* jeu, int numero);
-void remplir_maison(int num_maison, int num_route, Jeu* jeu, int indice_chateau);
+void remplir_maison(int num_maison, Jeu* jeu, int indice_chateau);
 
 // fonction BFS pour parcourir toutes les routes et tous les chateau en meme temps
-void BFS_eau(Jeu *jeu, File **file, int indice_chateau, Batiment * chateau, char** marquage);
+void BFS_eau(Jeu *jeu, File **file, Batiment *chateau, char **marquage,int indice,int* indices_chateaux);
 
 // fonction qui met toutes les fonctions precedentes en commun pour pouvoir effectuer la repartition de l'eau
 void repartitionEau(Jeu *jeu);

@@ -469,51 +469,49 @@ bool detruire_batiment(Jeu* jeu, int numero,int type_batiment){
     return true;
 }
 
-bool detruire_route(Jeu* jeu, int pos_x,int pos_y){
+bool detruire_route(Jeu* jeu, int numero){
     // même principe que pour les maisons et les batiments mais on a pas besoin de remodifier la carte
-    for (int i = 0; i < jeu->nb_routes; i++){
-        if (jeu->routes[i].pos_x == pos_x && jeu->routes[i].pos_y == pos_y){
-            for (int j = 0; j < jeu->nb_routes; j++){
-                retirer_liste(&(jeu->routes[j].adjacente_route),i);
-                faire_moins_un_si_sup_num(&(jeu->routes[j].adjacente_route),i);
-            }
-            for (int j = 0; j < jeu->nb_maisons; j++){
-                retirer_liste(&(jeu->maisons[j].routeAdjacente),i);
-                faire_moins_un_si_sup_num(&(jeu->maisons[j].routeAdjacente),i);
-            }
-            for (int j = 0; j < jeu->nb_centrales+jeu->nb_chateau_eau; j++){
-                retirer_liste(&(jeu->batiments[j].routeAdjacente),i);
-                faire_moins_un_si_sup_num(&(jeu->batiments[j].routeAdjacente),i);
-            }
-            free_liste(&(jeu->routes[i].adjacente_maison));
-            free_liste(&(jeu->routes[i].adjacente_batiment));
-            free_liste(&(jeu->routes[i].adjacente_route));
+    for (int j = 0; j < jeu->nb_routes; j++){
+        retirer_liste(&(jeu->routes[j].adjacente_route),numero);
+        faire_moins_un_si_sup_num(&(jeu->routes[j].adjacente_route),numero);
+    }
+    for (int j = 0; j < jeu->nb_maisons; j++){
+        retirer_liste(&(jeu->maisons[j].routeAdjacente),numero);
+        faire_moins_un_si_sup_num(&(jeu->maisons[j].routeAdjacente),numero);
+    }
+    for (int j = 0; j < jeu->nb_centrales+jeu->nb_chateau_eau; j++){
+        retirer_liste(&(jeu->batiments[j].routeAdjacente),numero);
+        faire_moins_un_si_sup_num(&(jeu->batiments[j].routeAdjacente),numero);
+    }
+    free_liste(&(jeu->routes[numero].adjacente_maison));
+    free_liste(&(jeu->routes[numero].adjacente_batiment));
+    free_liste(&(jeu->routes[numero].adjacente_route));
 
-            for (int j = i; j < jeu->nb_routes; j++){
-                jeu->routes[j].adjacente_batiment = jeu->routes[j+1].adjacente_batiment;
-                jeu->routes[j].adjacente_maison = jeu->routes[j+1].adjacente_maison;
-                jeu->routes[j].adjacente_route = jeu->routes[j+1].adjacente_route;
-                jeu->routes[j].pos_x = jeu->routes[j+1].pos_x;
-                jeu->routes[j].pos_y = jeu->routes[j+1].pos_y;
-            }
-
-            (jeu->nb_routes)--;
-
-            return true;
-        }
+    for (int j = numero; j < jeu->nb_routes; j++){
+        jeu->routes[j].adjacente_batiment = jeu->routes[j+1].adjacente_batiment;
+        jeu->routes[j].adjacente_maison = jeu->routes[j+1].adjacente_maison;
+        jeu->routes[j].adjacente_route = jeu->routes[j+1].adjacente_route;
+        jeu->routes[j].pos_x = jeu->routes[j+1].pos_x;
+        jeu->routes[j].pos_y = jeu->routes[j+1].pos_y;
     }
 
-    return false;
+    (jeu->nb_routes)--;
+
+    return true;
 }
 
-bool detruire(Jeu* jeu, int type_batiment, int numero,int pos_x,int pos_y){
+bool detruire(Jeu* jeu,int pos_x,int pos_y){
+    int numero,type_batiment;
+    if(!trouverNumero_et_TypeBatiment(jeu,&type_batiment,&numero,pos_x,pos_y))
+        return false;
+
     int taille_x, taille_y;
     switch (type_batiment)
     {
     case TYPE_ROUTE:
         taille_x = 1;
         taille_y = 1;
-        if(!detruire_route(jeu,pos_x,pos_y))
+        if(!detruire_route(jeu,numero))
             return false;
         break;
     case TYPE_MAISON:
@@ -562,6 +560,7 @@ bool detruire(Jeu* jeu, int type_batiment, int numero,int pos_x,int pos_y){
         }
         else
             return false;
+        break;
     default:
         return false;
         break;
@@ -579,29 +578,39 @@ bool detruire(Jeu* jeu, int type_batiment, int numero,int pos_x,int pos_y){
 }
 
 // pour determiner le numero du batiment a detruire en fonction de sa position
-bool trouverNumero(Jeu *jeu, int type_batiment, int *numero, int colonne, int ligne) {
-    switch (type_batiment) {
-        case TYPE_MAISON:
-            for (int i = 0; i < jeu->nb_maisons; i++) {
-                if (jeu->maisons[i].pos_x == colonne && jeu->maisons[i].pos_y == ligne) {
-                    *numero = i;
-                    return true;
-                }
+bool trouverNumero_et_TypeBatiment(Jeu *jeu, int* type_batiment, int *numero, int colonne, int ligne) {
+    for(int i = 0; i < jeu->nb_maisons; i++){
+        if (colonne >= jeu->maisons[i].pos_x && colonne < jeu->maisons[i].pos_x + TAILLE_MAISON 
+            && ligne >= jeu->maisons[i].pos_y && ligne < jeu->maisons[i].pos_y + TAILLE_MAISON){
+            *type_batiment = TYPE_MAISON;
+            *numero = i;
+            return true;
+        }
+    }
+    for(int i = 0;i<jeu->nb_routes;i++){
+        if (colonne == jeu->routes[i].pos_x && ligne == jeu->routes[i].pos_y){
+            *type_batiment = TYPE_ROUTE;
+            *numero = i;
+            return true;
+        }
+    }
+    for(int i = 0;i<jeu->nb_centrales+jeu->nb_chateau_eau;i++){
+        if (jeu->batiments[i].horizontal){
+            if (colonne >= jeu->batiments[i].pos_x && colonne < jeu->batiments[i].pos_x + TAILLE_GRANDE_BATIMENT 
+                && ligne >= jeu->batiments[i].pos_y && ligne < jeu->batiments[i].pos_y + TAILLE_PETITE_BATIMENT){
+                *type_batiment = jeu->batiments[i].type_batiment;
+                *numero = i;
+                return true;
             }
-            break;
-        case TYPE_CHATEAU_EAU:
-        case TYPE_CENTRALE:
-            for (int i = 0; i < jeu->nb_chateau_eau + jeu->nb_centrales; i++) {
-                if (jeu->batiments[i].pos_x == colonne && jeu->batiments[i].pos_y == ligne &&
-                    jeu->batiments[i].type_batiment == type_batiment) {
-                    *numero = i;
-                    return true;
-                }
+        }
+        else{
+            if (colonne >= jeu->batiments[i].pos_x && colonne < jeu->batiments[i].pos_x + TAILLE_PETITE_BATIMENT 
+                && ligne >= jeu->batiments[i].pos_y && ligne < jeu->batiments[i].pos_y + TAILLE_GRANDE_BATIMENT){
+                *type_batiment = jeu->batiments[i].type_batiment;
+                *numero = i;
+                return true;
             }
-            break;
-        default :
-            return false;
-            break;
+        }
     }
     return false;
 }

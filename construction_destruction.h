@@ -17,9 +17,7 @@ Les seules fonctions que l'on va utiliser dans ce fichier sont les fonctions :
     - detruire() : 
         * en paramètre :
             ø un pointeur sur la structure jeu
-            ø le type de la construction en utilisant les macros définies dans structure.h (ex : TYPE_ROUTE)
-            ø le numero de la construction à détruire pour les maisons, les centrales et les chateau d'eau
-            ø la position (pos_x, pos_y) seulement pour les routes
+            ø la position x et y d'une des cases sur laquelle la construction est située
         * en sortie :
             ø 1 si la destruction a été effectuée
             ø 0 si la destruction n'a pas été effectuée (construction inexistente, etc.)
@@ -80,12 +78,12 @@ void mettre_cases_inoccupees(Jeu *jeu, int **tableau_cases_interieurs, int taill
 // fonction appelée par detruire() suivant le type de construction
 bool detruire_maison(Jeu *jeu, int numero);
 bool detruire_batiment(Jeu *jeu, int numero, int type_batiment);
-bool detruire_route(Jeu *jeu, int pos_x, int pos_y);
+bool detruire_route(Jeu *jeu, int numero);
 
-bool detruire(Jeu *jeu, int type_batiment, int numero, int pos_x, int pos_y);
+bool detruire(Jeu *jeu, int pos_x, int pos_y);
 
 // pour determiner le numero du batiment a detruire en fonction de sa position
-bool trouverNumero(Jeu *jeu, int type_batiment, int *numero, int colonne, int ligne);
+bool trouverNumero_et_TypeBatiment(Jeu *jeu, int* type_batiment, int *numero, int colonne, int ligne);
 /*************************************Fin Détruire*********************************************/
 
 /**************************************Changement de Niveau************************************/
