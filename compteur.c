@@ -26,21 +26,23 @@ void impot(Jeu *jeu) {
 }
 
 void calcul_eau(Jeu* jeu){
-    int eau=0, eautot=0;
-    for(int i = 0; i < jeu->nb_maisons; i++){
-        eau+=jeu->maisons[i].eau;
-    }
-    eautot= jeu->tot_eau - eau;
-    jeu->eau = eautot;
+    int eau=0;
+        for(int i = 0; i < jeu->nb_maisons; i++){
+            eau+=jeu->maisons[i].eau;
+
+        }
+        jeu->eau= jeu->tot_eau - eau;
+
 }
 
 void calcul_elec(Jeu* jeu){
     int elec=0, electot=0;
-    for(int i = 0; i < jeu->nb_maisons; i++){
-        elec+=jeu->maisons[i].electricite;
-    }
-    electot= jeu->tot_electricite - elec;
-    jeu->eau = electot;
+
+        for (int i = 0; i < jeu->nb_maisons; i++) {
+            elec += jeu->maisons[i].electricite;
+        }
+        electot = jeu->tot_electricite - elec;
+        jeu->electricite = electot;
 }
 
 void compteur_population(Jeu* jeu){

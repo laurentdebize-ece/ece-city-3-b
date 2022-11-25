@@ -193,6 +193,7 @@ void afficherMap(Jeu * jeu, int niveau) {
             printf("erreur niveau\n");
             break;
     }
+    compteur_cycle_maison(jeu);
     afficherCompteur(*jeu);
 }
 

@@ -164,7 +164,6 @@ bool jouer(Jeu *jeu, int *niveauActuel) {
                 printf("erreur numéro veuillez réessayer\n");
                 break;
         }
-
             repartitionEau(jeu);
             //repartition_electricite(jeu);
             //repartition_habitants(jeu);
