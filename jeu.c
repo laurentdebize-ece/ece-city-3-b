@@ -5,6 +5,7 @@
 #include "jeu.h"
 #include "compteur.h"
 #include "eau.h"
+#include "elec.h"
 
 void timer(Jeu * jeu){
     time_t time_null = time(NULL);
@@ -77,8 +78,8 @@ bool jouer(Jeu *jeu, int *niveauActuel) {
     bool end = false;
     bool isCaseLibre = false;
     int choix= -1;
-    int ligne, colonne, sauvegarde;
-    char choixType, type;
+    int ligne, colonne, sauvegarde,type;
+    char choixType;
     FILE *fichierJeu = fopen("../caracteristiques.txt", "r");
 
     // test pour savoir si on commence une nouvelle partie ou si on reprend une partie sauvegardee
@@ -93,7 +94,9 @@ bool jouer(Jeu *jeu, int *niveauActuel) {
     printf("niveauActuel : %d\n", *niveauActuel);
     afficherMap(jeu, *niveauActuel);
     while (end != true) {
+        // mettre a jour les compteurs a chaque cycles
         compteur_debut_cycle(jeu);
+        timer(jeu);
         while (choixOk != true ) {
             printf("Que voulez vous faire ?\n 1- changer de niveau de visualisation\n 2- construire\n 3- detruire\n 0- Quitter le jeu\n");
             scanf("%d", &choix);
@@ -148,11 +151,11 @@ bool jouer(Jeu *jeu, int *niveauActuel) {
                 printf("ou voulez vous detruire (ligne/colonne) ?\n");
                 choixEmplacement(&ligne, &colonne, jeu);
                 if (type == TYPE_ROUTE) {
-                    detruire(jeu, TYPE_ROUTE, 0, colonne, ligne);
+                    detruire(jeu, colonne, ligne);
                 } else {
                     int numero;
-                    trouverNumero(jeu, type, &numero, colonne, ligne);
-                    detruire(jeu, type, numero, 0, 0);
+                    trouverNumero_et_TypeBatiment(jeu, &type, &numero, colonne, ligne);
+                    detruire(jeu, 0, 0);
                 }
                 afficherMap(jeu, *niveauActuel);
                 choixOk = false;
@@ -161,8 +164,10 @@ bool jouer(Jeu *jeu, int *niveauActuel) {
                 printf("erreur numéro veuillez réessayer\n");
                 break;
         }
-        if (jeu->nb_chateau_eau !=0 ) {
+        if (jeu->nb_chateau_eau !=0 || jeu->nb_centrales !=0 ) {
             repartitionEau(jeu);
+            repartition_electricite(jeu);
+            repartition_habitants(jeu);
         }
         //afficherCompteur(*jeu);
     }
