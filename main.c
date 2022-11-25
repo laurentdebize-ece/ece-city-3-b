@@ -14,15 +14,15 @@ int main() {
     int niveauActuel=0;
     Jeu jeu = initialisation_jeu();
     bool end=false;
-
+    menu1();
     //affichageMapRaylib(&jeu);
-    //choix_mode_jeu(&jeu);
-    //while (end !=true) {
+    choix_mode_jeu(&jeu);
+    while (end !=true) {
         // fonction pour commencer la partie et boucler tant que la partie n'est pas finie
-        //end = jouer(&jeu, &niveauActuel);
-    //}
+        end = jouer(&jeu, &niveauActuel);
+    }
 
-    for(int i=0;i<TAILLE_MAP_X;i++){
+    /*for(int i=0;i<TAILLE_MAP_X;i++){
         construire(&jeu,TYPE_ROUTE,i,0,0);
     }
     for(int i=0;i<TAILLE_MAP_Y;i++){
@@ -63,7 +63,7 @@ int main() {
     DEBUG_PRINT_INT(totalEau);
     DEBUG_PRINT_INT(totalElec);
     DEBUG_PRINT("\n")
-
+*/
     liberation_jeu(&jeu);
     return 0;
 }

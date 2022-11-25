@@ -146,7 +146,7 @@ void changerNiv(int *nivAct, Jeu * jeu) {
 }
 
 // fonctions pour permettre au joueur de choisir le type et l'emplacement de sa construction
-char choixConstruction(char *type) {
+int choixConstruction(char *type) {
     char type_de_construction;
     switch (*type) {
         case 'R':
