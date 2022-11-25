@@ -56,11 +56,11 @@ void composantes_connexes(Jeu* jeu, int* nb_composantes, Liste*** composantes_ma
     // allocations des listes
     // on alloue de la taille nb_routes car on ne peut pas avoir plus de composantes connexes que de routes
     *composantes_maisons =(Liste**) malloc(sizeof(Liste*)*jeu->nb_routes);
-    for (int i = 0; i < jeu->nb_maisons; i++){
+    for (int i = 0; i < jeu->nb_routes; i++){
         (*composantes_maisons)[i] = NULL;
     }
     *composantes_centrales =(Liste**) malloc(sizeof(Liste*)*jeu->nb_routes);
-    for (int i = 0; i < jeu->nb_centrales; i++){
+    for (int i = 0; i < jeu->nb_routes; i++){
         (*composantes_centrales)[i] = NULL;
     }
 

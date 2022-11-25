@@ -11,8 +11,7 @@ add_executable(ECE_CITY_3B
         construction_destruction.h construction_destruction.c
         initialisation_liberation.h initialisation_liberation.c
         affichage.h affichage.c compteur.c compteur.h
-        debug.h debug.c elec.c elec.h fichier.h fichier.c
-        eau.c eau.h)
+        debug.h debug.c jeu.c jeu.h fichier.h fichier.c eau.c eau.h elec.c elec.h)
 IF (WIN32)
     add_subdirectory(raylib)
     target_link_libraries(ECE_CITY_3B raylib)

@@ -635,9 +635,8 @@ void choix_mode_jeu (Jeu *jeu) {
 void evolution_et_regression(Jeu* jeu,int nummaison){
         if (!regression_type_maison(jeu,nummaison)){
             evolution_maison(jeu,nummaison);
-        }else
-            regression_type_maison(jeu, nummaison);
         }
+}
 
 
 void evolution_maison(Jeu* jeu, int nummaison){
