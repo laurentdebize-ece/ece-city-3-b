@@ -425,6 +425,9 @@ bool detruire_maison(Jeu* jeu, int numero){
         jeu->maisons[i].pos_x = jeu->maisons[i+1].pos_x;
         jeu->maisons[i].pos_y = jeu->maisons[i+1].pos_y;
         jeu->maisons[i].routeAdjacente = jeu->maisons[i+1].routeAdjacente;
+        jeu->maisons[i].position.pos_x = jeu->maisons[i+1].position.pos_x;
+        jeu->maisons[i].position.pos_y = jeu->maisons[i+1].position.pos_y;
+        jeu->maisons[i].position.pos_z = jeu->maisons[i+1].position.pos_z;
         if (i != jeu->nb_maisons-1){
             // pour modifier les indices dans l'affichage car on décale toutes les maisons
             mettre_cases_occupees(jeu,jeu->maisons[i].pos_x,jeu->maisons[i].pos_y,TAILLE_MAISON,TAILLE_MAISON,SYMBOLE_MAISON,i);
@@ -449,6 +452,9 @@ bool detruire_batiment(Jeu* jeu, int numero,int type_batiment){
         jeu->batiments[i].pos_x = jeu->batiments[i+1].pos_x;
         jeu->batiments[i].pos_y = jeu->batiments[i+1].pos_y;
         jeu->batiments[i].routeAdjacente = jeu->batiments[i+1].routeAdjacente;
+        jeu->batiments[i].position.pos_x = jeu->batiments[i+1].position.pos_x;
+        jeu->batiments[i].position.pos_y = jeu->batiments[i+1].position.pos_y;
+        jeu->batiments[i].position.pos_z = jeu->batiments[i+1].position.pos_z;
         if (i != jeu->nb_centrales+jeu->nb_chateau_eau-1){
             mettre_cases_occupees(jeu,jeu->batiments[i].pos_x,jeu->batiments[i].pos_y,
             (jeu->batiments[i].horizontal)?TAILLE_GRANDE_BATIMENT:TAILLE_PETITE_BATIMENT,
@@ -493,6 +499,9 @@ bool detruire_route(Jeu* jeu, int numero){
         jeu->routes[j].adjacente_route = jeu->routes[j+1].adjacente_route;
         jeu->routes[j].pos_x = jeu->routes[j+1].pos_x;
         jeu->routes[j].pos_y = jeu->routes[j+1].pos_y;
+        jeu->routes[j].position.pos_x = jeu->routes[j+1].position.pos_x;
+        jeu->routes[j].position.pos_y = jeu->routes[j+1].position.pos_y;
+        jeu->routes[j].position.pos_z = jeu->routes[j+1].position.pos_z;
     }
 
     (jeu->nb_routes)--;
