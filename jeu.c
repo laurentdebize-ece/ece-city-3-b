@@ -78,8 +78,8 @@ bool jouer(Jeu *jeu, int *niveauActuel) {
     bool end = false;
     bool isCaseLibre = false;
     int choix= -1;
-    int ligne, colonne, sauvegarde;
-    char choixType, type;
+    int ligne, colonne, sauvegarde,type;
+    char choixType;
     FILE *fichierJeu = fopen("../caracteristiques.txt", "r");
 
     // test pour savoir si on commence une nouvelle partie ou si on reprend une partie sauvegardee
@@ -154,7 +154,7 @@ bool jouer(Jeu *jeu, int *niveauActuel) {
                     detruire(jeu, colonne, ligne);
                 } else {
                     int numero;
-                    trouverNumero_et_TypeBatiment(jeu, type, &numero, colonne, ligne);
+                    trouverNumero_et_TypeBatiment(jeu, &type, &numero, colonne, ligne);
                     detruire(jeu, 0, 0);
                 }
                 afficherMap(jeu, *niveauActuel);
@@ -164,10 +164,12 @@ bool jouer(Jeu *jeu, int *niveauActuel) {
                 printf("erreur numéro veuillez réessayer\n");
                 break;
         }
+        if (jeu->nb_chateau_eau !=0 || jeu->nb_centrales !=0 ) {
             repartitionEau(jeu);
-            //repartition_electricite(jeu);
-            //repartition_habitants(jeu);
-
+            repartition_electricite(jeu);
+            repartition_habitants(jeu);
+        }
+        //afficherCompteur(*jeu);
     }
     return true;
 }
