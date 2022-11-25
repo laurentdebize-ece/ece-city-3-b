@@ -409,6 +409,7 @@ void affichageMapRaylib(Jeu* jeu){
                             jeu->maisons[jeu->nb_maisons - 1].position.pos_x= cases[i][j].x + 1;
                             jeu->maisons[jeu->nb_maisons - 1].position.pos_y= collision.point.y;
                             jeu->maisons[jeu->nb_maisons - 1].position.pos_z= cases[i][j].z - 1;
+                            jeu->maisons[jeu->nb_maisons - 1].niveau= NIVEAU_CABANE;
                         }
                     }
 
@@ -477,8 +478,29 @@ void affichageMapRaylib(Jeu* jeu){
         }
 
         for(int i = 0; i < jeu->nb_maisons; i++){
-            DrawModel(maison1, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,WHITE);
+            switch(jeu->maisons[i].niveau){
+                case NIVEAU_TERRAIN_VAGUE:
+                    DrawModel(maison1, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,WHITE);
+                    break;
+                case NIVEAU_RUINE:
+                    DrawModel(maison1, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,WHITE);
+                    break;
+                case NIVEAU_CABANE:
+                    DrawModel(cabane, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},1,WHITE);
+                    break;
+                case NIVEAU_MAISON:
+                    DrawModel(maison1, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,WHITE);
+                    break;
+                case NIVEAU_IMMEUBLE:
+                    DrawModel(immeuble, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2.7,WHITE);
+                    break;
+                case NIVEAU_GRATTE_CIEL:
+                    DrawModel(gratteCiel, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,WHITE);
+                    break;
+            }
         }
+
+
         for(int i = 0; i < jeu->nb_centrales+jeu->nb_chateau_eau; i++){
             switch (jeu->batiments[i].type_batiment) {
                 case TYPE_CHATEAU_EAU:
