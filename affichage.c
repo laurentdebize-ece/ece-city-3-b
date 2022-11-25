@@ -93,7 +93,6 @@ void menu1(){
     UnloadImage(logo);
     UnloadImage(bouton);
     UnloadImage(bouton2);
-
     SetTargetFPS(60);
 
     while (!WindowShouldClose())
@@ -248,6 +247,7 @@ void affichageMapRaylib(Jeu* jeu){
     Vector3 g1 = (Vector3){ -50.0f, 0.0f,  50.0f };
     Vector3 g2 = (Vector3){  50.0f, 0.0f,  50.0f };
     Vector3 g3 = (Vector3){  50.0f, 0.0f, -50.0f };
+    Vector3 axeRotation = (Vector3){0.0f,1.0f,0.0f};
 
     for (int i = 0; i < 1000; i++){
         positionHerbe1[i].x = rand()%24;
@@ -310,6 +310,8 @@ void affichageMapRaylib(Jeu* jeu){
     Model route2 = LoadModel("..\\3D\\road_crossroad.obj");
     Model route3 = LoadModel("..\\3D\\road_end.obj");
     Model route4 = LoadModel("..\\3D\\road_intersectionPath.obj");
+    Model route5 = LoadModel("..\\3D\\road_straight.obj");
+
 
     SetCameraMode(camera, CAMERA_FREE);   // mode de camera libre
     SetExitKey(KEY_NULL);
@@ -461,6 +463,19 @@ void affichageMapRaylib(Jeu* jeu){
             }
         }
 
+        if(IsKeyPressed(KEY_D)){
+            int i,j;
+            for(i = 0; i < TAILLE_MAP_X;i++) {
+                for (j = 0; j < TAILLE_MAP_Y; j++) {
+                    if (collision.point.z <= cases[i][j].z + 0.5 && collision.point.z >= cases[i][j].z - 0.5 &&
+                        collision.point.x <= cases[i][j].x + 0.5 && collision.point.x >= cases[i][j].x - 0.5) {
+                        detruire(jeu,i,j);
+
+                    }
+                }
+            }
+        }
+
         for(int i = 0; i < jeu->nb_maisons; i++){
             DrawModel(maison1, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,WHITE);
         }
@@ -476,7 +491,73 @@ void affichageMapRaylib(Jeu* jeu){
         }
 
         for(int i = 0; i < jeu->nb_routes; i++){
-            DrawModel(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,WHITE);
+            bool routes_a_cote[4] = {false};
+            Liste* tmp = jeu->routes[i].adjacente_route;
+            while(tmp != NULL){
+                if(jeu->routes[tmp->numero].pos_x < jeu->routes[i].pos_x){
+                    routes_a_cote[ROUTE_OUEST] = true;
+                }
+                else if (jeu->routes[tmp->numero].pos_x > jeu->routes[i].pos_x){
+                    routes_a_cote[ROUTE_EST] = true;
+                }
+                else if(jeu->routes[tmp->numero].pos_y < jeu->routes[i].pos_y){
+                    routes_a_cote[ROUTE_NORD] = true;
+                }
+                else{
+                    routes_a_cote[ROUTE_SUD] = true;
+                }
+                tmp = tmp->suivant;
+            }
+            if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_EST] && routes_a_cote[ROUTE_OUEST]){
+                DrawModel(route2, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,WHITE);
+
+            }
+            else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_EST]){
+                DrawModelEx(route4, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 180.0f, (Vector3){1,1,1}, WHITE);
+            }
+            else if(routes_a_cote[ROUTE_OUEST] && routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_EST]){
+                DrawModelEx(route4, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, -90.0f, (Vector3){1,1,1}, WHITE);
+            }
+            else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_OUEST] && routes_a_cote[ROUTE_EST]){
+                DrawModelEx(route4, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 90.0f, (Vector3){1,1,1}, WHITE);
+            }
+            else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_OUEST]){
+                DrawModel(route4, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,WHITE);
+            }
+            else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_NORD]){
+                DrawModel(route5, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,WHITE);
+            }
+            else if(routes_a_cote[ROUTE_EST] && routes_a_cote[ROUTE_OUEST]){
+                DrawModelEx(route5, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 90.0f, (Vector3){1,1,1}, WHITE);
+            }
+            else if(routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_OUEST]){
+                DrawModelEx(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 0.0f, (Vector3){1,1,1}, WHITE);
+            }
+            else if(routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_EST]){
+                DrawModelEx(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, -90.0f, (Vector3){1,1,1}, WHITE);
+            }
+            else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_OUEST]){
+                DrawModelEx(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 90.0f, (Vector3){1,1,1}, WHITE);
+            }
+            else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_EST]){
+                DrawModelEx(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, -180.0f, (Vector3){1,1,1}, WHITE);
+            }
+            else if(routes_a_cote[ROUTE_SUD]){
+                DrawModelEx(route3, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 0.0f, (Vector3){1,1,1}, WHITE);
+            }
+            else if(routes_a_cote[ROUTE_NORD]){
+                DrawModelEx(route3, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 180.0f, (Vector3){1,1,1}, WHITE);
+            }
+            else if(routes_a_cote[ROUTE_OUEST]){
+                DrawModelEx(route3, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, -90.0f, (Vector3){1,1,1}, WHITE);
+            }
+            else if(routes_a_cote[ROUTE_EST]){
+                DrawModelEx(route3, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 90.0f, (Vector3){1,1,1}, WHITE);
+            }
+            else{
+                DrawModel(route5, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,WHITE);
+
+            }
         }
 
 

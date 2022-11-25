@@ -15,7 +15,7 @@ int main() {
     Jeu jeu = initialisation_jeu();
     bool end=false;
 
-    //affichageMapRaylib(&jeu);
+    affichageMapRaylib(&jeu);
     //choix_mode_jeu(&jeu);
     //while (end !=true) {
         // fonction pour commencer la partie et boucler tant que la partie n'est pas finie
