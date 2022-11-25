@@ -87,6 +87,7 @@ bool jouer(Jeu *jeu, int *niveauActuel) {
         *jeu = reprendrePartie();
     } else {
         *jeu = initialisation_jeu();
+        choix_mode_jeu(jeu);
     }
     compteur_debut_cycle(jeu);
     //charger la map à partir du fichier
@@ -170,6 +171,7 @@ bool jouer(Jeu *jeu, int *niveauActuel) {
             repartition_habitants(jeu);
         }
         //afficherCompteur(*jeu);
+        printf("mode jeu : %d\n", jeu->mode_jeu);
     }
     return true;
 }
