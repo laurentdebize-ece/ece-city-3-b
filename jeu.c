@@ -94,8 +94,9 @@ bool jouer(Jeu *jeu, int *niveauActuel) {
     printf("niveauActuel : %d\n", *niveauActuel);
     afficherMap(jeu, *niveauActuel);
     while (end != true) {
+        // mettre a jour les compteurs a chaque cycles
         compteur_debut_cycle(jeu);
-
+        timer(jeu);
         while (choixOk != true ) {
             printf("Que voulez vous faire ?\n 1- changer de niveau de visualisation\n 2- construire\n 3- detruire\n 0- Quitter le jeu\n");
             scanf("%d", &choix);
