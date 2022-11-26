@@ -90,7 +90,6 @@ bool trouverNumero_et_TypeBatiment(Jeu *jeu, int* type_batiment, int *numero, in
 void choix_mode_jeu (Jeu *jeu);
 void evolution_et_regression(Jeu* jeu,int nummaison);
 void evolution_maison (Jeu *jeu, int nummaison);
-void changement_type_maison(Jeu *jeu);
 bool regression_type_maison(Jeu*jeu, int nummaison);
 
 #endif

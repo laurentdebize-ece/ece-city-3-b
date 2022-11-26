@@ -15,6 +15,7 @@ Jeu initialisation_jeu(){
     jeu.nb_routes = 0;
     jeu.nb_centrales = 0;
     jeu.nb_chateau_eau = 0;
+    jeu.compteur_impot = 0;
     jeu.map = initialisation_map();
     jeu.maisons = initialisation_maison();
     jeu.routes = initialisation_route();
@@ -103,6 +104,7 @@ Maison* initialisation_maison(){
         maisons[i].habitants = 0;
         maisons[i].eau = 0;
         maisons[i].electricite = 0;
+        maisons[i].compteur_evolution = 0;
         maisons[i].routeAdjacente = NULL;
     }
     return maisons;

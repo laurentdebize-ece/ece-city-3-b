@@ -112,6 +112,7 @@ typedef struct Maison{
     int pos_y;
     int timer;
     Position position;
+    int compteur_evolution;
 }Maison;
 
 typedef struct Jeu{
@@ -131,6 +132,7 @@ typedef struct Jeu{
     Maison* maisons;
     int nb_maisons;
     time_t temps;
+    int compteur_impot;
 }Jeu;
 
 

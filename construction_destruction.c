@@ -638,7 +638,6 @@ void evolution_et_regression(Jeu* jeu,int nummaison){
         }
 }
 
-
 void evolution_maison(Jeu* jeu, int nummaison){
     switch (jeu->mode_jeu) {
         case MODE_CAPITALISTE:
@@ -674,51 +673,11 @@ void evolution_maison(Jeu* jeu, int nummaison){
         default:
             choix_mode_jeu(jeu);
             break;
-            }
-
     }
-/*
-void changement_type_maison(Jeu* jeu){
-    switch (jeu->mode_jeu) {
-        case MODE_CAPITALISTE:
-            for (int i = 0; i < jeu->nb_maisons; i++) {
-                if(jeu->maisons[i].niveau<=3){
-                jeu->maisons[i].niveau+=1;
-                }
-            }
-            break;
-        case MODE_COMMUNISTE:
-            for (int i = 0; i < jeu->nb_maisons; i++) {
-                    switch (jeu->maisons[i].niveau) {
-                        case 0:
-                            if (jeu->maisons[i].habitants>= 10) {
-                                jeu->maisons[i].niveau=1;
-                                break;
-                            }
-                        case 1:
-                            if (jeu->maisons[i].habitants>= 50) {
-                                jeu->maisons[i].niveau=2;
-                                break;
-                            }
-                        case 2:
-                            if (jeu->maisons[i].habitants>= 100) {
-                                jeu->maisons[i].niveau=3;
-                                break;
-                            }
-                        case 3:
-                            if (jeu->maisons[i].habitants>= 1000) {
-                                jeu->maisons[i].niveau=4;
-                                break;
-                            }
-                        default:
-                            choix_mode_jeu(jeu);
-                            break;
-                    }
-            }
 
-    }
 }
-*/
+
+
 bool regression_type_maison(Jeu*jeu, int nummaison){
         switch (jeu->maisons[nummaison].niveau) {
             case NIVEAU_CABANE:

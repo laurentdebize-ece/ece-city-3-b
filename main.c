@@ -4,7 +4,7 @@
 #include "affichage.h"
 #include "compteur.h"
 #include <stdio.h>
-#include "jeu.h"
+//#include "jeu.h"
 #include"eau.h"
 #include"elec.h"
 #include <raylib.h>
@@ -18,10 +18,10 @@ int main() {
     Jeu jeu = initialisation_jeu();
     bool end=false;
     menu1(&jeu);
-    while (end !=true) {
+    //while (end !=true) {
          //fonction pour commencer la partie et boucler tant que la partie n'est pas finie
-        end = jouer(&jeu, &niveauActuel);
-    }
+        //end = jouer(&jeu, &niveauActuel);
+    //}
 /*
     for(int i=0;i<TAILLE_MAP_X;i++){
         construire(&jeu,TYPE_ROUTE,i,0,0);

@@ -1,24 +1,34 @@
 #include "compteur.h"
 #include <stdio.h>
 #include "structure.h"
+#include "construction_destruction.h"
 
-void compteur_debut_cycle(Jeu *jeu) {
+void maj_compteurs(Jeu *jeu) {
     jeu->tot_eau = 5000 * jeu->nb_chateau_eau;
     jeu->tot_electricite = 5000 * jeu->nb_centrales;
     compteur_population(jeu);
     calcul_eau(jeu);
     calcul_elec(jeu);
-    impot(jeu);
-
 }
 
-void compteur_cycle_maison(Jeu *jeu) {
-    jeu->tot_eau = 5000 * jeu->nb_chateau_eau;
-    jeu->tot_electricite = 5000 * jeu->nb_centrales;
-    compteur_population(jeu);
-    calcul_eau(jeu);
-    calcul_elec(jeu);
-
+void detection_temps(Jeu *jeu) {
+    time_t temps = time(NULL);
+    if (jeu->temps != temps) {
+        jeu->temps = temps;
+        jeu->compteur_impot++;
+        if (jeu->compteur_impot == 15){
+            jeu->compteur_impot = 0;
+            impot(jeu);
+        }
+        for (int i = 0; i < jeu->nb_maisons; i++) {
+            jeu->maisons[i].compteur_evolution++;
+            if (jeu->maisons[i].compteur_evolution == 15) {
+                jeu->maisons[i].compteur_evolution = 0;
+                evolution_et_regression(jeu, i);
+                maj_compteurs(jeu);
+            }
+        }
+    }
 }
 
 void impot(Jeu *jeu) {
@@ -46,12 +56,12 @@ void calcul_elec(Jeu* jeu){
 }
 
 void compteur_population(Jeu* jeu){
-    int pop=0;
+    jeu->population = 0;
     if(jeu->nb_maisons != 0){
         for(int i = 0; i < jeu->nb_maisons; i++){
-            pop += jeu->maisons[i].habitants;
+            jeu->population += jeu->maisons[i].habitants;
         }
-    }jeu->population = pop;
+    }
 }
 
 void afficherCompteur(Jeu jeu) {
