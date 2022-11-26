@@ -7,6 +7,9 @@
 #include "jeu.h"
 #include"eau.h"
 #include"elec.h"
+#include <raylib.h>
+#include "structure.h"
+
 
 int main() {
 
@@ -14,7 +17,7 @@ int main() {
     int niveauActuel=0;
     Jeu jeu = initialisation_jeu();
     bool end=false;
-    affichageMapRaylib(&jeu);
+    menu1(&jeu);
     while (end !=true) {
          //fonction pour commencer la partie et boucler tant que la partie n'est pas finie
         end = jouer(&jeu, &niveauActuel);
@@ -43,7 +46,7 @@ int main() {
 
     afficherCarte(jeu.map);
 
-    
+
     repartitionEau(&jeu);
     repartition_electricite(&jeu);
     repartition_habitants(&jeu);

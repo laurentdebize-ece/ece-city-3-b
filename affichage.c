@@ -11,8 +11,8 @@
 
 
 
-void choixM(Jeu jeu){
-    bool exit = true;
+void choixM(Jeu** jeu){
+    bool exit = false;
     float scrollingBack = 0.0f;
 
 
@@ -51,13 +51,15 @@ void choixM(Jeu jeu){
         if((GetMousePosition().x >= 270) && (GetMousePosition().x <=  750) && (GetMousePosition().y >= 670) && (GetMousePosition().y <= 810)){
             DrawTextureEx(Capitaliste, (Vector2){35,200 }, 0.0f, 1.0f, WHITE);
             if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-                jeu.mode_jeu = 1;
+                //jeu.mode_jeu = 1;
+                affichageMapRaylib(*jeu);
             }
         }
         if((GetMousePosition().x >= 1200) && (GetMousePosition().x <=  1700) && (GetMousePosition().y >= 670) && (GetMousePosition().y <= 810)){
             DrawTextureEx(Communiste, (Vector2){35,200 }, 0.0f, 1.0f, WHITE);
             if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-                jeu.mode_jeu = 2;
+               // jeu.mode_jeu = 2;
+                affichageMapRaylib(*jeu);
             }
         }
 
@@ -71,28 +73,41 @@ void choixM(Jeu jeu){
 }
 
 
-void menu1(){
+void menu1(Jeu* jeu){
     // Pour longueur et largeur: screenWidth 2000, screenHeight 1450
     float scrollingBack = 0.0f;
     bool exit = false;
-    Jeu jeu;
+
 
     InitWindow(screenWidth, screenHeight, "menu");
     Image simcity = LoadImage("../image/simcity.png");
     Image logo = LoadImage("../image/logoSimcity.png");
-    Image bouton = LoadImage("../image/logo.png");
-    Image bouton2 = LoadImage("../image/logoclick.png");
+    Image jouer = LoadImage("../image/logo.png");
+    Image jouer2 = LoadImage("../image/logoclick.png");
+    Image regles = LoadImage("../image/regle.png");
+    Image regles2 = LoadImage("../image/regle2.png");
+    Image sauvegarde = LoadImage("../image/sauvegarder.png");
+    Image sauvegarde2 = LoadImage("../image/sauvegarder2.png");
 
     Texture2D Simcity = LoadTextureFromImage(simcity);
     Texture2D Logo = LoadTextureFromImage(logo);
-    Texture2D Bouton = LoadTextureFromImage(bouton);
-    Texture2D Bouton2 = LoadTextureFromImage(bouton2);
-
+    Texture2D Jouer = LoadTextureFromImage(jouer);
+    Texture2D Jouer2 = LoadTextureFromImage(jouer2);
+    Texture2D Regles = LoadTextureFromImage(regles);
+    Texture2D Regles2 = LoadTextureFromImage(regles2);
+    Texture2D Sauvegarde = LoadTextureFromImage(sauvegarde);
+    Texture2D Sauvegarde2 = LoadTextureFromImage(sauvegarde2);
 
     UnloadImage(simcity);
     UnloadImage(logo);
-    UnloadImage(bouton);
-    UnloadImage(bouton2);
+    UnloadImage(jouer);
+    UnloadImage(jouer2);
+    UnloadImage(regles2);
+    UnloadImage(regles);
+    UnloadImage(sauvegarde2);
+    UnloadImage(sauvegarde);
+
+
     SetTargetFPS(60);
 
     while (!WindowShouldClose())
@@ -109,11 +124,11 @@ void menu1(){
         DrawTextureEx(Simcity, (Vector2){simcity.width * 2 , 20 }, 0.0f, 1.7f, WHITE);
 
         DrawTextureEx(Logo, (Vector2){150,100 }, 0.0f, 1.8f, WHITE);
-        DrawTextureEx(Bouton, (Vector2){585,500 }, 0.0f, 0.5f, WHITE);
+        DrawTextureEx(Jouer, (Vector2){585,500 }, 0.0f, 0.5f, WHITE);
         if((GetMousePosition().x >= 870) && (GetMousePosition().x <= 1250) && (GetMousePosition().y >= 720) && (GetMousePosition().y <= 820)){
-            DrawTextureEx(Bouton2, (Vector2){585,500 }, 0.0f, 0.5f, WHITE);
+            DrawTextureEx(Jouer2, (Vector2){585,500 }, 0.0f, 0.5f, WHITE);
             if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-                choixM(jeu);
+                choixM(&jeu);
             }
         }
 
@@ -125,7 +140,8 @@ void menu1(){
 
     UnloadTexture(Simcity);
     UnloadTexture(Logo);
-    UnloadTexture(Bouton);
+    UnloadTexture(Jouer);
+    UnloadTexture(Jouer2);
     CloseWindow();
 }
 
@@ -192,7 +208,6 @@ void afficherMap(Jeu * jeu, int niveau) {
             printf("erreur niveau\n");
             break;
     }
-    compteur_cycle_maison(jeu);
     afficherCompteur(*jeu);
 }
 
@@ -223,6 +238,13 @@ void affichageMapRaylib(Jeu* jeu){
     InitWindow(LARGEUR_ECRAN, HAUTEUR_ECRAN, "Raylib test");
 
     srand(time(NULL)) ;
+    int posX = 0;
+    int posY = 0;
+    bool maison = false;
+    bool chateau = false;
+    bool centrale = false;
+    bool road = false;
+    bool destruction  = false;
 
     //mise en place de la camera en 3D
     Camera3D camera = {0};
@@ -314,12 +336,80 @@ void affichageMapRaylib(Jeu* jeu){
     Model route5 = LoadModel("..\\3D\\road_straight.obj");
 
 
+    Image icone_maison = LoadImage("../image/maison.png");
+    Image icone_chateau = LoadImage("../image/chateau.png");
+    Image icone_centrale = LoadImage("../image/usine.png");
+    Image icone_reseau_eau = LoadImage("../image/eau.png");
+    Image icone_reseau_elec = LoadImage("../image/elec.png");
+    Image icone_detruire_maison = LoadImage("../image/destructionMaison.png");
+    Image icone_detruire_batiment = LoadImage("../image/destruction.png");
+    Image icone_route = LoadImage("../image/route.png");
+    Image eauBouton = LoadImage("../image/eauBouton.png");
+    Image elecBouton = LoadImage("../image/electriciteBouton.png");
+    Image habitantBouton = LoadImage("../image/habitantBouton.png");
+
+    Image icone_maisonO = LoadImage("../image/maisonOmbre.png");
+    Image icone_chateauO = LoadImage("../image/chateauOmbre.png");
+    Image icone_centraleO = LoadImage("../image/usineOmbre.png");
+    Image icone_reseau_eauO = LoadImage("../image/eauOmbre.png");
+    Image icone_reseau_elecO = LoadImage("../image/elecOmbre.png");
+    Image icone_detruire_maisonO = LoadImage("../image/destructionMaisonOmbre.png");
+    Image icone_detruire_batimentO = LoadImage("../image/destructionOmbre.png");
+    Image icone_routeO = LoadImage("../image/routeO.png");
+
+    Texture2D Icone_maison = LoadTextureFromImage(icone_maison);
+    Texture2D Icone_chateau = LoadTextureFromImage(icone_chateau);
+    Texture2D Icone_centrale = LoadTextureFromImage(icone_centrale);
+    Texture2D Icone_reseau_eau = LoadTextureFromImage(icone_reseau_eau);
+    Texture2D Icone_reseau_elec = LoadTextureFromImage(icone_reseau_elec);
+    Texture2D Icone_destruction_maison = LoadTextureFromImage(icone_detruire_maison);
+    Texture2D Icone_destruction_bat = LoadTextureFromImage(icone_detruire_batiment);
+    Texture2D Icone_maisonO = LoadTextureFromImage(icone_maisonO);
+    Texture2D Icone_chateauO = LoadTextureFromImage(icone_chateauO);
+    Texture2D Icone_centraleO = LoadTextureFromImage(icone_centraleO);
+    Texture2D Icone_reseau_eauO = LoadTextureFromImage(icone_reseau_eauO);
+    Texture2D Icone_reseau_elecO = LoadTextureFromImage(icone_reseau_elecO);
+    Texture2D Icone_destruction_maisonO = LoadTextureFromImage(icone_detruire_maisonO);
+    Texture2D Icone_destruction_batO = LoadTextureFromImage(icone_detruire_batimentO);
+    Texture2D Icone_route = LoadTextureFromImage(icone_route);
+    Texture2D Icone_routeO = LoadTextureFromImage(icone_routeO);
+    Texture2D EauBouton = LoadTextureFromImage(eauBouton);
+    Texture2D ElecBouton = LoadTextureFromImage(elecBouton);
+    Texture2D HabitantBouton = LoadTextureFromImage(habitantBouton);
+
+    UnloadImage(icone_maison);
+    UnloadImage(icone_chateau);
+    UnloadImage(icone_centrale);
+    UnloadImage(icone_reseau_eau);
+    UnloadImage(icone_reseau_elec);
+    UnloadImage(icone_detruire_maison);
+    UnloadImage(icone_detruire_batiment);
+    UnloadImage(icone_maisonO);
+    UnloadImage(icone_chateauO);
+    UnloadImage(icone_centraleO);
+    UnloadImage(icone_reseau_eauO);
+    UnloadImage(icone_reseau_elecO);
+    UnloadImage(icone_detruire_maisonO);
+    UnloadImage(icone_detruire_batimentO);
+    UnloadImage(icone_route);
+    UnloadImage(icone_routeO);
+    UnloadImage(eauBouton);
+    UnloadImage(elecBouton);
+    UnloadImage(habitantBouton);
+
+
+
+    Model dalle = LoadModel("../3D/dale.glb");
+    //Texture2D routeEW = LoadTexture("../route/roadEW.png");
+    Image dollars = LoadImage("../image/dollars.png");
+    Texture2D Dollars = LoadTextureFromImage(dollars);
+    UnloadImage(dollars);
+
     SetCameraMode(camera, CAMERA_FREE);   // mode de camera libre
     SetExitKey(KEY_NULL);
     bool demandeDeFermetureWindow = false;   // booléen demandant à fermer la fenetre
     bool fermetureWindow = false;    // booléen permettant de quitter la fenetre
     SetTargetFPS(60);  // notre jeu tournera en 60 fps
-
 
 
 
@@ -358,13 +448,10 @@ void affichageMapRaylib(Jeu* jeu){
             collision = groundHitInfo;
         }
 
+        posX = GetMousePosition().x - 1.0f;
+        posY = GetMousePosition().y - 1.0f;
 
         BeginDrawing();
-
-
-
-
-
         ClearBackground(SKYBLUE);
 
         BeginMode3D(camera);
@@ -386,6 +473,17 @@ void affichageMapRaylib(Jeu* jeu){
         DrawModel(sol,positionCubeSol,TAILLE_PLATEAU,VERT_HERBE);
         dessinerCases(cases);
         DrawCubeWires(positionContourCarte, TAILLE_MAP_Y, 0, TAILLE_MAP_X, BLACK);
+
+        //if(IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
+          //  DrawModel(dalle, (Vector3) {posX, -0.25f, posY}, 1.4f, WHITE);
+        //}
+        //for(int i = 0; i < jeu->nb_maisons; i++){
+          //  DrawModel(dalle, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},1.4f,WHITE);
+        //}
+
+
+
+
        // DrawGrid(50, 1);
 
         for(int i = 0; i < 1000; i++){
@@ -401,16 +499,84 @@ void affichageMapRaylib(Jeu* jeu){
             i = i + 1;
         }
 
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-            int i,j;
-            for(i = 0; i < TAILLE_MAP_X;i++){
-                for(j = 0; j < TAILLE_MAP_Y;j++){
-                    if (collision.point.z <= cases[i][j].z + 0.5 && collision.point.z >= cases[i][j].z - 0.5 && collision.point.x  <= cases[i][j].x + 0.5  && collision.point.x >= cases[i][j].x - 0.5){
-                        if (construire(jeu, TYPE_MAISON,i,j,0)) {
-                            jeu->maisons[jeu->nb_maisons - 1].position.pos_x= cases[i][j].x + 1;
-                            jeu->maisons[jeu->nb_maisons - 1].position.pos_y= collision.point.y;
-                            jeu->maisons[jeu->nb_maisons - 1].position.pos_z= cases[i][j].z - 1;
-                            jeu->maisons[jeu->nb_maisons - 1].niveau= NIVEAU_CABANE;
+        if((GetMousePosition().x >= 55) && (GetMousePosition().x <= 150) && (GetMousePosition().y >= 465) && (GetMousePosition().y <= 580)){
+            if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
+                centrale = false;
+                chateau = false;
+                road = false;
+                destruction = false;
+                maison = true;
+            }
+        }
+        if(maison){
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                int i,j;
+                for(i = 0; i < TAILLE_MAP_X;i++){
+                    for(j = 0; j < TAILLE_MAP_Y;j++){
+                        if (collision.point.z <= cases[i][j].z + 0.5 && collision.point.z >= cases[i][j].z - 0.5 && collision.point.x  <= cases[i][j].x + 0.5  && collision.point.x >= cases[i][j].x - 0.5){
+                            if (construire(jeu, TYPE_MAISON,i,j,0)) {
+                                jeu->maisons[jeu->nb_maisons - 1].position.pos_x= cases[i][j].x + 1;
+                                jeu->maisons[jeu->nb_maisons - 1].position.pos_y= collision.point.y;
+                                jeu->maisons[jeu->nb_maisons - 1].position.pos_z= cases[i][j].z - 1;
+                                jeu->maisons[jeu->nb_maisons - 1].niveau= NIVEAU_CABANE;
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+
+        if((GetMousePosition().x >= 55) && (GetMousePosition().x <= 160) && (GetMousePosition().y >= 645) && (GetMousePosition().y <= 765)){
+            if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
+                maison = false;
+                chateau = false;
+                road = false;
+                destruction = false;
+                centrale = true;
+
+            }
+        }
+        if(centrale){
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                int i,j;
+                for(i = 0; i < TAILLE_MAP_X;i++){
+                    for(j = 0; j < TAILLE_MAP_Y;j++){
+                        if (collision.point.z <= cases[i][j].z + 0.5 && collision.point.z >= cases[i][j].z - 0.5 && collision.point.x  <= cases[i][j].x + 0.5  && collision.point.x >= cases[i][j].x - 0.5){
+                            if (construire(jeu, TYPE_CENTRALE,i,j,0)) {
+                                jeu->batiments[jeu->nb_centrales + jeu->nb_chateau_eau - 1].position.pos_x= cases[i][j].x + 2.5;
+                                jeu->batiments[jeu->nb_centrales + jeu->nb_chateau_eau - 1].position.pos_y= collision.point.y;
+                                jeu->batiments[jeu->nb_centrales + jeu->nb_chateau_eau - 1].position.pos_z= cases[i][j].z - 1.5;
+                            }
+                        }
+                    }
+
+
+                }
+            }
+        }
+
+        if((GetMousePosition().x >= 80) && (GetMousePosition().x <= 130) && (GetMousePosition().y >= 833) && (GetMousePosition().y <= 955)){
+            if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
+                maison = false;
+                centrale = false;
+                road = false;
+                destruction = false;
+                chateau = true;
+            }
+        }
+        if(chateau){
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                int i,j;
+                for(i = 0; i < TAILLE_MAP_X;i++){
+                    for(j = 0; j < TAILLE_MAP_Y;j++){
+                        if (collision.point.z <= cases[i][j].z + 0.5 && collision.point.z >= cases[i][j].z - 0.5 && collision.point.x  <= cases[i][j].x + 0.5  && collision.point.x >= cases[i][j].x - 0.5){
+                            if (construire(jeu, TYPE_CHATEAU_EAU,i,j,0)) {
+                                jeu->batiments[jeu->nb_centrales + jeu->nb_chateau_eau - 1].position.pos_x= cases[i][j].x;
+                                jeu->batiments[jeu->nb_centrales + jeu->nb_chateau_eau - 1].position.pos_y= collision.point.y;
+                                jeu->batiments[jeu->nb_centrales + jeu->nb_chateau_eau - 1].position.pos_z= cases[i][j].z;
+                            }
                         }
                     }
 
@@ -418,65 +584,56 @@ void affichageMapRaylib(Jeu* jeu){
             }
         }
 
-        if (IsKeyPressed(KEY_U)){
-            int i,j;
-            for(i = 0; i < TAILLE_MAP_X;i++){
-                for(j = 0; j < TAILLE_MAP_Y;j++){
-                    if (collision.point.z <= cases[i][j].z + 0.5 && collision.point.z >= cases[i][j].z - 0.5 && collision.point.x  <= cases[i][j].x + 0.5  && collision.point.x >= cases[i][j].x - 0.5){
-                        if (construire(jeu, TYPE_CENTRALE,i,j,0)) {
-                            jeu->batiments[jeu->nb_centrales + jeu->nb_chateau_eau - 1].position.pos_x= cases[i][j].x + 2.5;
-                            jeu->batiments[jeu->nb_centrales + jeu->nb_chateau_eau - 1].position.pos_y= collision.point.y;
-                            jeu->batiments[jeu->nb_centrales + jeu->nb_chateau_eau - 1].position.pos_z= cases[i][j].z - 1.5;
-                        }
-                    }
-
-
-                }
+        if((GetMousePosition().x >= 52) && (GetMousePosition().x <= 170) && (GetMousePosition().y >= 1020) && (GetMousePosition().y <= 1120)){
+            if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
+                maison = false;
+                centrale = false;
+                chateau = false;
+                destruction = false;
+                road = true;
             }
         }
-        if (IsKeyPressed(KEY_C)){
-            int i,j;
-            for(i = 0; i < TAILLE_MAP_X;i++){
-                for(j = 0; j < TAILLE_MAP_Y;j++){
-                    if (collision.point.z <= cases[i][j].z + 0.5 && collision.point.z >= cases[i][j].z - 0.5 && collision.point.x  <= cases[i][j].x + 0.5  && collision.point.x >= cases[i][j].x - 0.5){
-                        if (construire(jeu, TYPE_CHATEAU_EAU,i,j,0)) {
-                            jeu->batiments[jeu->nb_centrales + jeu->nb_chateau_eau - 1].position.pos_x= cases[i][j].x;
-                            jeu->batiments[jeu->nb_centrales + jeu->nb_chateau_eau - 1].position.pos_y= collision.point.y;
-                            jeu->batiments[jeu->nb_centrales + jeu->nb_chateau_eau - 1].position.pos_z= cases[i][j].z;
+        if(road){
+            if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                int i,j;
+                for(i = 0; i < TAILLE_MAP_X;i++){
+                    for(j = 0; j < TAILLE_MAP_Y;j++){
+                        if (collision.point.z <= cases[i][j].z + 0.5 && collision.point.z >= cases[i][j].z - 0.5 && collision.point.x  <= cases[i][j].x + 0.5  && collision.point.x >= cases[i][j].x - 0.5){
+                            if (construire(jeu, TYPE_ROUTE,i,j,0)) {
+                                jeu->routes[jeu->nb_routes - 1].position.pos_x= cases[i][j].x;
+                                jeu->routes[jeu->nb_routes - 1].position.pos_y= collision.point.y;
+                                jeu->routes[jeu->nb_routes - 1].position.pos_z= cases[i][j].z;
+                            }
                         }
                     }
 
                 }
             }
         }
-        if (IsKeyPressed(KEY_R)){
-            int i,j;
-            for(i = 0; i < TAILLE_MAP_X;i++){
-                for(j = 0; j < TAILLE_MAP_Y;j++){
-                    if (collision.point.z <= cases[i][j].z + 0.5 && collision.point.z >= cases[i][j].z - 0.5 && collision.point.x  <= cases[i][j].x + 0.5  && collision.point.x >= cases[i][j].x - 0.5){
-                        if (construire(jeu, TYPE_ROUTE,i,j,0)) {
-                            jeu->routes[jeu->nb_routes - 1].position.pos_x= cases[i][j].x;
-                            jeu->routes[jeu->nb_routes - 1].position.pos_y= collision.point.y;
-                            jeu->routes[jeu->nb_routes - 1].position.pos_z= cases[i][j].z;
+        if((GetMousePosition().x >= 55) && (GetMousePosition().x <= 160) && (GetMousePosition().y >= 1200) && (GetMousePosition().y <= 1320)){
+            if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
+                maison = false;
+                centrale = false;
+                chateau = false;
+                road = false;
+                destruction = true;
+            }
+        }
+        if(destruction){
+            if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                int i,j;
+                for(i = 0; i < TAILLE_MAP_X;i++) {
+                    for (j = 0; j < TAILLE_MAP_Y; j++) {
+                        if (collision.point.z <= cases[i][j].z + 0.5 && collision.point.z >= cases[i][j].z - 0.5 &&
+                            collision.point.x <= cases[i][j].x + 0.5 && collision.point.x >= cases[i][j].x - 0.5) {
+                            detruire(jeu,i,j);
+
                         }
                     }
-
                 }
             }
         }
 
-        if(IsKeyPressed(KEY_D)){
-            int i,j;
-            for(i = 0; i < TAILLE_MAP_X;i++) {
-                for (j = 0; j < TAILLE_MAP_Y; j++) {
-                    if (collision.point.z <= cases[i][j].z + 0.5 && collision.point.z >= cases[i][j].z - 0.5 &&
-                        collision.point.x <= cases[i][j].x + 0.5 && collision.point.x >= cases[i][j].x - 0.5) {
-                        detruire(jeu,i,j);
-
-                    }
-                }
-            }
-        }
 
         for(int i = 0; i < jeu->nb_maisons; i++){
             switch(jeu->maisons[i].niveau){
@@ -591,21 +748,50 @@ void affichageMapRaylib(Jeu* jeu){
         if (collision.hit)
         {
             int ypos = 70;
-
-            DrawText(TextFormat("Distance camera: %3.2f", collision.distance), 10, ypos, 10, BLACK);
-
-            DrawText(TextFormat("Position souris sur plateau : x = %3.2f y = %3.2f z = %3.2f",
-                                collision.point.x,
-                                collision.point.y,
-                                collision.point.z), 10, ypos + 15, 10, BLACK);
-
+            DrawText(TextFormat("Distance camera: %3.2f", collision.distance), 10, ypos, 20, BLACK);
+            DrawText(TextFormat("Position souris sur plateau : x = %3.2f y = %3.2f z = %3.2f", collision.point.x, collision.point.y, collision.point.z), 10, ypos + 15, 20, BLACK);
         }
 
+        DrawTextureEx(Dollars, (Vector2){30, 300 }, 0.0f, 0.1f, WHITE);
+        DrawText(TextFormat("%d ", jeu->argent), 55, 340, 30, WHITE);
+        DrawTextureEx(HabitantBouton,(Vector2){30, 240 }, 0.0f, 0.1f, WHITE);
+        DrawText(TextFormat("%d ", jeu->population), 55, 280, 30, WHITE);
+        DrawTextureEx(EauBouton,(Vector2){30, 180 }, 0.0f, 0.1f, WHITE);
+        DrawText(TextFormat("%d ", jeu->eau), 55, 220, 30, WHITE);
+        DrawTextureEx(ElecBouton,(Vector2){30, 120 }, 0.0f, 0.1f, WHITE);
+        DrawText(TextFormat("%d ", jeu->electricite), 55, 160, 30, WHITE);
 
+
+        DrawRectangleGradientV(30,450,170,900,DARKGREEN,GREEN);
+        DrawRectangleLines(30,450,170,900,BLACK);
+
+        DrawTextureEx(Icone_maison,(Vector2){-80, 420 }, 0.0f, 0.2f, WHITE);
+        if((GetMousePosition().x >= 55) && (GetMousePosition().x <= 150) && (GetMousePosition().y >= 465) && (GetMousePosition().y <= 580)){
+            DrawTextureEx(Icone_maisonO, (Vector2){-80,420 }, 0.0f, 0.2f, WHITE);
+        }
+
+        DrawTextureEx(Icone_centrale,(Vector2){-80, 600}, 0.0f, 0.2f, WHITE);
+        if((GetMousePosition().x >= 55) && (GetMousePosition().x <= 160) && (GetMousePosition().y >= 645) && (GetMousePosition().y <= 765)){
+            DrawTextureEx(Icone_centraleO, (Vector2){-80,600 }, 0.0f, 0.2f, WHITE);
+        }
+
+        DrawTextureEx(Icone_chateau,(Vector2){-80, 800 }, 0.0f, 0.2f, WHITE);
+        if((GetMousePosition().x >= 80) && (GetMousePosition().x <= 130) && (GetMousePosition().y >= 833) && (GetMousePosition().y <= 955)){
+            DrawTextureEx(Icone_chateauO, (Vector2){-80,800 }, 0.0f, 0.2f, WHITE);
+        }
+
+        DrawTextureEx(Icone_route,(Vector2){-80, 950 }, 0.0f, 0.2f, WHITE);
+        if((GetMousePosition().x >= 52) && (GetMousePosition().x <= 170) && (GetMousePosition().y >= 1020) && (GetMousePosition().y <= 1120)){
+            DrawTextureEx(Icone_routeO, (Vector2){-80,950 }, 0.0f, 0.2f, WHITE);
+        }
+
+        DrawTextureEx(Icone_destruction_bat,(Vector2){-80, 1150 }, 0.0f, 0.2f, WHITE);
+        if((GetMousePosition().x >= 55) && (GetMousePosition().x <= 160) && (GetMousePosition().y >= 1200) && (GetMousePosition().y <= 1320)){
+            DrawTextureEx(Icone_destruction_batO, (Vector2){-80,1150 }, 0.0f, 0.2f, WHITE);
+        }
 
         DrawFPS(10, 10);
 
-        DrawText(TextFormat("%d $", jeu->argent), 50, 400, 30, BLACK);
 
 
         if (demandeDeFermetureWindow){

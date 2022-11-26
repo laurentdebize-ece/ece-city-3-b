@@ -53,8 +53,8 @@
 #define NON_MARQUE -1
 // affichage en travaux
 
-#define LARGEUR_ECRAN 1280
-#define HAUTEUR_ECRAN 720
+#define LARGEUR_ECRAN 2000
+#define HAUTEUR_ECRAN 1450
 #define TAILLE_PLATEAU 50
 #define LARGEUR_PLATEAU 35
 #define LONGUEUR_PLATEAU 45
