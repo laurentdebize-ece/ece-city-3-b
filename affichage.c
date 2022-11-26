@@ -43,22 +43,20 @@ void choixM(Jeu** jeu){
         BeginDrawing();
         ClearBackground(WHITE);
 
-        DrawTextureEx(Simcityflou, (Vector2){scrollingBack, 20 }, 0.0f, 1.7f, WHITE);
-        DrawTextureEx(Simcityflou, (Vector2){Simcityflou.width * 2 , 20 }, 0.0f, 1.7f, WHITE);
+        DrawTextureEx(Simcityflou, (Vector2){scrollingBack, 0 }, 0.0f, 1.2f, WHITE);
+        DrawTextureEx(Simcityflou, (Vector2){Simcityflou.width * 2 , 20 }, 0.0f, 1.2f, WHITE);
 
 
-        DrawTextureEx(Choix, (Vector2){35,200 }, 0.0f, 1.0f, WHITE);
-        if((GetMousePosition().x >= 270) && (GetMousePosition().x <=  750) && (GetMousePosition().y >= 670) && (GetMousePosition().y <= 810)){
-            DrawTextureEx(Capitaliste, (Vector2){35,200 }, 0.0f, 1.0f, WHITE);
+        DrawTextureEx(Choix, (Vector2){63,50 }, 0.0f, 0.6f, WHITE);
+        if((GetMousePosition().x >= 204) && (GetMousePosition().x <=  485) && (GetMousePosition().y >= 334) && (GetMousePosition().y <= 414)){
+            DrawTextureEx(Capitaliste, (Vector2){63,50 }, 0.0f, 0.6f, WHITE);
             if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-                //jeu.mode_jeu = 1;
                 affichageMapRaylib(*jeu);
             }
         }
-        if((GetMousePosition().x >= 1200) && (GetMousePosition().x <=  1700) && (GetMousePosition().y >= 670) && (GetMousePosition().y <= 810)){
-            DrawTextureEx(Communiste, (Vector2){35,200 }, 0.0f, 1.0f, WHITE);
+        if((GetMousePosition().x >= 780) && (GetMousePosition().x <=  1061) && (GetMousePosition().y >= 334) && (GetMousePosition().y <= 414)){
+            DrawTextureEx(Communiste, (Vector2){63,50 }, 0.0f, 0.6f, WHITE);
             if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-               // jeu.mode_jeu = 2;
                 affichageMapRaylib(*jeu);
             }
         }
@@ -79,13 +77,13 @@ void menu1(Jeu* jeu){
     bool exit = false;
 
 
-    InitWindow(screenWidth, screenHeight, "menu");
+    InitWindow(LARGEUR_ECRAN, HAUTEUR_ECRAN, "menu");
     Image simcity = LoadImage("../image/simcity.png");
     Image logo = LoadImage("../image/logoSimcity.png");
     Image jouer = LoadImage("../image/logo.png");
     Image jouer2 = LoadImage("../image/logoclick.png");
-    Image regles = LoadImage("../image/regle.png");
-    Image regles2 = LoadImage("../image/regle2.png");
+    Image regles = LoadImage("../image/relges.png");
+    Image regles2 = LoadImage("../image/regles2.png");
     Image sauvegarde = LoadImage("../image/sauvegarder.png");
     Image sauvegarde2 = LoadImage("../image/sauvegarder2.png");
 
@@ -120,15 +118,33 @@ void menu1(Jeu* jeu){
         ClearBackground(WHITE);
 
         // DrawTexture(Simcity,0,0,WHITE);
-        DrawTextureEx(Simcity, (Vector2){scrollingBack, 20 }, 0.0f, 1.7f, WHITE);
-        DrawTextureEx(Simcity, (Vector2){simcity.width * 2 , 20 }, 0.0f, 1.7f, WHITE);
+        DrawTextureEx(Simcity, (Vector2){scrollingBack, 0 }, 0.0f, 1.2f, WHITE);
+        DrawTextureEx(Simcity, (Vector2){simcity.width * 2 , 20 }, 0.0f, 1.2f, WHITE);
 
-        DrawTextureEx(Logo, (Vector2){150,100 }, 0.0f, 1.8f, WHITE);
-        DrawTextureEx(Jouer, (Vector2){585,500 }, 0.0f, 0.5f, WHITE);
-        if((GetMousePosition().x >= 870) && (GetMousePosition().x <= 1250) && (GetMousePosition().y >= 720) && (GetMousePosition().y <= 820)){
-            DrawTextureEx(Jouer2, (Vector2){585,500 }, 0.0f, 0.5f, WHITE);
+        DrawTextureEx(Logo, (Vector2){130,40 }, 0.0f, 1.1f, WHITE);
+
+        DrawTextureEx(Jouer, (Vector2){350,160 }, 0.0f, 0.3f, WHITE);
+        if((GetMousePosition().x >= 522) && (GetMousePosition().x <= 744) && (GetMousePosition().y >= 291) && (GetMousePosition().y <= 353)){
+            DrawTextureEx(Jouer2, (Vector2){350,160 }, 0.0f, 0.3f, WHITE);
             if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
                 choixM(&jeu);
+            }
+        }
+        DrawTextureEx(Regles, (Vector2){350,310 }, 0.0f, 0.3f, WHITE);
+        if((GetMousePosition().x >= 522) && (GetMousePosition().x <= 744) && (GetMousePosition().y >= 441) && (GetMousePosition().y <= 503)){
+            DrawTextureEx(Regles2, (Vector2){350,310 }, 0.0f, 0.3f, WHITE);
+            if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                choixM(&jeu);
+                affichageMapRaylib(&jeu);
+            }
+        }
+        DrawTextureEx(Sauvegarde, (Vector2){350,460 }, 0.0f, 0.3f, WHITE);
+        if((GetMousePosition().x >= 522) && (GetMousePosition().x <= 744) && (GetMousePosition().y >= 591) && (GetMousePosition().y <= 653)){
+            DrawTextureEx(Sauvegarde2, (Vector2){350,460 }, 0.0f, 0.3f, WHITE);
+            if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                choixM(&jeu);
+                affichageMapRaylib(&jeu);
+
             }
         }
 
@@ -240,7 +256,7 @@ void dessinerCases(Case cases[TAILLE_MAP_X][TAILLE_MAP_Y]){
 }
 
 void affichageMapRaylib(Jeu* jeu){
-    InitWindow(LARGEUR_ECRAN, HAUTEUR_ECRAN, "Raylib test");
+   // InitWindow(LARGEUR_ECRAN, HAUTEUR_ECRAN, "ECE-City");
 
     srand(time(NULL)) ;
     int posX = 0;
@@ -361,6 +377,8 @@ void affichageMapRaylib(Jeu* jeu){
     Image icone_detruire_maisonO = LoadImage("../image/destructionMaisonOmbre.png");
     Image icone_detruire_batimentO = LoadImage("../image/destructionOmbre.png");
     Image icone_routeO = LoadImage("../image/routeO.png");
+    Image dollars = LoadImage("../image/dollars.png");
+
 
     Texture2D Icone_maison = LoadTextureFromImage(icone_maison);
     Texture2D Icone_chateau = LoadTextureFromImage(icone_chateau);
@@ -381,6 +399,8 @@ void affichageMapRaylib(Jeu* jeu){
     Texture2D EauBouton = LoadTextureFromImage(eauBouton);
     Texture2D ElecBouton = LoadTextureFromImage(elecBouton);
     Texture2D HabitantBouton = LoadTextureFromImage(habitantBouton);
+    Texture2D Dollars = LoadTextureFromImage(dollars);
+
 
     UnloadImage(icone_maison);
     UnloadImage(icone_chateau);
@@ -401,13 +421,6 @@ void affichageMapRaylib(Jeu* jeu){
     UnloadImage(eauBouton);
     UnloadImage(elecBouton);
     UnloadImage(habitantBouton);
-
-
-
-    Model dalle = LoadModel("../3D/dale.glb");
-    //Texture2D routeEW = LoadTexture("../route/roadEW.png");
-    Image dollars = LoadImage("../image/dollars.png");
-    Texture2D Dollars = LoadTextureFromImage(dollars);
     UnloadImage(dollars);
 
     SetCameraMode(camera, CAMERA_FREE);   // mode de camera libre
@@ -453,9 +466,6 @@ void affichageMapRaylib(Jeu* jeu){
             collision = groundHitInfo;
         }
 
-        posX = GetMousePosition().x - 1.0f;
-        posY = GetMousePosition().y - 1.0f;
-
         BeginDrawing();
         ClearBackground(SKYBLUE);
 
@@ -478,17 +488,6 @@ void affichageMapRaylib(Jeu* jeu){
         DrawModel(sol,positionCubeSol,TAILLE_PLATEAU,VERT_HERBE);
         dessinerCases(cases);
         DrawCubeWires(positionContourCarte, TAILLE_MAP_Y, 0, TAILLE_MAP_X, BLACK);
-
-        //if(IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
-          //  DrawModel(dalle, (Vector3) {posX, -0.25f, posY}, 1.4f, WHITE);
-        //}
-        //for(int i = 0; i < jeu->nb_maisons; i++){
-          //  DrawModel(dalle, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},1.4f,WHITE);
-        //}
-
-
-
-
        // DrawGrid(50, 1);
 
         for(int i = 0; i < 1000; i++){
@@ -504,7 +503,7 @@ void affichageMapRaylib(Jeu* jeu){
             i = i + 1;
         }
 
-        if((GetMousePosition().x >= 55) && (GetMousePosition().x <= 150) && (GetMousePosition().y >= 465) && (GetMousePosition().y <= 580)){
+        if((GetMousePosition().x >= 50) && (GetMousePosition().x <= 100) && (GetMousePosition().y >= 214) && (GetMousePosition().y <= 273)){
             if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
                 centrale = false;
                 chateau = false;
@@ -533,7 +532,7 @@ void affichageMapRaylib(Jeu* jeu){
         }
 
 
-        if((GetMousePosition().x >= 55) && (GetMousePosition().x <= 160) && (GetMousePosition().y >= 645) && (GetMousePosition().y <= 765)){
+        if((GetMousePosition().x >= 45) && (GetMousePosition().x <= 105) && (GetMousePosition().y >= 315) && (GetMousePosition().y <= 373)){
             if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
                 maison = false;
                 chateau = false;
@@ -562,7 +561,7 @@ void affichageMapRaylib(Jeu* jeu){
             }
         }
 
-        if((GetMousePosition().x >= 80) && (GetMousePosition().x <= 130) && (GetMousePosition().y >= 833) && (GetMousePosition().y <= 955)){
+        if((GetMousePosition().x >= 60) && (GetMousePosition().x <= 90) && (GetMousePosition().y >= 415) && (GetMousePosition().y <= 473)){
             if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
                 maison = false;
                 centrale = false;
@@ -589,7 +588,7 @@ void affichageMapRaylib(Jeu* jeu){
             }
         }
 
-        if((GetMousePosition().x >= 52) && (GetMousePosition().x <= 170) && (GetMousePosition().y >= 1020) && (GetMousePosition().y <= 1120)){
+        if((GetMousePosition().x >= 45) && (GetMousePosition().x <= 105) && (GetMousePosition().y >= 515) && (GetMousePosition().y <= 573)){
             if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
                 maison = false;
                 centrale = false;
@@ -615,7 +614,7 @@ void affichageMapRaylib(Jeu* jeu){
                 }
             }
         }
-        if((GetMousePosition().x >= 55) && (GetMousePosition().x <= 160) && (GetMousePosition().y >= 1200) && (GetMousePosition().y <= 1320)){
+        if((GetMousePosition().x >= 45) && (GetMousePosition().x <= 105) && (GetMousePosition().y >= 615) && (GetMousePosition().y <= 673)){
             if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
                 maison = false;
                 centrale = false;
@@ -748,51 +747,53 @@ void affichageMapRaylib(Jeu* jeu){
 
 
         EndMode3D();
+       // DrawText(TextFormat("Position souris : x = %d y = %d", GetMouseX(), GetMouseY()), 10, 15, 20, BLACK);
+
 
 
         if (collision.hit)
         {
-            int ypos = 70;
-            DrawText(TextFormat("Distance camera: %3.2f", collision.distance), 10, ypos, 20, BLACK);
-            DrawText(TextFormat("Position souris sur plateau : x = %3.2f y = %3.2f z = %3.2f", collision.point.x, collision.point.y, collision.point.z), 10, ypos + 15, 20, BLACK);
+            int ypos = 10;
+            DrawText(TextFormat("Distance camera: %3.2f", collision.distance), 980, ypos, 10, BLACK);
+            DrawText(TextFormat("Position souris sur plateau : x = %3.2f y = %3.2f z = %3.2f", collision.point.x, collision.point.y, collision.point.z), 980, ypos + 15, 10, BLACK);
         }
 
-        DrawTextureEx(Dollars, (Vector2){30, 300 }, 0.0f, 0.1f, WHITE);
-        DrawText(TextFormat("%d ", jeu->argent), 55, 340, 30, WHITE);
-        DrawTextureEx(HabitantBouton,(Vector2){30, 240 }, 0.0f, 0.1f, WHITE);
-        DrawText(TextFormat("%d ", jeu->population), 55, 280, 30, WHITE);
-        DrawTextureEx(EauBouton,(Vector2){30, 180 }, 0.0f, 0.1f, WHITE);
-        DrawText(TextFormat("%d ", jeu->eau), 55, 220, 30, WHITE);
-        DrawTextureEx(ElecBouton,(Vector2){30, 120 }, 0.0f, 0.1f, WHITE);
-        DrawText(TextFormat("%d ", jeu->electricite), 55, 160, 30, WHITE);
+        DrawTextureEx(Dollars, (Vector2){20, 140 }, 0.0f, 0.06f, WHITE);
+        DrawText(TextFormat("%d ", jeu->argent), 30, 162, 20, WHITE);
+        DrawTextureEx(HabitantBouton,(Vector2){20, 100 }, 0.0f, 0.06f, WHITE);
+        DrawText(TextFormat("%d ", jeu->population), 30, 122, 20, WHITE);
+        DrawTextureEx(EauBouton,(Vector2){20, 60 }, 0.0f, 0.06f, WHITE);
+        DrawText(TextFormat("%d ", jeu->eau), 30, 82, 20, WHITE);
+        DrawTextureEx(ElecBouton,(Vector2){20, 20 }, 0.0f, 0.06f, WHITE);
+        DrawText(TextFormat("%d ", jeu->electricite), 30, 42, 20, WHITE);
 
 
-        DrawRectangleGradientV(30,450,170,900,DARKGREEN,GREEN);
-        DrawRectangleLines(30,450,170,900,BLACK);
+        DrawRectangleGradientV(20,200,115,500,DARKGREEN,GREEN);
+        DrawRectangleLines(20,200,115,500,BLACK);
 
-        DrawTextureEx(Icone_maison,(Vector2){-80, 420 }, 0.0f, 0.2f, WHITE);
-        if((GetMousePosition().x >= 55) && (GetMousePosition().x <= 150) && (GetMousePosition().y >= 465) && (GetMousePosition().y <= 580)){
-            DrawTextureEx(Icone_maisonO, (Vector2){-80,420 }, 0.0f, 0.2f, WHITE);
+        DrawTextureEx(Icone_maison,(Vector2){-20, 190}, 0.0f, 0.1f, WHITE);
+        if((GetMousePosition().x >= 50) && (GetMousePosition().x <= 100) && (GetMousePosition().y >= 214) && (GetMousePosition().y <= 273)){
+            DrawTextureEx(Icone_maisonO, (Vector2){-20,190 }, 0.0f, 0.1f, WHITE);
         }
 
-        DrawTextureEx(Icone_centrale,(Vector2){-80, 600}, 0.0f, 0.2f, WHITE);
-        if((GetMousePosition().x >= 55) && (GetMousePosition().x <= 160) && (GetMousePosition().y >= 645) && (GetMousePosition().y <= 765)){
-            DrawTextureEx(Icone_centraleO, (Vector2){-80,600 }, 0.0f, 0.2f, WHITE);
+        DrawTextureEx(Icone_centrale,(Vector2){-20, 290}, 0.0f, 0.1f, WHITE);
+        if((GetMousePosition().x >= 45) && (GetMousePosition().x <= 105) && (GetMousePosition().y >= 315) && (GetMousePosition().y <= 373)){
+            DrawTextureEx(Icone_centraleO, (Vector2){-20,290 }, 0.0f, 0.1f, WHITE);
         }
 
-        DrawTextureEx(Icone_chateau,(Vector2){-80, 800 }, 0.0f, 0.2f, WHITE);
-        if((GetMousePosition().x >= 80) && (GetMousePosition().x <= 130) && (GetMousePosition().y >= 833) && (GetMousePosition().y <= 955)){
-            DrawTextureEx(Icone_chateauO, (Vector2){-80,800 }, 0.0f, 0.2f, WHITE);
+        DrawTextureEx(Icone_chateau,(Vector2){-20, 390 }, 0.0f, 0.1f, WHITE);
+        if((GetMousePosition().x >= 60) && (GetMousePosition().x <= 90) && (GetMousePosition().y >= 415) && (GetMousePosition().y <= 473)){
+            DrawTextureEx(Icone_chateauO, (Vector2){-20,390 }, 0.0f, 0.1f, WHITE);
         }
 
-        DrawTextureEx(Icone_route,(Vector2){-80, 950 }, 0.0f, 0.2f, WHITE);
-        if((GetMousePosition().x >= 52) && (GetMousePosition().x <= 170) && (GetMousePosition().y >= 1020) && (GetMousePosition().y <= 1120)){
-            DrawTextureEx(Icone_routeO, (Vector2){-80,950 }, 0.0f, 0.2f, WHITE);
+        DrawTextureEx(Icone_route,(Vector2){-20, 490 }, 0.0f, 0.1f, WHITE);
+        if((GetMousePosition().x >= 45) && (GetMousePosition().x <= 105) && (GetMousePosition().y >= 515) && (GetMousePosition().y <= 573)){
+            DrawTextureEx(Icone_routeO, (Vector2){-20,490 }, 0.0f, 0.1f, WHITE);
         }
 
-        DrawTextureEx(Icone_destruction_bat,(Vector2){-80, 1150 }, 0.0f, 0.2f, WHITE);
-        if((GetMousePosition().x >= 55) && (GetMousePosition().x <= 160) && (GetMousePosition().y >= 1200) && (GetMousePosition().y <= 1320)){
-            DrawTextureEx(Icone_destruction_batO, (Vector2){-80,1150 }, 0.0f, 0.2f, WHITE);
+        DrawTextureEx(Icone_destruction_bat,(Vector2){-20, 590 }, 0.0f, 0.1f, WHITE);
+        if((GetMousePosition().x >= 45) && (GetMousePosition().x <= 105) && (GetMousePosition().y >= 615) && (GetMousePosition().y <= 673)){
+            DrawTextureEx(Icone_destruction_batO, (Vector2){-20,590 }, 0.0f, 0.1f, WHITE);
         }
 
         DrawFPS(10, 10);
