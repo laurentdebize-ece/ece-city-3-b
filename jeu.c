@@ -170,8 +170,8 @@ bool jouer(Jeu *jeu, int *niveauActuel) {
             repartition_electricite(jeu);
             repartition_habitants(jeu);
         }
-        //afficherCompteur(*jeu);
-        printf("mode jeu : %d\n", jeu->mode_jeu);
+        printf("eau maison : %d\n", jeu->maisons[0].eau);
+        printf("electricite maison : %d\n", jeu->maisons[0].electricite);
     }
     return true;
 }
