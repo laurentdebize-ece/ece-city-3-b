@@ -46,12 +46,12 @@ void calcul_elec(Jeu* jeu){
 }
 
 void compteur_population(Jeu* jeu){
-    jeu->population = 0;
+    int pop=0;
     if(jeu->nb_maisons != 0){
         for(int i = 0; i < jeu->nb_maisons; i++){
-            jeu->population += jeu->maisons[i].habitants;
+            pop += jeu->maisons[i].habitants;
         }
-    }
+    }jeu->population = pop;
 }
 
 void afficherCompteur(Jeu jeu) {

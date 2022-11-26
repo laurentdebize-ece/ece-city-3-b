@@ -209,6 +209,11 @@ void afficherMap(Jeu * jeu, int niveau) {
             break;
     }
     afficherCompteur(*jeu);
+    if (jeu->mode_jeu == 1) {
+        printf("mode jeu : Capitaliste\n");
+    }else{
+        printf("mode jeu : Communiste\n");
+    }
 }
 
 void initCases(Case cases[TAILLE_MAP_X][TAILLE_MAP_Y]){
