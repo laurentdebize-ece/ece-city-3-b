@@ -333,6 +333,8 @@ void affichageMapRaylib(Jeu* jeu, bool lancer){
     bool niveauElec = false;
     bool niveauEau = false;
     bool niveauNormal = true;
+    bool save = false;
+    bool demandeDeSave = false;
 
 
     //mise en place de la camera en 3D
@@ -446,6 +448,10 @@ void affichageMapRaylib(Jeu* jeu, bool lancer){
     Image elecBouton = LoadImage("../image/electriciteBouton.png");
     Image habitantBouton = LoadImage("../image/habitantBouton.png");
     Image temps = LoadImage("../image/temps.png");
+    Image sauvegarde = LoadImage("../image/sauvegarde.png");
+    Image sauvegardeOui = LoadImage("../image/sauvegarderOui.png");
+    Image sauvegarderNon = LoadImage("../image/sauvegarderNon.png");
+    Image quitter = LoadImage("../image/quitter.png");
 
     Image icone_maisonO = LoadImage("../image/maisonOmbre.png");
     Image icone_chateauO = LoadImage("../image/chateauOmbre.png");
@@ -458,6 +464,10 @@ void affichageMapRaylib(Jeu* jeu, bool lancer){
     Image dollars = LoadImage("../image/dollars.png");
     Image icone_M = LoadImage("../image/M.png");
     Image icone_M_Ombre = LoadImage("../image/MOmbre.png");
+    Texture2D Sauvegarde = LoadTextureFromImage(sauvegarde);
+    Texture2D SauvegardeOui = LoadTextureFromImage(sauvegardeOui);
+    Texture2D SauvegarderNon = LoadTextureFromImage(sauvegarderNon);
+    Texture2D Quitter = LoadTextureFromImage(quitter);
 
 
 
@@ -509,6 +519,10 @@ void affichageMapRaylib(Jeu* jeu, bool lancer){
     UnloadImage(temps);
     UnloadImage(icone_M);
     UnloadImage(icone_M_Ombre);
+    UnloadImage(sauvegarde);
+    UnloadImage(sauvegardeOui);
+    UnloadImage(sauvegarderNon);
+    UnloadImage(quitter);
 
 
     SetCameraMode(camera, CAMERA_FREE);   // mode de camera libre
@@ -926,6 +940,7 @@ void affichageMapRaylib(Jeu* jeu, bool lancer){
                 switch (jeu->batiments[i].type_batiment) {
                     case TYPE_CHATEAU_EAU:
                         DrawModel(chateauEau, (Vector3){jeu->batiments[i].position.pos_x,jeu->batiments[i].position.pos_y,jeu->batiments[i].position.pos_z},0.002f,SKYBLUE );
+
                         break;
                     case TYPE_CENTRALE:
                         DrawModel(usine, (Vector3){jeu->batiments[i].position.pos_x,jeu->batiments[i].position.pos_y,jeu->batiments[i].position.pos_z},0.003f,DARKGRAY);
@@ -1320,7 +1335,7 @@ void affichageMapRaylib(Jeu* jeu, bool lancer){
         DrawTextureEx(ElecBouton,(Vector2){20, 20 }, 0.0f, 0.06f, WHITE);
         DrawText(TextFormat("%d ", jeu->electricite), 30, 42, 20, WHITE);
         DrawTextureEx(Temps,(Vector2){1150, 660 }, 0.0f, 0.06f, WHITE);
-       // DrawText(TextFormat("%d ", jeu->electricite), 30, 202, 20, WHITE);
+        DrawText(TextFormat("%d ", jeu->temps - 1669560780 -27700 -100), 1160, 682, 20, WHITE);
 
 
         DrawRectangleGradientV(20,200,115,500,DARKGREEN,GREEN);
@@ -1367,6 +1382,8 @@ void affichageMapRaylib(Jeu* jeu, bool lancer){
         if((GetMousePosition().x >= 627) && (GetMousePosition().x <=675) && (GetMousePosition().y >= 21) && (GetMousePosition().y <= 71)){
             DrawTextureEx(Icone_M_Ombre,(Vector2){580,5},0,0.075f,WHITE);
         }
+
+
 
         DrawFPS(10, 10);
 
