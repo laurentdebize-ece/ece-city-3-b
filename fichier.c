@@ -68,7 +68,10 @@ void sauvegarderJeu(Jeu * jeu) {
     // stockage des caracteristiques de chaque maison
     for(int i = 0; i < jeu->nb_routes; i++){
         fprintf(fichierJeu, "%d ", jeu->routes[i].pos_x);
-        fprintf(fichierJeu, "%d\n", jeu->routes[i].pos_y);
+        fprintf(fichierJeu, "%d ", jeu->routes[i].pos_y);
+        fprintf(fichierJeu, "%f ", jeu->routes[i].position.pos_x);
+        fprintf(fichierJeu, "%f ", jeu->routes[i].position.pos_y);
+        fprintf(fichierJeu, "%f \n ", jeu->routes[i].position.pos_z);
     }
     for(int i = 0; i < jeu->nb_maisons; i++){
         fprintf(fichierJeu, "%d ", jeu->maisons[i].pos_x);
@@ -76,14 +79,20 @@ void sauvegarderJeu(Jeu * jeu) {
         fprintf(fichierJeu, "%d ", jeu->maisons[i].niveau);
         fprintf(fichierJeu, "%d ", jeu->maisons[i].habitants);
         fprintf(fichierJeu, "%d ", jeu->maisons[i].eau);
-        fprintf(fichierJeu, "%d\n", jeu->maisons[i].electricite);
+        fprintf(fichierJeu, "%d ", jeu->maisons[i].electricite);
+        fprintf(fichierJeu, "%f ", jeu->maisons[i].position.pos_x);
+        fprintf(fichierJeu, "%f ", jeu->maisons[i].position.pos_y);
+        fprintf(fichierJeu, "%f \n ", jeu->maisons[i].position.pos_z);
     }
     for(int i = 0; i < jeu->nb_centrales+jeu->nb_chateau_eau; i++){
         fprintf(fichierJeu, "%d ", jeu->batiments[i].pos_x);
         fprintf(fichierJeu, "%d ", jeu->batiments[i].pos_y);
         fprintf(fichierJeu, "%d ", jeu->batiments[i].type_batiment);
         fprintf(fichierJeu, "%d ", jeu->batiments[i].capacite);
-        fprintf(fichierJeu, "%d\n", jeu->batiments[i].horizontal);
+        fprintf(fichierJeu, "%d ", jeu->batiments[i].horizontal);
+        fprintf(fichierJeu, "%f ", jeu->batiments[i].position.pos_x);
+        fprintf(fichierJeu, "%f ", jeu->batiments[i].position.pos_y);
+        fprintf(fichierJeu, "%f \n", jeu->batiments[i].position.pos_z);
     }
     fclose(fichierJeu); // On ferme le fichier
 }

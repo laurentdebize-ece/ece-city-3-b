@@ -5,13 +5,9 @@
 #include <stdlib.h>
 #include <time.h>
 #include "construction_destruction.h"
+#include "fichier.h"
 
-#define screenWidth 2000
-#define screenHeight 1450
-
-
-
-void choixM(Jeu** jeu){
+void choixM(Jeu** jeu, bool lancer){
     bool exit = false;
     float scrollingBack = 0.0f;
 
@@ -52,14 +48,14 @@ void choixM(Jeu** jeu){
             DrawTextureEx(Capitaliste, (Vector2){63,50 }, 0.0f, 0.6f, WHITE);
             if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
                 (*jeu)->mode_jeu = MODE_CAPITALISTE;
-                affichageMapRaylib(*jeu);
+                affichageMapRaylib(*jeu, lancer);
             }
         }
         if((GetMousePosition().x >= 780) && (GetMousePosition().x <=  1061) && (GetMousePosition().y >= 334) && (GetMousePosition().y <= 414)){
             DrawTextureEx(Communiste, (Vector2){63,50 }, 0.0f, 0.6f, WHITE);
             if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
                 (*jeu)->mode_jeu = MODE_COMMUNISTE;
-                affichageMapRaylib(*jeu);
+                affichageMapRaylib(*jeu, lancer);
             }
         }
 
@@ -80,6 +76,7 @@ void menu1(Jeu* jeu){
     bool regle = false;
     bool regle2 = false;
     bool debut = true;
+    bool lancer = false;
 
 
     InitWindow(LARGEUR_ECRAN, HAUTEUR_ECRAN, "menu");
@@ -154,15 +151,15 @@ void menu1(Jeu* jeu){
             if((GetMousePosition().x >= 522) && (GetMousePosition().x <= 744) && (GetMousePosition().y >= 291) && (GetMousePosition().y <= 353)){
                 DrawTextureEx(Jouer2, (Vector2){350,160 }, 0.0f, 0.3f, WHITE);
                 if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-                    choixM(&jeu);
+                    choixM(&jeu, lancer);
                 }
             }
             DrawTextureEx(Sauvegarde, (Vector2){350,310 }, 0.0f, 0.3f, WHITE);
             if((GetMousePosition().x >= 522) && (GetMousePosition().x <= 744) && (GetMousePosition().y >= 441) && (GetMousePosition().y <= 503)){
                 DrawTextureEx(Sauvegarde2, (Vector2){350,310 }, 0.0f, 0.3f, WHITE);
                 if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-                    choixM(&jeu);
-                    affichageMapRaylib(jeu);
+                    lancer = true;
+                    affichageMapRaylib(jeu, lancer);
                 }
             }
             DrawTextureEx(Regles, (Vector2){350,460 }, 0.0f, 0.3f, WHITE);
@@ -322,7 +319,7 @@ void dessinerCases(Case cases[TAILLE_MAP_X][TAILLE_MAP_Y]){
     }
 }
 
-void affichageMapRaylib(Jeu* jeu){
+void affichageMapRaylib(Jeu* jeu, bool lancer){
    // InitWindow(LARGEUR_ECRAN, HAUTEUR_ECRAN, "ECE-City");
 
     srand(time(NULL)) ;
@@ -336,6 +333,7 @@ void affichageMapRaylib(Jeu* jeu){
     bool niveauElec = false;
     bool niveauEau = false;
     bool niveauNormal = true;
+
 
     //mise en place de la camera en 3D
     Camera3D camera = {0};
@@ -532,6 +530,7 @@ void affichageMapRaylib(Jeu* jeu){
 
             if (IsKeyPressed(KEY_Y)){
                 fermetureWindow = true;
+                sauvegarderJeu(jeu);
             }
             else if (IsKeyPressed(KEY_N)){
                 demandeDeFermetureWindow = false;
@@ -563,6 +562,8 @@ void affichageMapRaylib(Jeu* jeu){
 
         BeginMode3D(camera);
 
+
+
         if (collision.hit)
         {
 
@@ -572,7 +573,6 @@ void affichageMapRaylib(Jeu* jeu){
             normalEnd.z = collision.point.z + collision.normal.z;
 
         }
-
 
         if((GetMousePosition().x >= 50) && (GetMousePosition().x <= 100) && (GetMousePosition().y >= 214) && (GetMousePosition().y <= 273)){
             if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
@@ -726,6 +726,7 @@ void affichageMapRaylib(Jeu* jeu){
                 }
             }
         }
+
         if((GetMousePosition().x >= 710) && (GetMousePosition().x <=763) && (GetMousePosition().y >= 24) && (GetMousePosition().y <= 73)){
             if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
                 maison = false;
@@ -789,7 +790,7 @@ void affichageMapRaylib(Jeu* jeu){
                         DrawModel(chateauEau, (Vector3){jeu->batiments[i].position.pos_x,jeu->batiments[i].position.pos_y,jeu->batiments[i].position.pos_z},0.002f,DARKGRAY);
                         break;
                     case TYPE_CENTRALE:
-                        DrawModel(usine, (Vector3){jeu->batiments[i].position.pos_x,jeu->batiments[i].position.pos_y,jeu->batiments[i].position.pos_z},0.003f,DARKGRAY);
+                        DrawModel(usine, (Vector3){jeu->batiments[i].position.pos_x,jeu->batiments[i].position.pos_y,jeu->batiments[i].position.pos_z},0.003f,YELLOW);
                         break;
                 }
             }
@@ -924,7 +925,7 @@ void affichageMapRaylib(Jeu* jeu){
             for(int i = 0; i < jeu->nb_centrales+jeu->nb_chateau_eau; i++){
                 switch (jeu->batiments[i].type_batiment) {
                     case TYPE_CHATEAU_EAU:
-                        DrawModel(chateauEau, (Vector3){jeu->batiments[i].position.pos_x,jeu->batiments[i].position.pos_y,jeu->batiments[i].position.pos_z},0.002f,DARKGRAY);
+                        DrawModel(chateauEau, (Vector3){jeu->batiments[i].position.pos_x,jeu->batiments[i].position.pos_y,jeu->batiments[i].position.pos_z},0.002f,SKYBLUE );
                         break;
                     case TYPE_CENTRALE:
                         DrawModel(usine, (Vector3){jeu->batiments[i].position.pos_x,jeu->batiments[i].position.pos_y,jeu->batiments[i].position.pos_z},0.003f,DARKGRAY);
@@ -1141,6 +1142,161 @@ void affichageMapRaylib(Jeu* jeu){
                 }
             }
 
+        }
+
+        if(lancer){
+            FILE *fichierJeu = fopen("../caracteristiques.txt", "r");
+            int argentPred, eau, elec, nbRoute, nbMaison, nbCentrale, nbChateau;
+
+            fscanf(fichierJeu, "%d ", &argentPred);
+            fscanf(fichierJeu, "%d ", &nbMaison);
+            fscanf(fichierJeu, "%d ", &nbRoute);
+            fscanf(fichierJeu, "%d ", &nbCentrale);
+            fscanf(fichierJeu, "%d ", &nbChateau);
+
+            // detecter les routes
+            for(int i = 0; i < jeu->nb_routes; i++){
+                fscanf(fichierJeu, "%d ", &jeu->routes[i].pos_x);
+                fscanf(fichierJeu, "%d ", &jeu->routes[i].pos_y);
+                fscanf(fichierJeu, "%f ", &jeu->routes[i].position.pos_x);
+                fscanf(fichierJeu, "%f ", &jeu->routes[i].position.pos_y);
+                fscanf(fichierJeu, "%f ", &jeu->routes[i].position.pos_z);
+
+                bool routes_a_cote[4] = {false};
+                Liste* tmp = jeu->routes[i].adjacente_route;
+                while(tmp != NULL){
+                    if(jeu->routes[tmp->numero].pos_x < jeu->routes[i].pos_x){
+                        routes_a_cote[ROUTE_OUEST] = true;
+                    }
+                    else if (jeu->routes[tmp->numero].pos_x > jeu->routes[i].pos_x){
+                        routes_a_cote[ROUTE_EST] = true;
+                    }
+                    else if(jeu->routes[tmp->numero].pos_y < jeu->routes[i].pos_y){
+                        routes_a_cote[ROUTE_NORD] = true;
+                    }
+                    else{
+                        routes_a_cote[ROUTE_SUD] = true;
+                    }
+                    tmp = tmp->suivant;
+                }
+                if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_EST] && routes_a_cote[ROUTE_OUEST]){
+                    DrawModel(route2, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,WHITE);
+
+                }
+                else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_EST]){
+                    DrawModelEx(route4, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 180.0f, (Vector3){1,1,1}, WHITE);
+                }
+                else if(routes_a_cote[ROUTE_OUEST] && routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_EST]){
+                    DrawModelEx(route4, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, -90.0f, (Vector3){1,1,1}, WHITE);
+                }
+                else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_OUEST] && routes_a_cote[ROUTE_EST]){
+                    DrawModelEx(route4, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 90.0f, (Vector3){1,1,1}, WHITE);
+                }
+                else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_OUEST]){
+                    DrawModel(route4, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,WHITE);
+                }
+                else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_NORD]){
+                    DrawModel(route5, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,WHITE);
+                }
+                else if(routes_a_cote[ROUTE_EST] && routes_a_cote[ROUTE_OUEST]){
+                    DrawModelEx(route5, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 90.0f, (Vector3){1,1,1}, WHITE);
+                }
+                else if(routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_OUEST]){
+                    DrawModelEx(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 0.0f, (Vector3){1,1,1}, WHITE);
+                }
+                else if(routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_EST]){
+                    DrawModelEx(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, -90.0f, (Vector3){1,1,1}, WHITE);
+                }
+                else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_OUEST]){
+                    DrawModelEx(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 90.0f, (Vector3){1,1,1}, WHITE);
+                }
+                else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_EST]){
+                    DrawModelEx(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, -180.0f, (Vector3){1,1,1}, WHITE);
+                }
+                else if(routes_a_cote[ROUTE_SUD]){
+                    DrawModelEx(route3, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 0.0f, (Vector3){1,1,1}, WHITE);
+                }
+                else if(routes_a_cote[ROUTE_NORD]){
+                    DrawModelEx(route3, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 180.0f, (Vector3){1,1,1}, WHITE);
+                }
+                else if(routes_a_cote[ROUTE_OUEST]){
+                    DrawModelEx(route3, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, -90.0f, (Vector3){1,1,1}, WHITE);
+                }
+                else if(routes_a_cote[ROUTE_EST]){
+                    DrawModelEx(route3, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 90.0f, (Vector3){1,1,1}, WHITE);
+                }
+                else{
+                    DrawModel(route5, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,WHITE);
+
+                }
+                fscanf(fichierJeu, "\n");
+            }
+            // detecter les maisons + routes adjacentes
+            for (int i = 0; i < nbMaison; i++) {
+                fscanf(fichierJeu, "%d ", &jeu->maisons[i].pos_x);
+                fscanf(fichierJeu, "%d ", &jeu->maisons[i].pos_y);
+                fscanf(fichierJeu, "%d ", &jeu->maisons[i].niveau);
+                fscanf(fichierJeu, "%d ", &jeu->maisons[i].habitants);
+                fscanf(fichierJeu, "%d ", &jeu->maisons[i].eau);
+                fscanf(fichierJeu, "%d ", &jeu->maisons[i].electricite);
+                fscanf(fichierJeu, "%f ", &jeu->maisons[i].position.pos_x);
+                fscanf(fichierJeu, "%f ", &jeu->maisons[i].position.pos_y);
+                fscanf(fichierJeu, "%f ", &jeu->maisons[i].position.pos_z);
+
+                switch(jeu->maisons[i].niveau){
+                    case NIVEAU_TERRAIN_VAGUE:
+                        DrawModel(terrainVague, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y + 0.01,jeu->maisons[i].position.pos_z},3,WHITE);
+                        break;
+                    case NIVEAU_RUINE:
+                        DrawModel(ruine, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,WHITE);
+                        DrawModel(terrainVague, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y + 0.01,jeu->maisons[i].position.pos_z},3,WHITE);
+                        break;
+                    case NIVEAU_CABANE:
+                        DrawModel(cabane, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,WHITE);
+                        break;
+                    case NIVEAU_MAISON:
+                        DrawModel(maison1, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,WHITE);
+                        break;
+                    case NIVEAU_IMMEUBLE:
+                        DrawModel(immeuble, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2.7,WHITE);
+                        break;
+                    case NIVEAU_GRATTE_CIEL:
+                        DrawModel(gratteCiel, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,WHITE);
+                        break;
+                }
+                fscanf(fichierJeu, "\n");
+
+            }
+            // detecter les centrales et leur routes adjacentes
+            for (int i = 0; i < nbCentrale + nbChateau; i++) {
+                fscanf(fichierJeu, "%d ", &jeu->batiments[i].pos_x);
+                fscanf(fichierJeu, "%d ", &jeu->batiments[i].pos_y);
+                fscanf(fichierJeu, "%d ", &jeu->batiments[i].type_batiment);
+                fscanf(fichierJeu, "%d ", &jeu->batiments[i].capacite);
+                fscanf(fichierJeu, "%f ", &jeu->batiments[i].position.pos_x);
+                fscanf(fichierJeu, "%f ", &jeu->batiments[i].position.pos_y);
+                fscanf(fichierJeu, "%f ", &jeu->batiments[i].position.pos_z);
+
+                int horizontal;
+                fscanf(fichierJeu, "%d", &horizontal);
+                // pour faire fonctionner le bouleen est reussir a lire le fichier quand meme car on print dans le fichier un int 0/1
+                if (horizontal == 1) {
+                    jeu->batiments[i].horizontal = true;
+                } else {
+                    jeu->batiments[i].horizontal = false;
+                }
+                switch (jeu->batiments[i].type_batiment) {
+                    case TYPE_CHATEAU_EAU:
+                        DrawModel(chateauEau, (Vector3){jeu->batiments[i].position.pos_x,jeu->batiments[i].position.pos_y,jeu->batiments[i].position.pos_z},0.002f,WHITE);
+                        break;
+                    case TYPE_CENTRALE:
+                        DrawModel(usine, (Vector3){jeu->batiments[i].position.pos_x,jeu->batiments[i].position.pos_y,jeu->batiments[i].position.pos_z},0.003f,WHITE);
+                        break;
+                }
+                fscanf(fichierJeu, "\n");
+
+            }
+            jeu->argent = argentPred;
         }
 
         EndMode3D();
