@@ -77,6 +77,9 @@ void menu1(Jeu* jeu){
     // Pour longueur et largeur: screenWidth 2000, screenHeight 1450
     float scrollingBack = 0.0f;
     bool exit = false;
+    bool regle = false;
+    bool regle2 = false;
+    bool debut = true;
 
 
     InitWindow(LARGEUR_ECRAN, HAUTEUR_ECRAN, "menu");
@@ -88,6 +91,13 @@ void menu1(Jeu* jeu){
     Image regles2 = LoadImage("../image/regles2.png");
     Image sauvegarde = LoadImage("../image/sauvegarder.png");
     Image sauvegarde2 = LoadImage("../image/sauvegarder2.png");
+    Image rules = LoadImage("../image/rules.png");
+    Image fondRules = LoadImage("../image/rules2.png");
+    Image rules2 = LoadImage("../image/fondRules.png");
+    Image suivant2 = LoadImage("../image/suivant.png");
+    Image retour2 = LoadImage("../image/retour.png");
+    Image suivant = LoadImage("../image/retour1.png");
+    Image retour = LoadImage("../image/suivant1.png");
 
     Texture2D Simcity = LoadTextureFromImage(simcity);
     Texture2D Logo = LoadTextureFromImage(logo);
@@ -97,6 +107,13 @@ void menu1(Jeu* jeu){
     Texture2D Regles2 = LoadTextureFromImage(regles2);
     Texture2D Sauvegarde = LoadTextureFromImage(sauvegarde);
     Texture2D Sauvegarde2 = LoadTextureFromImage(sauvegarde2);
+    Texture2D Rules = LoadTextureFromImage(rules);
+    Texture2D Rules2 = LoadTextureFromImage(rules2);
+    Texture2D FondRules = LoadTextureFromImage(fondRules);
+    Texture2D Suivant2 = LoadTextureFromImage(suivant2);
+    Texture2D Retour2 = LoadTextureFromImage(retour2);
+    Texture2D Retour = LoadTextureFromImage(retour);
+    Texture2D Suivant = LoadTextureFromImage(suivant);
 
     UnloadImage(simcity);
     UnloadImage(logo);
@@ -106,6 +123,13 @@ void menu1(Jeu* jeu){
     UnloadImage(regles);
     UnloadImage(sauvegarde2);
     UnloadImage(sauvegarde);
+    UnloadImage(rules);
+    UnloadImage(rules2);
+    UnloadImage(fondRules);
+    UnloadImage(suivant);
+    UnloadImage(suivant2);
+    UnloadImage(retour);
+    UnloadImage(retour2);
 
 
     SetTargetFPS(60);
@@ -119,36 +143,77 @@ void menu1(Jeu* jeu){
         BeginDrawing();
         ClearBackground(WHITE);
 
-        // DrawTexture(Simcity,0,0,WHITE);
-        DrawTextureEx(Simcity, (Vector2){scrollingBack, 0 }, 0.0f, 1.2f, WHITE);
-        DrawTextureEx(Simcity, (Vector2){simcity.width * 2 , 20 }, 0.0f, 1.2f, WHITE);
 
-        DrawTextureEx(Logo, (Vector2){130,40 }, 0.0f, 1.1f, WHITE);
+        if(debut){
+            DrawTextureEx(Simcity, (Vector2){scrollingBack, 0 }, 0.0f, 1.2f, WHITE);
+            DrawTextureEx(Simcity, (Vector2){simcity.width * 2 , 20 }, 0.0f, 1.2f, WHITE);
 
-        DrawTextureEx(Jouer, (Vector2){350,160 }, 0.0f, 0.3f, WHITE);
-        if((GetMousePosition().x >= 522) && (GetMousePosition().x <= 744) && (GetMousePosition().y >= 291) && (GetMousePosition().y <= 353)){
-            DrawTextureEx(Jouer2, (Vector2){350,160 }, 0.0f, 0.3f, WHITE);
-            if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-                choixM(&jeu);
+            DrawTextureEx(Logo, (Vector2){130,40 }, 0.0f, 1.1f, WHITE);
+
+            DrawTextureEx(Jouer, (Vector2){350,160 }, 0.0f, 0.3f, WHITE);
+            if((GetMousePosition().x >= 522) && (GetMousePosition().x <= 744) && (GetMousePosition().y >= 291) && (GetMousePosition().y <= 353)){
+                DrawTextureEx(Jouer2, (Vector2){350,160 }, 0.0f, 0.3f, WHITE);
+                if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                    choixM(&jeu);
+                }
+            }
+            DrawTextureEx(Sauvegarde, (Vector2){350,310 }, 0.0f, 0.3f, WHITE);
+            if((GetMousePosition().x >= 522) && (GetMousePosition().x <= 744) && (GetMousePosition().y >= 441) && (GetMousePosition().y <= 503)){
+                DrawTextureEx(Sauvegarde2, (Vector2){350,310 }, 0.0f, 0.3f, WHITE);
+                if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                    choixM(&jeu);
+                    affichageMapRaylib(jeu);
+                }
+            }
+            DrawTextureEx(Regles, (Vector2){350,460 }, 0.0f, 0.3f, WHITE);
+            if((GetMousePosition().x >= 522) && (GetMousePosition().x <= 744) && (GetMousePosition().y >= 591) && (GetMousePosition().y <= 653)){
+                DrawTextureEx(Regles2, (Vector2){350,460 }, 0.0f, 0.3f, WHITE);
+                if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                    debut = false;
+                    regle2 = false;
+                    regle = true;
+                }
             }
         }
-        DrawTextureEx(Sauvegarde, (Vector2){350,310 }, 0.0f, 0.3f, WHITE);
-        if((GetMousePosition().x >= 522) && (GetMousePosition().x <= 744) && (GetMousePosition().y >= 441) && (GetMousePosition().y <= 503)){
-            DrawTextureEx(Sauvegarde2, (Vector2){350,310 }, 0.0f, 0.3f, WHITE);
-            if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-                choixM(&jeu);
-                affichageMapRaylib(jeu);
+        //DrawText(TextFormat("Position souris : x = %d y = %d", GetMouseX(), GetMouseY()), 10, 15, 20, BLACK);
+        if(regle){
+            DrawTextureEx(FondRules,(Vector2){0,0},0,0.9f,WHITE);
+            DrawTextureEx(Rules, (Vector2){120,50 }, 0.0f, 0.55f, WHITE);
+            DrawTextureEx(Retour,(Vector2){25,-15},0.0f,0.2f,WHITE);
+            DrawTextureEx(Suivant,(Vector2){890,-15},0.0f,0.2f,WHITE);
+            DrawText(TextFormat("Position souris : x = %d y = %d", GetMouseX(), GetMouseY()), 10, 15, 20, BLACK);
+            if((GetMousePosition().x >= 140) && (GetMousePosition().x <= 293) && (GetMousePosition().y >= 80) && (GetMousePosition().y <= 125)){
+                DrawTextureEx(Retour2,(Vector2){25,-15},0.0f,0.2f,WHITE);
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                    regle = false;
+                    regle2 = false;
+                    debut = true;
+                }
+            }
+            if((GetMousePosition().x >= 1005) && (GetMousePosition().x <=1160) && (GetMousePosition().y >= 80) && (GetMousePosition().y <= 125)){
+                DrawTextureEx(Suivant2,(Vector2){890,-15},0.0f,0.2f,WHITE);
+                if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                    regle = false;
+                    debut = false;
+                    regle2 = true;
+                }
             }
         }
-        DrawTextureEx(Regles, (Vector2){350,460 }, 0.0f, 0.3f, WHITE);
-        if((GetMousePosition().x >= 522) && (GetMousePosition().x <= 744) && (GetMousePosition().y >= 591) && (GetMousePosition().y <= 653)){
-            DrawTextureEx(Regles2, (Vector2){350,460 }, 0.0f, 0.3f, WHITE);
-            if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-                choixM(&jeu);
-                affichageMapRaylib(jeu);
 
+        if(regle2){
+            DrawTextureEx(FondRules,(Vector2){0,0},0,0.9f,WHITE);
+            DrawTextureEx(Rules2, (Vector2){110,110 }, 0.0f, 0.55f, WHITE);
+            DrawTextureEx(Retour,(Vector2){25,-15},0.0f,0.2f,WHITE);
+            if((GetMousePosition().x >= 140) && (GetMousePosition().x <=293) && (GetMousePosition().y >= 80) && (GetMousePosition().y <= 125)){
+                DrawTextureEx(Retour2,(Vector2){25,-15},0.0f,0.2f,WHITE);
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                    regle2 = false;
+                    debut = false;
+                    regle = true;
+                }
             }
         }
+
 
         //DrawText("jouer", 940, 710, 100, RED);
         //si bouton dans la zone du bouton jouer d'une autre couleur
@@ -159,7 +224,7 @@ void menu1(Jeu* jeu){
     UnloadTexture(Simcity);
     UnloadTexture(Logo);
     UnloadTexture(Jouer);
-    UnloadTexture(Jouer2);
+    UnloadTexture(Jouer2); // a finir
     CloseWindow();
 }
 
@@ -268,6 +333,9 @@ void affichageMapRaylib(Jeu* jeu){
     bool centrale = false;
     bool road = false;
     bool destruction  = false;
+    bool niveauElec = false;
+    bool niveauEau = false;
+    bool niveauNormal = true;
 
     //mise en place de la camera en 3D
     Camera3D camera = {0};
@@ -347,7 +415,7 @@ void affichageMapRaylib(Jeu* jeu){
     Model herbe2 = LoadModel("../3D/grass_large.obj");
     Model herbe3 = LoadModel("../3D/grass_leafs.obj");
     Model maison1 = LoadModel("../3D/house_type02.obj");
-    Model cabane = LoadModel("../3D/hangar_smallA.obj");
+    Model cabane = LoadModel("../3D/tent_detailedClosed.obj");
     Model immeuble = LoadModel("../3D/large_buildingC.obj");
     Model gratteCiel = LoadModel("../3D/skyscraperF.obj");
     Model chateauEau = LoadModel("../3D/chateauEau.glb");
@@ -357,6 +425,14 @@ void affichageMapRaylib(Jeu* jeu){
     Model route3 = LoadModel("../3D/road_end.obj");
     Model route4 = LoadModel("../3D/road_intersectionPath.obj");
     Model route5 = LoadModel("../3D/road_straight.obj");
+    Model ruine = LoadModel("../3D/woodStructure.obj");
+    Model terrainVague = LoadModel("../3D/terrain.obj");
+
+
+
+
+
+
 
 
 
@@ -364,23 +440,27 @@ void affichageMapRaylib(Jeu* jeu){
     Image icone_chateau = LoadImage("../image/chateau.png");
     Image icone_centrale = LoadImage("../image/usine.png");
     Image icone_reseau_eau = LoadImage("../image/eau.png");
-    Image icone_reseau_elec = LoadImage("../image/elec.png");
+    Image icone_reseau_elec = LoadImage("../image/elect.png");
     Image icone_detruire_maison = LoadImage("../image/destructionMaison.png");
     Image icone_detruire_batiment = LoadImage("../image/destruction.png");
     Image icone_route = LoadImage("../image/route.png");
     Image eauBouton = LoadImage("../image/eauBouton.png");
     Image elecBouton = LoadImage("../image/electriciteBouton.png");
     Image habitantBouton = LoadImage("../image/habitantBouton.png");
+    Image temps = LoadImage("../image/temps.png");
 
     Image icone_maisonO = LoadImage("../image/maisonOmbre.png");
     Image icone_chateauO = LoadImage("../image/chateauOmbre.png");
     Image icone_centraleO = LoadImage("../image/usineOmbre.png");
     Image icone_reseau_eauO = LoadImage("../image/eauOmbre.png");
-    Image icone_reseau_elecO = LoadImage("../image/elecOmbre.png");
+    Image icone_reseau_elecO = LoadImage("../image/electOmbre.png");
     Image icone_detruire_maisonO = LoadImage("../image/destructionMaisonOmbre.png");
     Image icone_detruire_batimentO = LoadImage("../image/destructionOmbre.png");
     Image icone_routeO = LoadImage("../image/routeO.png");
     Image dollars = LoadImage("../image/dollars.png");
+    Image icone_M = LoadImage("../image/M.png");
+    Image icone_M_Ombre = LoadImage("../image/MOmbre.png");
+
 
 
     Texture2D Icone_maison = LoadTextureFromImage(icone_maison);
@@ -403,6 +483,9 @@ void affichageMapRaylib(Jeu* jeu){
     Texture2D ElecBouton = LoadTextureFromImage(elecBouton);
     Texture2D HabitantBouton = LoadTextureFromImage(habitantBouton);
     Texture2D Dollars = LoadTextureFromImage(dollars);
+    Texture2D Temps = LoadTextureFromImage(temps);
+    Texture2D Icone_M = LoadTextureFromImage(icone_M);
+    Texture2D Icone_M_Ombre = LoadTextureFromImage(icone_M_Ombre);
 
 
     UnloadImage(icone_maison);
@@ -425,6 +508,10 @@ void affichageMapRaylib(Jeu* jeu){
     UnloadImage(elecBouton);
     UnloadImage(habitantBouton);
     UnloadImage(dollars);
+    UnloadImage(temps);
+    UnloadImage(icone_M);
+    UnloadImage(icone_M_Ombre);
+
 
     SetCameraMode(camera, CAMERA_FREE);   // mode de camera libre
     SetExitKey(KEY_NULL);
@@ -487,33 +574,15 @@ void affichageMapRaylib(Jeu* jeu){
         }
 
 
-
-
-
-        DrawModel(sol,positionCubeSol,TAILLE_PLATEAU,VERT_HERBE);
-        dessinerCases(cases);
-        DrawCubeWires(positionContourCarte, TAILLE_MAP_Y, 0, TAILLE_MAP_X, BLACK);
-       // DrawGrid(50, 1);
-
-        for(int i = 0; i < 1000; i++){
-            DrawModel(herbe1, positionHerbe1[i], 1, WHITE);
-            i = i + 1;
-        }
-        for(int i = 0; i < 1000; i++){
-            DrawModel(herbe2, positionHerbe2[i], 1, GREEN);
-            i = i + 1;
-        }
-        for(int i = 0; i < 1000; i++){
-            DrawModel(herbe3, positionHerbe3[i], 1, LIME);
-            i = i + 1;
-        }
-
         if((GetMousePosition().x >= 50) && (GetMousePosition().x <= 100) && (GetMousePosition().y >= 214) && (GetMousePosition().y <= 273)){
             if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
                 centrale = false;
                 chateau = false;
                 road = false;
                 destruction = false;
+                niveauElec = false;
+                niveauEau = false;
+                niveauNormal = true;
                 maison = true;
             }
         }
@@ -543,6 +612,9 @@ void affichageMapRaylib(Jeu* jeu){
                 chateau = false;
                 road = false;
                 destruction = false;
+                niveauElec = false;
+                niveauEau = false;
+                niveauNormal = true;
                 centrale = true;
 
             }
@@ -573,6 +645,9 @@ void affichageMapRaylib(Jeu* jeu){
                 centrale = false;
                 road = false;
                 destruction = false;
+                niveauElec = false;
+                niveauEau = false;
+                niveauNormal = true;
                 chateau = true;
             }
         }
@@ -601,6 +676,9 @@ void affichageMapRaylib(Jeu* jeu){
                 centrale = false;
                 chateau = false;
                 destruction = false;
+                niveauElec = false;
+                niveauEau = false;
+                niveauNormal = true;
                 road = true;
             }
         }
@@ -628,6 +706,9 @@ void affichageMapRaylib(Jeu* jeu){
                 centrale = false;
                 chateau = false;
                 road = false;
+                niveauElec = false;
+                niveauEau = false;
+                niveauNormal = true;
                 destruction = true;
             }
         }
@@ -645,117 +726,425 @@ void affichageMapRaylib(Jeu* jeu){
                 }
             }
         }
-
-
-        for(int i = 0; i < jeu->nb_maisons; i++){
-            switch(jeu->maisons[i].niveau){
-                case NIVEAU_TERRAIN_VAGUE:
-                    DrawModel(maison1, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,WHITE);
-                    break;
-                case NIVEAU_RUINE:
-                    DrawModel(maison1, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,WHITE);
-                    break;
-                case NIVEAU_CABANE:
-                    DrawModel(cabane, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},1,WHITE);
-                    break;
-                case NIVEAU_MAISON:
-                    DrawModel(maison1, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,WHITE);
-                    break;
-                case NIVEAU_IMMEUBLE:
-                    DrawModel(immeuble, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2.7,WHITE);
-                    break;
-                case NIVEAU_GRATTE_CIEL:
-                    DrawModel(gratteCiel, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,WHITE);
-                    break;
+        if((GetMousePosition().x >= 710) && (GetMousePosition().x <=763) && (GetMousePosition().y >= 24) && (GetMousePosition().y <= 73)){
+            if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
+                maison = false;
+                centrale = false;
+                chateau = false;
+                road = false;
+                niveauEau = false;
+                destruction = false;
+                niveauNormal = false;
+                niveauElec = true;
             }
         }
+        if(niveauElec){
+            DrawModel(sol,positionCubeSol,TAILLE_PLATEAU,DARKGRAY);
+            dessinerCases(cases);
+            DrawCubeWires(positionContourCarte, TAILLE_MAP_Y, 0, TAILLE_MAP_X, BLACK);
+            // DrawGrid(50, 1);
 
-
-        for(int i = 0; i < jeu->nb_centrales+jeu->nb_chateau_eau; i++){
-            switch (jeu->batiments[i].type_batiment) {
-                case TYPE_CHATEAU_EAU:
-                    DrawModel(chateauEau, (Vector3){jeu->batiments[i].position.pos_x,jeu->batiments[i].position.pos_y,jeu->batiments[i].position.pos_z},0.002,WHITE);
-                    break;
-                case TYPE_CENTRALE:
-                    DrawModel(usine, (Vector3){jeu->batiments[i].position.pos_x,jeu->batiments[i].position.pos_y,jeu->batiments[i].position.pos_z},0.003,WHITE);
-                    break;
+            for(int i = 0; i < 1000; i++){
+                DrawModel(herbe1, positionHerbe1[i], 1, DARKGRAY);
+                i = i + 1;
             }
-        }
+            for(int i = 0; i < 1000; i++){
+                DrawModel(herbe2, positionHerbe2[i], 1, DARKGRAY);
+                i = i + 1;
+            }
+            for(int i = 0; i < 1000; i++){
+                DrawModel(herbe3, positionHerbe3[i], 1, DARKGRAY);
+                i = i + 1;
+            }
 
-        for(int i = 0; i < jeu->nb_routes; i++){
-            bool routes_a_cote[4] = {false};
-            Liste* tmp = jeu->routes[i].adjacente_route;
-            while(tmp != NULL){
-                if(jeu->routes[tmp->numero].pos_x < jeu->routes[i].pos_x){
-                    routes_a_cote[ROUTE_OUEST] = true;
+
+            for(int i = 0; i < jeu->nb_maisons; i++){
+                switch(jeu->maisons[i].niveau){
+                    case NIVEAU_TERRAIN_VAGUE:
+                        DrawModel(terrainVague, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y + 0.01,jeu->maisons[i].position.pos_z},3,DARKGRAY);
+                        break;
+                    case NIVEAU_RUINE:
+                        DrawModel(ruine, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,DARKGRAY);
+                        DrawModel(terrainVague, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y + 0.01,jeu->maisons[i].position.pos_z},3,DARKGRAY);
+                        break;
+                    case NIVEAU_CABANE:
+                        DrawModel(cabane, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,DARKGRAY);
+                        break;
+                    case NIVEAU_MAISON:
+                        DrawModel(maison1, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,DARKGRAY);
+                        break;
+                    case NIVEAU_IMMEUBLE:
+                        DrawModel(immeuble, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2.7,DARKGRAY);
+                        break;
+                    case NIVEAU_GRATTE_CIEL:
+                        DrawModel(gratteCiel, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,DARKGRAY);
+                        break;
                 }
-                else if (jeu->routes[tmp->numero].pos_x > jeu->routes[i].pos_x){
-                    routes_a_cote[ROUTE_EST] = true;
+            }
+
+
+            for(int i = 0; i < jeu->nb_centrales+jeu->nb_chateau_eau; i++){
+                switch (jeu->batiments[i].type_batiment) {
+                    case TYPE_CHATEAU_EAU:
+                        DrawModel(chateauEau, (Vector3){jeu->batiments[i].position.pos_x,jeu->batiments[i].position.pos_y,jeu->batiments[i].position.pos_z},0.002f,DARKGRAY);
+                        break;
+                    case TYPE_CENTRALE:
+                        DrawModel(usine, (Vector3){jeu->batiments[i].position.pos_x,jeu->batiments[i].position.pos_y,jeu->batiments[i].position.pos_z},0.003f,DARKGRAY);
+                        break;
                 }
-                else if(jeu->routes[tmp->numero].pos_y < jeu->routes[i].pos_y){
-                    routes_a_cote[ROUTE_NORD] = true;
+            }
+
+            for(int i = 0; i < jeu->nb_routes; i++){
+                bool routes_a_cote[4] = {false};
+                Liste* tmp = jeu->routes[i].adjacente_route;
+                while(tmp != NULL){
+                    if(jeu->routes[tmp->numero].pos_x < jeu->routes[i].pos_x){
+                        routes_a_cote[ROUTE_OUEST] = true;
+                    }
+                    else if (jeu->routes[tmp->numero].pos_x > jeu->routes[i].pos_x){
+                        routes_a_cote[ROUTE_EST] = true;
+                    }
+                    else if(jeu->routes[tmp->numero].pos_y < jeu->routes[i].pos_y){
+                        routes_a_cote[ROUTE_NORD] = true;
+                    }
+                    else{
+                        routes_a_cote[ROUTE_SUD] = true;
+                    }
+                    tmp = tmp->suivant;
+                }
+                if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_EST] && routes_a_cote[ROUTE_OUEST]){
+                    DrawModel(route2, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,YELLOW);
+
+                }
+                else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_EST]){
+                    DrawModelEx(route4, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 180.0f, (Vector3){1,1,1}, YELLOW);
+                }
+                else if(routes_a_cote[ROUTE_OUEST] && routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_EST]){
+                    DrawModelEx(route4, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, -90.0f, (Vector3){1,1,1}, YELLOW);
+                }
+                else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_OUEST] && routes_a_cote[ROUTE_EST]){
+                    DrawModelEx(route4, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 90.0f, (Vector3){1,1,1}, YELLOW);
+                }
+                else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_OUEST]){
+                    DrawModel(route4, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,YELLOW);
+                }
+                else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_NORD]){
+                    DrawModel(route5, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,YELLOW);
+                }
+                else if(routes_a_cote[ROUTE_EST] && routes_a_cote[ROUTE_OUEST]){
+                    DrawModelEx(route5, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 90.0f, (Vector3){1,1,1}, YELLOW);
+                }
+                else if(routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_OUEST]){
+                    DrawModelEx(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 0.0f, (Vector3){1,1,1}, YELLOW);
+                }
+                else if(routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_EST]){
+                    DrawModelEx(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, -90.0f, (Vector3){1,1,1}, YELLOW);
+                }
+                else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_OUEST]){
+                    DrawModelEx(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 90.0f, (Vector3){1,1,1}, YELLOW);
+                }
+                else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_EST]){
+                    DrawModelEx(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, -180.0f, (Vector3){1,1,1}, YELLOW);
+                }
+                else if(routes_a_cote[ROUTE_SUD]){
+                    DrawModelEx(route3, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 0.0f, (Vector3){1,1,1}, YELLOW);
+                }
+                else if(routes_a_cote[ROUTE_NORD]){
+                    DrawModelEx(route3, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 180.0f, (Vector3){1,1,1}, YELLOW);
+                }
+                else if(routes_a_cote[ROUTE_OUEST]){
+                    DrawModelEx(route3, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, -90.0f, (Vector3){1,1,1}, YELLOW);
+                }
+                else if(routes_a_cote[ROUTE_EST]){
+                    DrawModelEx(route3, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 90.0f, (Vector3){1,1,1}, YELLOW);
                 }
                 else{
-                    routes_a_cote[ROUTE_SUD] = true;
+                    DrawModel(route5, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,YELLOW);
+
                 }
-                tmp = tmp->suivant;
-            }
-            if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_EST] && routes_a_cote[ROUTE_OUEST]){
-                DrawModel(route2, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,WHITE);
-
-            }
-            else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_EST]){
-                DrawModelEx(route4, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 180.0f, (Vector3){1,1,1}, WHITE);
-            }
-            else if(routes_a_cote[ROUTE_OUEST] && routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_EST]){
-                DrawModelEx(route4, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, -90.0f, (Vector3){1,1,1}, WHITE);
-            }
-            else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_OUEST] && routes_a_cote[ROUTE_EST]){
-                DrawModelEx(route4, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 90.0f, (Vector3){1,1,1}, WHITE);
-            }
-            else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_OUEST]){
-                DrawModel(route4, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,WHITE);
-            }
-            else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_NORD]){
-                DrawModel(route5, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,WHITE);
-            }
-            else if(routes_a_cote[ROUTE_EST] && routes_a_cote[ROUTE_OUEST]){
-                DrawModelEx(route5, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 90.0f, (Vector3){1,1,1}, WHITE);
-            }
-            else if(routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_OUEST]){
-                DrawModelEx(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 0.0f, (Vector3){1,1,1}, WHITE);
-            }
-            else if(routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_EST]){
-                DrawModelEx(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, -90.0f, (Vector3){1,1,1}, WHITE);
-            }
-            else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_OUEST]){
-                DrawModelEx(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 90.0f, (Vector3){1,1,1}, WHITE);
-            }
-            else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_EST]){
-                DrawModelEx(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, -180.0f, (Vector3){1,1,1}, WHITE);
-            }
-            else if(routes_a_cote[ROUTE_SUD]){
-                DrawModelEx(route3, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 0.0f, (Vector3){1,1,1}, WHITE);
-            }
-            else if(routes_a_cote[ROUTE_NORD]){
-                DrawModelEx(route3, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 180.0f, (Vector3){1,1,1}, WHITE);
-            }
-            else if(routes_a_cote[ROUTE_OUEST]){
-                DrawModelEx(route3, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, -90.0f, (Vector3){1,1,1}, WHITE);
-            }
-            else if(routes_a_cote[ROUTE_EST]){
-                DrawModelEx(route3, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 90.0f, (Vector3){1,1,1}, WHITE);
-            }
-            else{
-                DrawModel(route5, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,WHITE);
-
             }
         }
+        if((GetMousePosition().x >= 540) && (GetMousePosition().x <=593) && (GetMousePosition().y >= 24) && (GetMousePosition().y <= 73)){
+            if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
+                maison = false;
+                centrale = false;
+                chateau = false;
+                road = false;
+                destruction = false;
+                niveauElec = false;
+                niveauNormal = false;
+                niveauEau = true;
+            }
+        }
+        if(niveauEau){
+            DrawModel(sol,positionCubeSol,TAILLE_PLATEAU,DARKGRAY);
+            dessinerCases(cases);
+            DrawCubeWires(positionContourCarte, TAILLE_MAP_Y, 0, TAILLE_MAP_X, BLACK);
+            // DrawGrid(50, 1);
+
+            for(int i = 0; i < 1000; i++){
+                DrawModel(herbe1, positionHerbe1[i], 1, DARKGRAY);
+                i = i + 1;
+            }
+            for(int i = 0; i < 1000; i++){
+                DrawModel(herbe2, positionHerbe2[i], 1, DARKGRAY);
+                i = i + 1;
+            }
+            for(int i = 0; i < 1000; i++){
+                DrawModel(herbe3, positionHerbe3[i], 1, DARKGRAY);
+                i = i + 1;
+            }
 
 
+            for(int i = 0; i < jeu->nb_maisons; i++){
+                switch(jeu->maisons[i].niveau){
+                    case NIVEAU_TERRAIN_VAGUE:
+                        DrawModel(terrainVague, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y + 0.01,jeu->maisons[i].position.pos_z},3,DARKGRAY);
+                        break;
+                    case NIVEAU_RUINE:
+                        DrawModel(ruine, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,DARKGRAY);
+                        DrawModel(terrainVague, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y + 0.01,jeu->maisons[i].position.pos_z},3,DARKGRAY);
+                        break;
+                    case NIVEAU_CABANE:
+                        DrawModel(cabane, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,DARKGRAY);
+                        break;
+                    case NIVEAU_MAISON:
+                        DrawModel(maison1, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,DARKGRAY);
+                        break;
+                    case NIVEAU_IMMEUBLE:
+                        DrawModel(immeuble, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2.7,DARKGRAY);
+                        break;
+                    case NIVEAU_GRATTE_CIEL:
+                        DrawModel(gratteCiel, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,DARKGRAY);
+                        break;
+                }
+            }
+
+
+            for(int i = 0; i < jeu->nb_centrales+jeu->nb_chateau_eau; i++){
+                switch (jeu->batiments[i].type_batiment) {
+                    case TYPE_CHATEAU_EAU:
+                        DrawModel(chateauEau, (Vector3){jeu->batiments[i].position.pos_x,jeu->batiments[i].position.pos_y,jeu->batiments[i].position.pos_z},0.002f,DARKGRAY);
+                        break;
+                    case TYPE_CENTRALE:
+                        DrawModel(usine, (Vector3){jeu->batiments[i].position.pos_x,jeu->batiments[i].position.pos_y,jeu->batiments[i].position.pos_z},0.003f,DARKGRAY);
+                        break;
+                }
+            }
+
+            for(int i = 0; i < jeu->nb_routes; i++){
+                bool routes_a_cote[4] = {false};
+                Liste* tmp = jeu->routes[i].adjacente_route;
+                while(tmp != NULL){
+                    if(jeu->routes[tmp->numero].pos_x < jeu->routes[i].pos_x){
+                        routes_a_cote[ROUTE_OUEST] = true;
+                    }
+                    else if (jeu->routes[tmp->numero].pos_x > jeu->routes[i].pos_x){
+                        routes_a_cote[ROUTE_EST] = true;
+                    }
+                    else if(jeu->routes[tmp->numero].pos_y < jeu->routes[i].pos_y){
+                        routes_a_cote[ROUTE_NORD] = true;
+                    }
+                    else{
+                        routes_a_cote[ROUTE_SUD] = true;
+                    }
+                    tmp = tmp->suivant;
+                }
+                if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_EST] && routes_a_cote[ROUTE_OUEST]){
+                    DrawModel(route2, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,SKYBLUE);
+
+                }
+                else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_EST]){
+                    DrawModelEx(route4, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 180.0f, (Vector3){1,1,1}, SKYBLUE);
+                }
+                else if(routes_a_cote[ROUTE_OUEST] && routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_EST]){
+                    DrawModelEx(route4, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, -90.0f, (Vector3){1,1,1}, SKYBLUE);
+                }
+                else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_OUEST] && routes_a_cote[ROUTE_EST]){
+                    DrawModelEx(route4, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 90.0f, (Vector3){1,1,1}, SKYBLUE);
+                }
+                else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_OUEST]){
+                    DrawModel(route4, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,SKYBLUE);
+                }
+                else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_NORD]){
+                    DrawModel(route5, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,SKYBLUE);
+                }
+                else if(routes_a_cote[ROUTE_EST] && routes_a_cote[ROUTE_OUEST]){
+                    DrawModelEx(route5, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 90.0f, (Vector3){1,1,1}, SKYBLUE);
+                }
+                else if(routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_OUEST]){
+                    DrawModelEx(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 0.0f, (Vector3){1,1,1}, SKYBLUE);
+                }
+                else if(routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_EST]){
+                    DrawModelEx(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, -90.0f, (Vector3){1,1,1}, SKYBLUE);
+                }
+                else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_OUEST]){
+                    DrawModelEx(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 90.0f, (Vector3){1,1,1}, SKYBLUE);
+                }
+                else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_EST]){
+                    DrawModelEx(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, -180.0f, (Vector3){1,1,1}, SKYBLUE);
+                }
+                else if(routes_a_cote[ROUTE_SUD]){
+                    DrawModelEx(route3, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 0.0f, (Vector3){1,1,1}, SKYBLUE);
+                }
+                else if(routes_a_cote[ROUTE_NORD]){
+                    DrawModelEx(route3, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 180.0f, (Vector3){1,1,1}, SKYBLUE);
+                }
+                else if(routes_a_cote[ROUTE_OUEST]){
+                    DrawModelEx(route3, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, -90.0f, (Vector3){1,1,1}, SKYBLUE);
+                }
+                else if(routes_a_cote[ROUTE_EST]){
+                    DrawModelEx(route3, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 90.0f, (Vector3){1,1,1}, SKYBLUE);
+                }
+                else{
+                    DrawModel(route5, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,SKYBLUE);
+
+                }
+            }
+
+        }
+        if((GetMousePosition().x >= 627) && (GetMousePosition().x <=675) && (GetMousePosition().y >= 21) && (GetMousePosition().y <= 71)){
+            if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
+                maison = false;
+                centrale = false;
+                chateau = false;
+                road = false;
+                destruction = false;
+                niveauElec = false;
+                niveauEau = false;
+                niveauNormal = true;
+            }
+        }
+        if(niveauNormal){
+            DrawModel(sol,positionCubeSol,TAILLE_PLATEAU,VERT_HERBE);
+            dessinerCases(cases);
+            DrawCubeWires(positionContourCarte, TAILLE_MAP_Y, 0, TAILLE_MAP_X, BLACK);
+            // DrawGrid(50, 1);
+
+            for(int i = 0; i < 1000; i++){
+                DrawModel(herbe1, positionHerbe1[i], 1, WHITE);
+                i = i + 1;
+            }
+            for(int i = 0; i < 1000; i++){
+                DrawModel(herbe2, positionHerbe2[i], 1, GREEN);
+                i = i + 1;
+            }
+            for(int i = 0; i < 1000; i++){
+                DrawModel(herbe3, positionHerbe3[i], 1, LIME);
+                i = i + 1;
+            }
+
+
+            for(int i = 0; i < jeu->nb_maisons; i++){
+                switch(jeu->maisons[i].niveau){
+                    case NIVEAU_TERRAIN_VAGUE:
+                        DrawModel(terrainVague, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y + 0.01,jeu->maisons[i].position.pos_z},3,WHITE);
+                        break;
+                    case NIVEAU_RUINE:
+                        DrawModel(ruine, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,WHITE);
+                        DrawModel(terrainVague, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y + 0.01,jeu->maisons[i].position.pos_z},3,WHITE);
+                        break;
+                    case NIVEAU_CABANE:
+                        DrawModel(cabane, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,WHITE);
+                        break;
+                    case NIVEAU_MAISON:
+                        DrawModel(maison1, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,WHITE);
+                        break;
+                    case NIVEAU_IMMEUBLE:
+                        DrawModel(immeuble, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2.7,WHITE);
+                        break;
+                    case NIVEAU_GRATTE_CIEL:
+                        DrawModel(gratteCiel, (Vector3){jeu->maisons[i].position.pos_x,jeu->maisons[i].position.pos_y,jeu->maisons[i].position.pos_z},2,WHITE);
+                        break;
+                }
+            }
+
+
+            for(int i = 0; i < jeu->nb_centrales+jeu->nb_chateau_eau; i++){
+                switch (jeu->batiments[i].type_batiment) {
+                    case TYPE_CHATEAU_EAU:
+                        DrawModel(chateauEau, (Vector3){jeu->batiments[i].position.pos_x,jeu->batiments[i].position.pos_y,jeu->batiments[i].position.pos_z},0.002f,WHITE);
+                        break;
+                    case TYPE_CENTRALE:
+                        DrawModel(usine, (Vector3){jeu->batiments[i].position.pos_x,jeu->batiments[i].position.pos_y,jeu->batiments[i].position.pos_z},0.003f,WHITE);
+                        break;
+                }
+            }
+
+            for(int i = 0; i < jeu->nb_routes; i++){
+                bool routes_a_cote[4] = {false};
+                Liste* tmp = jeu->routes[i].adjacente_route;
+                while(tmp != NULL){
+                    if(jeu->routes[tmp->numero].pos_x < jeu->routes[i].pos_x){
+                        routes_a_cote[ROUTE_OUEST] = true;
+                    }
+                    else if (jeu->routes[tmp->numero].pos_x > jeu->routes[i].pos_x){
+                        routes_a_cote[ROUTE_EST] = true;
+                    }
+                    else if(jeu->routes[tmp->numero].pos_y < jeu->routes[i].pos_y){
+                        routes_a_cote[ROUTE_NORD] = true;
+                    }
+                    else{
+                        routes_a_cote[ROUTE_SUD] = true;
+                    }
+                    tmp = tmp->suivant;
+                }
+                if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_EST] && routes_a_cote[ROUTE_OUEST]){
+                    DrawModel(route2, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,WHITE);
+
+                }
+                else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_EST]){
+                    DrawModelEx(route4, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 180.0f, (Vector3){1,1,1}, WHITE);
+                }
+                else if(routes_a_cote[ROUTE_OUEST] && routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_EST]){
+                    DrawModelEx(route4, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, -90.0f, (Vector3){1,1,1}, WHITE);
+                }
+                else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_OUEST] && routes_a_cote[ROUTE_EST]){
+                    DrawModelEx(route4, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 90.0f, (Vector3){1,1,1}, WHITE);
+                }
+                else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_OUEST]){
+                    DrawModel(route4, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,WHITE);
+                }
+                else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_NORD]){
+                    DrawModel(route5, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,WHITE);
+                }
+                else if(routes_a_cote[ROUTE_EST] && routes_a_cote[ROUTE_OUEST]){
+                    DrawModelEx(route5, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 90.0f, (Vector3){1,1,1}, WHITE);
+                }
+                else if(routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_OUEST]){
+                    DrawModelEx(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 0.0f, (Vector3){1,1,1}, WHITE);
+                }
+                else if(routes_a_cote[ROUTE_NORD] && routes_a_cote[ROUTE_EST]){
+                    DrawModelEx(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, -90.0f, (Vector3){1,1,1}, WHITE);
+                }
+                else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_OUEST]){
+                    DrawModelEx(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 90.0f, (Vector3){1,1,1}, WHITE);
+                }
+                else if(routes_a_cote[ROUTE_SUD] && routes_a_cote[ROUTE_EST]){
+                    DrawModelEx(route1, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, -180.0f, (Vector3){1,1,1}, WHITE);
+                }
+                else if(routes_a_cote[ROUTE_SUD]){
+                    DrawModelEx(route3, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 0.0f, (Vector3){1,1,1}, WHITE);
+                }
+                else if(routes_a_cote[ROUTE_NORD]){
+                    DrawModelEx(route3, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 180.0f, (Vector3){1,1,1}, WHITE);
+                }
+                else if(routes_a_cote[ROUTE_OUEST]){
+                    DrawModelEx(route3, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, -90.0f, (Vector3){1,1,1}, WHITE);
+                }
+                else if(routes_a_cote[ROUTE_EST]){
+                    DrawModelEx(route3, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z}, axeRotation, 90.0f, (Vector3){1,1,1}, WHITE);
+                }
+                else{
+                    DrawModel(route5, (Vector3){jeu->routes[i].position.pos_x,jeu->routes[i].position.pos_y,jeu->routes[i].position.pos_z},1,WHITE);
+
+                }
+            }
+
+        }
 
         EndMode3D();
-       // DrawText(TextFormat("Position souris : x = %d y = %d", GetMouseX(), GetMouseY()), 10, 15, 20, BLACK);
+        DrawText(TextFormat("Position souris : x = %d y = %d", GetMouseX(), GetMouseY()), 10, 15, 20, BLACK);
 
 
 
@@ -774,10 +1163,14 @@ void affichageMapRaylib(Jeu* jeu){
         DrawText(TextFormat("%d ", jeu->eau), 30, 82, 20, WHITE);
         DrawTextureEx(ElecBouton,(Vector2){20, 20 }, 0.0f, 0.06f, WHITE);
         DrawText(TextFormat("%d ", jeu->electricite), 30, 42, 20, WHITE);
+        DrawTextureEx(Temps,(Vector2){1150, 660 }, 0.0f, 0.06f, WHITE);
+       // DrawText(TextFormat("%d ", jeu->electricite), 30, 202, 20, WHITE);
 
 
         DrawRectangleGradientV(20,200,115,500,DARKGREEN,GREEN);
         DrawRectangleLines(20,200,115,500,BLACK);
+        DrawRectangleGradientV(525,15,250,65,DARKGREEN,GREEN);
+        DrawRectangleLines(525,15,250,65,BLACK);
 
         DrawTextureEx(Icone_maison,(Vector2){-20, 190}, 0.0f, 0.1f, WHITE);
         if((GetMousePosition().x >= 50) && (GetMousePosition().x <= 100) && (GetMousePosition().y >= 214) && (GetMousePosition().y <= 273)){
@@ -802,6 +1195,21 @@ void affichageMapRaylib(Jeu* jeu){
         DrawTextureEx(Icone_destruction_bat,(Vector2){-20, 590 }, 0.0f, 0.1f, WHITE);
         if((GetMousePosition().x >= 45) && (GetMousePosition().x <= 105) && (GetMousePosition().y >= 615) && (GetMousePosition().y <= 673)){
             DrawTextureEx(Icone_destruction_batO, (Vector2){-20,590 }, 0.0f, 0.1f, WHITE);
+        }
+
+        DrawTextureEx(Icone_reseau_eau,(Vector2){470,-5},0,0.1f,WHITE);
+        if((GetMousePosition().x >= 540) && (GetMousePosition().x <=593) && (GetMousePosition().y >= 24) && (GetMousePosition().y <= 73)){
+            DrawTextureEx(Icone_reseau_eauO,(Vector2){470,-5},0,0.1f,WHITE);
+        }
+
+        DrawTextureEx(Icone_reseau_elec,(Vector2){640,-5},0,0.1f,WHITE);
+        if((GetMousePosition().x >= 710) && (GetMousePosition().x <=763) && (GetMousePosition().y >= 24) && (GetMousePosition().y <= 73)){
+            DrawTextureEx(Icone_reseau_elecO,(Vector2){640,-5},0,0.1f,WHITE);
+        }
+
+        DrawTextureEx(Icone_M,(Vector2){580,5},0,0.075f,WHITE);
+        if((GetMousePosition().x >= 627) && (GetMousePosition().x <=675) && (GetMousePosition().y >= 21) && (GetMousePosition().y <= 71)){
+            DrawTextureEx(Icone_M_Ombre,(Vector2){580,5},0,0.075f,WHITE);
         }
 
         DrawFPS(10, 10);
