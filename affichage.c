@@ -451,7 +451,11 @@ void affichageMapRaylib(Jeu* jeu, bool lancer){
     Image sauvegarde = LoadImage("../image/sauvegarde.png");
     Image sauvegardeOui = LoadImage("../image/sauvegarderOui.png");
     Image sauvegarderNon = LoadImage("../image/sauvegarderNon.png");
-    Image quitter = LoadImage("../image/quitter.png");
+    Image quitter = LoadImage("../image/demande.png");
+    Image quitterOui = LoadImage("../image/demandeOui.png");
+    Image quitterNon = LoadImage("../image/demandeNon.png");
+
+
 
     Image icone_maisonO = LoadImage("../image/maisonOmbre.png");
     Image icone_chateauO = LoadImage("../image/chateauOmbre.png");
@@ -468,6 +472,10 @@ void affichageMapRaylib(Jeu* jeu, bool lancer){
     Texture2D SauvegardeOui = LoadTextureFromImage(sauvegardeOui);
     Texture2D SauvegarderNon = LoadTextureFromImage(sauvegarderNon);
     Texture2D Quitter = LoadTextureFromImage(quitter);
+    Texture2D QuitterOui = LoadTextureFromImage(quitterOui);
+    Texture2D QuitterNon = LoadTextureFromImage(quitterNon);
+
+
 
 
 
@@ -523,6 +531,8 @@ void affichageMapRaylib(Jeu* jeu, bool lancer){
     UnloadImage(sauvegardeOui);
     UnloadImage(sauvegarderNon);
     UnloadImage(quitter);
+    UnloadImage(quitterOui);
+    UnloadImage(quitterNon);
 
 
     SetCameraMode(camera, CAMERA_FREE);   // mode de camera libre
@@ -541,14 +551,16 @@ void affichageMapRaylib(Jeu* jeu, bool lancer){
             demandeDeFermetureWindow = true;
         }
         if (demandeDeFermetureWindow == true){
+            if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
+                if ((GetMousePosition().x >= 520) && (GetMousePosition().x <=565) && (GetMousePosition().y >= 344) && (GetMousePosition().y <= 387)){
+                    fermetureWindow = true;
+                    sauvegarderJeu(jeu);
+                }
+                else if ((GetMousePosition().x >= 768) && (GetMousePosition().x <=806) && (GetMousePosition().y >= 344) && (GetMousePosition().y <= 387)){
+                    demandeDeFermetureWindow = false;
+                }
+            }
 
-            if (IsKeyPressed(KEY_Y)){
-                fermetureWindow = true;
-                sauvegarderJeu(jeu);
-            }
-            else if (IsKeyPressed(KEY_N)){
-                demandeDeFermetureWindow = false;
-            }
         }
 
         UpdateCamera(&camera);
@@ -1390,8 +1402,13 @@ void affichageMapRaylib(Jeu* jeu, bool lancer){
 
 
         if (demandeDeFermetureWindow){
-            DrawRectangle(0, 100, LARGEUR_ECRAN, 200, BLACK);
-            DrawText("Voulez vous fermer la fenetre ? [Y/N]", 325, 180, 30, WHITE);
+            DrawTextureEx(Quitter,(Vector2){200,50},0,0.5f,WHITE);
+            if ((GetMousePosition().x >= 520) && (GetMousePosition().x <=565) && (GetMousePosition().y >= 344) && (GetMousePosition().y <= 387)){
+                DrawTextureEx(QuitterOui,(Vector2){200,50},0,0.5f,WHITE);
+            }
+            else if ((GetMousePosition().x >= 768) && (GetMousePosition().x <=806) && (GetMousePosition().y >= 344) && (GetMousePosition().y <= 387)){
+                DrawTextureEx(QuitterNon,(Vector2){200,50},0,0.5f,WHITE);
+            }
         }
 
         EndDrawing();
