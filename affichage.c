@@ -132,17 +132,17 @@ void menu1(Jeu* jeu){
                 choixM(&jeu);
             }
         }
-        DrawTextureEx(Regles, (Vector2){350,310 }, 0.0f, 0.3f, WHITE);
+        DrawTextureEx(Sauvegarde, (Vector2){350,310 }, 0.0f, 0.3f, WHITE);
         if((GetMousePosition().x >= 522) && (GetMousePosition().x <= 744) && (GetMousePosition().y >= 441) && (GetMousePosition().y <= 503)){
-            DrawTextureEx(Regles2, (Vector2){350,310 }, 0.0f, 0.3f, WHITE);
+            DrawTextureEx(Sauvegarde2, (Vector2){350,310 }, 0.0f, 0.3f, WHITE);
             if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
                 choixM(&jeu);
                 affichageMapRaylib(jeu);
             }
         }
-        DrawTextureEx(Sauvegarde, (Vector2){350,460 }, 0.0f, 0.3f, WHITE);
+        DrawTextureEx(Regles, (Vector2){350,460 }, 0.0f, 0.3f, WHITE);
         if((GetMousePosition().x >= 522) && (GetMousePosition().x <= 744) && (GetMousePosition().y >= 591) && (GetMousePosition().y <= 653)){
-            DrawTextureEx(Sauvegarde2, (Vector2){350,460 }, 0.0f, 0.3f, WHITE);
+            DrawTextureEx(Regles2, (Vector2){350,460 }, 0.0f, 0.3f, WHITE);
             if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
                 choixM(&jeu);
                 affichageMapRaylib(jeu);
@@ -357,6 +357,7 @@ void affichageMapRaylib(Jeu* jeu){
     Model route3 = LoadModel("../3D/road_end.obj");
     Model route4 = LoadModel("../3D/road_intersectionPath.obj");
     Model route5 = LoadModel("../3D/road_straight.obj");
+
 
 
     Image icone_maison = LoadImage("../image/maison.png");
