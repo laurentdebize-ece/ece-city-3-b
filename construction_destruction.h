@@ -91,5 +91,7 @@ void choix_mode_jeu (Jeu *jeu);
 void evolution_et_regression(Jeu* jeu,int nummaison);
 void evolution_maison (Jeu *jeu, int nummaison);
 bool regression_type_maison(Jeu*jeu, int nummaison);
+void maj_totale(Jeu *jeu);
+void detection_temps(Jeu *jeu);
 
 #endif

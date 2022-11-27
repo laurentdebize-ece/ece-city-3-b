@@ -1,7 +1,8 @@
 #include "compteur.h"
 #include <stdio.h>
 #include "structure.h"
-#include "construction_destruction.h"
+#include "eau.h"
+#include "elec.h"
 
 void maj_compteurs(Jeu *jeu) {
     jeu->tot_eau = 5000 * jeu->nb_chateau_eau;
@@ -11,48 +12,17 @@ void maj_compteurs(Jeu *jeu) {
     calcul_elec(jeu);
 }
 
-void detection_temps(Jeu *jeu) {
-    time_t temps = time(NULL);
-    if (jeu->temps != temps) {
-        jeu->temps = temps;
-        jeu->compteur_impot++;
-        if (jeu->compteur_impot == 15){
-            jeu->compteur_impot = 0;
-            impot(jeu);
-        }
-        for (int i = 0; i < jeu->nb_maisons; i++) {
-            jeu->maisons[i].compteur_evolution++;
-            if (jeu->maisons[i].compteur_evolution == 15) {
-                jeu->maisons[i].compteur_evolution = 0;
-                evolution_et_regression(jeu, i);
-                maj_compteurs(jeu);
-            }
-        }
-    }
-}
-
 void impot(Jeu *jeu) {
     jeu->argent += jeu->population * 10;
 }
 
 void calcul_eau(Jeu* jeu){
-    int eau=0;
-        for(int i = 0; i < jeu->nb_maisons; i++){
-            eau+=jeu->maisons[i].eau;
-
-        }
-        jeu->eau= jeu->tot_eau - eau;
+    jeu->eau = jeu->tot_eau - jeu->population;
 
 }
 
 void calcul_elec(Jeu* jeu){
-    int elec=0, electot=0;
-
-        for (int i = 0; i < jeu->nb_maisons; i++) {
-            elec += jeu->maisons[i].electricite;
-        }
-        electot = jeu->tot_electricite - elec;
-        jeu->electricite = electot;
+    jeu->electricite = jeu->tot_electricite - jeu->population;
 }
 
 void compteur_population(Jeu* jeu){

@@ -51,12 +51,14 @@ void choixM(Jeu** jeu){
         if((GetMousePosition().x >= 204) && (GetMousePosition().x <=  485) && (GetMousePosition().y >= 334) && (GetMousePosition().y <= 414)){
             DrawTextureEx(Capitaliste, (Vector2){63,50 }, 0.0f, 0.6f, WHITE);
             if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                (*jeu)->mode_jeu = MODE_CAPITALISTE;
                 affichageMapRaylib(*jeu);
             }
         }
         if((GetMousePosition().x >= 780) && (GetMousePosition().x <=  1061) && (GetMousePosition().y >= 334) && (GetMousePosition().y <= 414)){
             DrawTextureEx(Communiste, (Vector2){63,50 }, 0.0f, 0.6f, WHITE);
             if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                (*jeu)->mode_jeu = MODE_COMMUNISTE;
                 affichageMapRaylib(*jeu);
             }
         }
@@ -135,7 +137,7 @@ void menu1(Jeu* jeu){
             DrawTextureEx(Regles2, (Vector2){350,310 }, 0.0f, 0.3f, WHITE);
             if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
                 choixM(&jeu);
-                affichageMapRaylib(&jeu);
+                affichageMapRaylib(jeu);
             }
         }
         DrawTextureEx(Sauvegarde, (Vector2){350,460 }, 0.0f, 0.3f, WHITE);
@@ -143,7 +145,7 @@ void menu1(Jeu* jeu){
             DrawTextureEx(Sauvegarde2, (Vector2){350,460 }, 0.0f, 0.3f, WHITE);
             if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
                 choixM(&jeu);
-                affichageMapRaylib(&jeu);
+                affichageMapRaylib(jeu);
 
             }
         }
@@ -340,21 +342,21 @@ void affichageMapRaylib(Jeu* jeu){
         positionHerbe3[i].z = -rand()%24;
         i = i + 1;
     }
-    Model sol = LoadModel("..\\3D\\ground_grass.obj");
-    Model herbe1 = LoadModel("..\\3D\\grass.obj");
-    Model herbe2 = LoadModel("..\\3D\\grass_large.obj");
-    Model herbe3 = LoadModel("..\\3D\\grass_leafs.obj");
-    Model maison1 = LoadModel("..\\3D\\house_type02.obj");
-    Model cabane = LoadModel("..\\3D\\hangar_smallA.obj");
-    Model immeuble = LoadModel("..\\3D\\large_buildingC.obj");
-    Model gratteCiel = LoadModel("..\\3D\\skyscraperF.obj");
-    Model chateauEau = LoadModel("..\\3D\\chateauEau.glb");
-    Model usine = LoadModel("..\\3D\\usine.glb");
-    Model route1 = LoadModel("..\\3D\\road_bendSidewalk.obj");
-    Model route2 = LoadModel("..\\3D\\road_crossroad.obj");
-    Model route3 = LoadModel("..\\3D\\road_end.obj");
-    Model route4 = LoadModel("..\\3D\\road_intersectionPath.obj");
-    Model route5 = LoadModel("..\\3D\\road_straight.obj");
+    Model sol = LoadModel("../3D/ground_grass.obj");
+    Model herbe1 = LoadModel("../3D/grass.obj");
+    Model herbe2 = LoadModel("../3D/grass_large.obj");
+    Model herbe3 = LoadModel("../3D/grass_leafs.obj");
+    Model maison1 = LoadModel("../3D/house_type02.obj");
+    Model cabane = LoadModel("../3D/hangar_smallA.obj");
+    Model immeuble = LoadModel("../3D/large_buildingC.obj");
+    Model gratteCiel = LoadModel("../3D/skyscraperF.obj");
+    Model chateauEau = LoadModel("../3D/chateauEau.glb");
+    Model usine = LoadModel("../3D/usine.glb");
+    Model route1 = LoadModel("../3D/road_bendSidewalk.obj");
+    Model route2 = LoadModel("../3D/road_crossroad.obj");
+    Model route3 = LoadModel("../3D/road_end.obj");
+    Model route4 = LoadModel("../3D/road_intersectionPath.obj");
+    Model route5 = LoadModel("../3D/road_straight.obj");
 
 
     Image icone_maison = LoadImage("../image/maison.png");
@@ -432,6 +434,8 @@ void affichageMapRaylib(Jeu* jeu){
 
 
     while (!fermetureWindow) {
+
+        detection_temps(jeu);
 
         if (WindowShouldClose() || IsKeyPressed(KEY_ESCAPE)){
             demandeDeFermetureWindow = true;
@@ -522,7 +526,7 @@ void affichageMapRaylib(Jeu* jeu){
                                 jeu->maisons[jeu->nb_maisons - 1].position.pos_x= cases[i][j].x + 1;
                                 jeu->maisons[jeu->nb_maisons - 1].position.pos_y= collision.point.y;
                                 jeu->maisons[jeu->nb_maisons - 1].position.pos_z= cases[i][j].z - 1;
-                                jeu->maisons[jeu->nb_maisons - 1].niveau= NIVEAU_CABANE;
+                                maj_totale(jeu);
                             }
                         }
 
@@ -552,6 +556,7 @@ void affichageMapRaylib(Jeu* jeu){
                                 jeu->batiments[jeu->nb_centrales + jeu->nb_chateau_eau - 1].position.pos_x= cases[i][j].x + 2.5;
                                 jeu->batiments[jeu->nb_centrales + jeu->nb_chateau_eau - 1].position.pos_y= collision.point.y;
                                 jeu->batiments[jeu->nb_centrales + jeu->nb_chateau_eau - 1].position.pos_z= cases[i][j].z - 1.5;
+                                maj_totale(jeu);
                             }
                         }
                     }
@@ -580,6 +585,7 @@ void affichageMapRaylib(Jeu* jeu){
                                 jeu->batiments[jeu->nb_centrales + jeu->nb_chateau_eau - 1].position.pos_x= cases[i][j].x;
                                 jeu->batiments[jeu->nb_centrales + jeu->nb_chateau_eau - 1].position.pos_y= collision.point.y;
                                 jeu->batiments[jeu->nb_centrales + jeu->nb_chateau_eau - 1].position.pos_z= cases[i][j].z;
+                                maj_totale(jeu);
                             }
                         }
                     }
@@ -607,6 +613,7 @@ void affichageMapRaylib(Jeu* jeu){
                                 jeu->routes[jeu->nb_routes - 1].position.pos_x= cases[i][j].x;
                                 jeu->routes[jeu->nb_routes - 1].position.pos_y= collision.point.y;
                                 jeu->routes[jeu->nb_routes - 1].position.pos_z= cases[i][j].z;
+                                maj_totale(jeu);
                             }
                         }
                     }
@@ -631,7 +638,7 @@ void affichageMapRaylib(Jeu* jeu){
                         if (collision.point.z <= cases[i][j].z + 0.5 && collision.point.z >= cases[i][j].z - 0.5 &&
                             collision.point.x <= cases[i][j].x + 0.5 && collision.point.x >= cases[i][j].x - 0.5) {
                             detruire(jeu,i,j);
-
+                            maj_totale(jeu);
                         }
                     }
                 }

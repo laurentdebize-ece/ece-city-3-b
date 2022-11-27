@@ -3,6 +3,10 @@
 #include <stdlib.h>
 
 void repartition_electricite(Jeu* jeu){
+    for (int i = 0;i<jeu->nb_maisons;i++){
+        jeu->maisons[i].electricite = 0;
+    }
+
     Liste** composantes_maisons;
     Liste** composantes_centrales;
     int nb_composantes;

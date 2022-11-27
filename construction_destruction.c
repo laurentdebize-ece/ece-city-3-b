@@ -1,5 +1,8 @@
 #include "construction_destruction.h"
 #include "debug.h"
+#include "compteur.h"
+#include "eau.h"
+#include "elec.h"
 #include <stdlib.h>
 
 /**************************************Construire***********************************************/
@@ -451,6 +454,7 @@ bool detruire_batiment(Jeu* jeu, int numero,int type_batiment){
         jeu->batiments[i].horizontal = jeu->batiments[i+1].horizontal;
         jeu->batiments[i].pos_x = jeu->batiments[i+1].pos_x;
         jeu->batiments[i].pos_y = jeu->batiments[i+1].pos_y;
+        jeu->batiments[i].type_batiment = jeu->batiments[i+1].type_batiment;
         jeu->batiments[i].routeAdjacente = jeu->batiments[i+1].routeAdjacente;
         jeu->batiments[i].position.pos_x = jeu->batiments[i+1].position.pos_x;
         jeu->batiments[i].position.pos_y = jeu->batiments[i+1].position.pos_y;
@@ -639,10 +643,15 @@ void evolution_et_regression(Jeu* jeu,int nummaison){
 }
 
 void evolution_maison(Jeu* jeu, int nummaison){
+    int ancien_nb_hab = jeu->maisons[nummaison].habitants;
     switch (jeu->mode_jeu) {
         case MODE_CAPITALISTE:
                 if(jeu->maisons[nummaison].niveau<=NIVEAU_IMMEUBLE){
-                    jeu->maisons[nummaison].niveau+=1;
+                    jeu->maisons[nummaison].niveau++;
+                    maj_totale(jeu);
+                    if (jeu->maisons[nummaison].habitants == 0){
+                        jeu->maisons[nummaison].niveau--;
+                    }
                 }
             break;
         case MODE_COMMUNISTE:
@@ -650,28 +659,45 @@ void evolution_maison(Jeu* jeu, int nummaison){
                     case NIVEAU_TERRAIN_VAGUE:
                         if (jeu->maisons[nummaison].habitants>= 0) {
                             jeu->maisons[nummaison].niveau=NIVEAU_CABANE;
-                            break;
+                            maj_totale(jeu);
+                            if (jeu->maisons[nummaison].habitants == 0){
+                                jeu->maisons[nummaison].niveau--;
+                            }
                         }
+                        break;
+                        
                     case NIVEAU_CABANE:
-                        if (jeu->maisons[nummaison].habitants>= HAB_MAX_CABANE && jeu->eau>0 && jeu->electricite>HAB_MAX_MAISON) {
+                        if (jeu->maisons[nummaison].habitants>= HAB_MAX_CABANE) {
                             jeu->maisons[nummaison].niveau=NIVEAU_MAISON;
-                            break;
+                            maj_totale(jeu);
+                            if (jeu->maisons[nummaison].habitants <= ancien_nb_hab){
+                                jeu->maisons[nummaison].niveau--;
+                            }
                         }
+                        break;
                     case NIVEAU_MAISON:
                         if (jeu->maisons[nummaison].habitants>= HAB_MAX_MAISON && jeu->eau>0 && jeu->electricite>HAB_MAX_IMMEUBLE) {
                             jeu->maisons[nummaison].niveau=NIVEAU_IMMEUBLE;
-                            break;
+                            maj_totale(jeu);
+                            if (jeu->maisons[nummaison].habitants <= ancien_nb_hab){
+                                jeu->maisons[nummaison].niveau--;
+                            }
                         }
+                        break;
                     case NIVEAU_IMMEUBLE:
                         if (jeu->maisons[nummaison].habitants>= HAB_MAX_IMMEUBLE && jeu->eau>0 && jeu->electricite>HAB_MAX_GRATTE_CIEL) {
                             jeu->maisons[nummaison].niveau=NIVEAU_GRATTE_CIEL;
-                            break;
+                            maj_totale(jeu);
+                            if (jeu->maisons[nummaison].habitants <= ancien_nb_hab){
+                                jeu->maisons[nummaison].niveau--;
+                            }
                         }
+                        break;
                     default:
                         break;
                 }
+            break;
         default:
-            choix_mode_jeu(jeu);
             break;
     }
 
@@ -681,7 +707,7 @@ void evolution_maison(Jeu* jeu, int nummaison){
 bool regression_type_maison(Jeu*jeu, int nummaison){
         switch (jeu->maisons[nummaison].niveau) {
             case NIVEAU_CABANE:
-                if (jeu->maisons[nummaison].habitants< 0) {
+                if (jeu->maisons[nummaison].habitants == 0) {
                     jeu->maisons[nummaison].niveau=NIVEAU_RUINE;
                     return 1;
                     break;
@@ -709,4 +735,31 @@ bool regression_type_maison(Jeu*jeu, int nummaison){
 
         }
         return 0;
+}
+
+void maj_totale(Jeu *jeu) {
+    repartitionEau(jeu);
+    repartition_electricite(jeu);
+    repartition_habitants(jeu);
+    maj_compteurs(jeu);
+}
+
+void detection_temps(Jeu *jeu) {
+    time_t temps = time(NULL);
+    if (jeu->temps != temps) {
+        jeu->temps = temps;
+        jeu->compteur_impot++;
+        if (jeu->compteur_impot == 15){
+            jeu->compteur_impot = 0;
+            impot(jeu);
+        }
+        for (int i = 0; i < jeu->nb_maisons; i++) {
+            jeu->maisons[i].compteur_evolution++;
+            if (jeu->maisons[i].compteur_evolution == 15) {
+                jeu->maisons[i].compteur_evolution = 0;
+                evolution_et_regression(jeu, i);
+                maj_totale(jeu);
+            }
+        }
+    }
 }

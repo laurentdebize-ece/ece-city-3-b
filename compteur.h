@@ -6,7 +6,6 @@
 #include "initialisation_liberation.h"
 
 void maj_compteurs(Jeu *jeu);
-void detection_temps(Jeu *jeu);
 void compteur_electricite(Jeu* jeu);
 void compteur_eau(Jeu* jeu);
 void compteur_argent(Jeu* jeu);
